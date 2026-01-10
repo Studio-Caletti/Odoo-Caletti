@@ -1,0 +1,52 @@
+<odoo>
+    <record id="action_report_tarea" model="ir.actions.report">
+        <field name="name">Imprimir Tarea Caletti</field>
+        <field name="model">tablero.tarea</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tablero_kanban.report_tarea_template</field>
+        <field name="binding_model_id" ref="model_tablero_tarea"/> <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_tarea_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        .color-bar { width: 10px; height: 50px; display: inline-block; margin-right: 15px; vertical-align: middle; }
+                        .color-0 { background-color: #714B67; } /* Color por defecto (Púrpura Odoo) */
+                        .color-1 { background-color: #F06050; } .color-2 { background-color: #F4A460; }
+                        .color-3 { background-color: #F7CD1F; } .color-4 { background-color: #6CC1ED; }
+                        .color-5 { background-color: #814968; } .color-6 { background-color: #EB7E7F; }
+                        .color-7 { background-color: #2C8397; } .color-8 { background-color: #475577; }
+                        .color-9 { background-color: #D6145F; } .color-10 { background-color: #30C381; }
+                    </style>
+
+                    <div class="mt-4">
+                        <div t-attf-class="color-bar color-#{doc.color or 0}"></div>
+                        <h2 style="display: inline-block; vertical-align: middle;">
+                            Informe de Tarea: <span t-field="doc.name"/>
+                        </h2>
+                    </div>
+                    
+                    <hr/>
+                    
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <strong>Responsable:</strong> <p t-field="doc.user_id.name"/>
+                        </div>
+                        <div class="col-6 text-end">
+                            <strong>Estado:</strong> 
+                                <p>
+                                <span class="badge rounded-pill bg-info text-white" t-if="doc.state == 'nuevo'">Nuevo</span>
+                                <span class="badge rounded-pill bg-warning text-dark" t-if="doc.state == 'proceso'">En Proceso</span>
+                                <span class="badge rounded-pill bg-success text-white" t-if="doc.state == 'hecho'">Finalizado</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
