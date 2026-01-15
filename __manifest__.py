@@ -6,6 +6,7 @@
     'author': 'Carlos Caletti',
     'depends': ['base', 'mail'],
     'data': [
+        'security/security_groups.xml',
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/report_tarea.xml',
