@@ -47,8 +47,10 @@
                         <h1><field name="name" placeholder="Ej. Diseño de Logotipo"/></h1>
                     </div>
                     <div class="bg-100 p-3 mb-3 rounded border">
-                    <group name="description_group" string="Generalidades">
-                        <field name="description" placeholder="Escribe aquí los detalles de la tarea..." nolabel="1"/>
+                    <group name="description_group" string="Generalidades" col="1">
+                        <field name="description" 
+                            placeholder="Escribe aquí los detalles de la tarea..." nolabel="1" 
+                            style="min-height: 100px;"/>
                     </group>
                     </div>
 
