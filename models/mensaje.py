@@ -14,6 +14,21 @@ class TableroTarea(models.Model):
         ('hecho', 'Finalizado')
     ], string='Estado', default='nuevo')
 
+    # NUEVOS CAMPOS
+    date_deadline = fields.Date(string='Fecha Límite', tracking=True)
+    priority = fields.Selection([
+        ('0', 'Baja'),
+        ('1', 'Normal'),
+        ('2', 'Alta'),
+        ('3', 'Muy Alta')
+    ], string='Prioridad', default='1')
+    
+    kanban_state = fields.Selection([
+        ('normal', 'En Progreso'),
+        ('blocked', 'Bloqueada'),
+        ('done', 'Lista para siguiente etapa')
+    ], string='Estado Kanban', default='normal')
+
 
    # Función que se ejecutará al presionar el botón
     def action_finalizar_tarea(self):
