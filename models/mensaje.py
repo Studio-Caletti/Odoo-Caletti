@@ -15,6 +15,8 @@ class TableroTarea(models.Model):
     ], string='Estado', default='nuevo')
 
     # NUEVOS CAMPOS
+    description = fields.Text(string='Detalles')
+
     date_deadline = fields.Date(string='Fecha Límite', tracking=True)
     priority = fields.Selection([
         ('0', 'Baja'),
