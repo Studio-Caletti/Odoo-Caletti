@@ -46,10 +46,12 @@
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Ej. Diseño de Logotipo"/></h1>
                     </div>
+                    <div class="bg-100 p-3 mb-3 rounded border">
                     <group name="description_group" string="Generalidades">
-                        <field name="description" placeholder="Escribe aquí los detalles de la tarea..."/>
+                        <field name="description" placeholder="Escribe aquí los detalles de la tarea..." nolabel="1"/>
                     </group>
-                    
+                    </div>
+
                     <group>
                         <group>
                             <field name="user_id" widget="many2one_avatar_user"/>
