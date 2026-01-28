@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="rule_tarea_colaboracion" model="ir.rule">
+        <field name="name">Ver: Asignadas o Creadas</field>
+        <field name="model_id" ref="model_tablero_tarea"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_tablero_user')), (4, ref('group_tablero_manager'))]"/>
+    </record>
+
+    <record id="rule_tarea_admin_all" model="ir.rule">
+        <field name="name">Admin: Ver Todo</field>
+        <field name="model_id" ref="model_tablero_tarea"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_tablero_admin'))]"/>
+    </record>
+
+
+
+
+    <record id="rule_tablero_tarea_portal_user" model="ir.rule">
+        <field name="name">Portal: Ver solo tareas asignadas</field>
+        <field name="model_id" ref="model_tablero_tarea"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

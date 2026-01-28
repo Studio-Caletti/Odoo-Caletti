@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <record id="module_category_tablero_caletti" model="ir.module.category">
+            <field name="name">Gestión de Tablero Caletti</field>
+            <field name="description">Niveles de acceso para Caletti Studio</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="group_tablero_user" model="res.groups">
+            <field name="name">Usuario: Solo mis tareas</field>
+            <field name="category_id" ref="module_category_tablero_caletti"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_tablero_manager" model="res.groups">
+            <field name="name">Gerente: Gestión de Tareas</field>
+            <field name="category_id" ref="module_category_tablero_caletti"/>
+            <field name="implied_ids" eval="[(4, ref('group_tablero_user'))]"/>
+        </record>
+
+        <record id="group_tablero_admin" model="res.groups">
+            <field name="name">Administrador: Control Total</field>
+            <field name="category_id" ref="module_category_tablero_caletti"/>
+            <field name="implied_ids" eval="[(4, ref('group_tablero_manager'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+        
+    </data>
+</odoo>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tablero_tarea_kanban" model="ir.ui.view">
+    <field name="name">tablero.tarea.kanban</field>
+    <field name="model">tablero.tarea</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="state" quick_create="true" class="o_kanban_small_column" sample="1">
+            <field name="color"/>
+            <field name="priority"/>
+            <field name="date_deadline"/>
+            <field name="kanban_state"/>
+            <field name="partner_id"/>
+            <field name="user_id"/>
+            <field name="is_overdue" invisible="1"/>
+
+            <header>
+                <button class="btn btn-primary" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
+                        context="{'search_default_user_id': uid}"> Mis Tareas </button>
+                <button class="btn btn-danger" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
+                        context="{'search_default_overdue': 1}"> ¡VENCIDAS! </button>
+                <button class="btn btn-warning" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
+                        context="{'search_default_urgent': 1}"> Urgentes </button>
+            </header>
+
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_global_click shadow-sm border-rounded mb-2"
+                         t-attf-style="#{record.is_overdue.raw_value ? 'border-left: 6px solid #d9534f !important;' : (record.kanban_state.raw_value == 'done' ? 'border-left: 6px solid #f0ad4e !important;' : '')}">
+                        
+                        <div class="ribbon ribbon-top-right" t-if="record.is_overdue.raw_value">
+                            <span class="text-bg-danger">VENCIDA</span>
+                        </div>
+
+                        <div class="oe_kanban_details">
+                            <strong class="o_kanban_record_title"><field name="name"/></strong>
+                            
+                            <div class="text-muted" t-if="record.partner_id.value">
+                                <i class="fa fa-user-circle-o" title="Cliente"/> <field name="partner_id"/>
+                            </div>
+
+                            <div class="o_kanban_record_bottom mt-2">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="priority" widget="priority"/>
+                                    <field name="state" widget="label_selection" options="{'classes': {'nuevo': 'info', 'proceso': 'warning', 'hecho': 'success'}}"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="kanban_state" widget="state_selection"/>
+                                    <field name="date_deadline" widget="remaining_days"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+    <record id="view_tablero_tarea_form" model="ir.ui.view">
+        <field name="name">tablero.tarea.form</field>
+        <field name="model">tablero.tarea</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_finalizar_tarea" string="Finalizar Tarea" 
+                            type="object" class="oe_highlight" 
+                            invisible="state == 'hecho'"/>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Ej. Diseño de Logotipo"/></h1>
+                    </div>
+
+                    <group>
+                        <group name="left_info" string="Responsabilidades">
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="partner_id" widget="res_partner_many2one" 
+                                   context="{'res_partner_search_mode': 'customer'}"/>
+                            <field name="date_deadline"/>
+                        </group>
+                        <group name="right_info" string="Clasificación y Alertas">
+                            <field name="priority" widget="priority"/>
+                            <field name="kanban_state" widget="state_selection"/>
+                            <field name="color" widget="color_picker"/>
+    
+                            <label for="is_overdue" string="¡Atención!" invisible="not is_overdue"/>
+                            <div class="o_row" invisible="not is_overdue">
+                                <span class="badge rounded-pill text-bg-danger" style="font-size: 14px; padding: 8px 12px;">
+                                    <i class="fa fa-exclamation-triangle"/> ¡TAREA VENCIDA!
+                                </span>
+                            </div>
+                            <field name="is_overdue" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Descripción del Proyecto" name="description_page">
+                            <div class="bg-100 p-3 rounded border">
+                                <field name="description" placeholder="Escribe aquí los detalles..." 
+                                       nolabel="1" style="min-height: 100px;"/>
+                            </div>
+                        </page>
+                        <page string="Métricas de Productividad" name="metrics">
+                            <group>
+                                <group string="Tiempos Registrados">
+                                    <field name="date_started"/>
+                                    <field name="date_finished"/>
+                                </group>
+                                <group string="Resultado">
+                                    <field name="duration_days" widget="float_time" string="Duración Total"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tablero_tarea_tree" model="ir.ui.view">
+        <field name="name">tablero.tarea.tree</field>
+        <field name="model">tablero.tarea</field>
+        <field name="arch" type="xml">
+            <tree sample="1" decoration-danger="is_overdue == True" decoration-warning="kanban_state == 'done'" decoration-success="state == 'hecho'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="date_deadline" widget="remaining_days"/>
+                <field name="kanban_state" widget="state_selection"/>
+                <field name="state" widget="badge" decoration-info="state == 'nuevo'" decoration-warning="state == 'proceso'" decoration-success="state == 'hecho'"/>
+                <field name="is_overdue" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    
+
+    <record id="view_tablero_tarea_graph" model="ir.ui.view">
+    <field name="name">tablero.tarea.graph</field>
+    <field name="model">tablero.tarea</field>
+    <field name="arch" type="xml">
+        <graph string="Productividad Caletti Studio" type="bar" stacked="True" sample="1">
+            <field name="user_id" type="row"/>        <field name="state" type="col"/>          <field name="duration_days" type="measure"/> </graph>
+    </field>
+    </record>
+
+    <record id="view_tablero_tarea_pivot" model="ir.ui.view">
+    <field name="name">tablero.tarea.pivot</field>
+    <field name="model">tablero.tarea</field>
+    <field name="arch" type="xml">
+        <pivot string="Métricas de Ejecución" display_quantity="1" sample="1">
+            <field name="partner_id" type="row"/>
+            <field name="user_id" type="col"/>
+            <field name="duration_days" type="measure"/>
+        </pivot>
+    </field>
+    </record>
+
+
+<record id="view_tablero_tarea_search" model="ir.ui.view">
+    <field name="name">tablero.tarea.search</field>
+    <field name="model">tablero.tarea</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="partner_id"/>
+            <field name="user_id"/>
+            <filter string="Mis Tareas" name="my_tasks" domain="[('user_id', '=', uid)]"/>
+            <filter string="⚠️ Vencidas" name="overdue" domain="[('is_overdue', '=', True), ('state', '!=', 'hecho')]"/>
+            <filter string="⏳ En Proceso" name="in_progress" domain="[('state', '=', 'proceso')]"/>
+            <filter string="Urgentes (Estado Listo)" name="urgent" domain="[('kanban_state', '=', 'done')]"/>
+            <separator/>
+            <group expand="0" string="Agrupar por...">
+                <filter string="Responsable" name="group_user" context="{'group_by': 'user_id'}"/>
+                <filter string="Cliente" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<record id="action_tablero_kanban_caletti" model="ir.actions.act_window">
+    <field name="name">Tablero de Tareas</field>
+    <field name="res_model">tablero.tarea</field>
+    <field name="view_mode">kanban,tree,form,graph,pivot</field> 
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">¡Crea tu primera tarea!</p>
+    </field>
+</record>
+    
+
+    <menuitem id="menu_kanban_root" name="Tablero Caletti" 
+              groups="tablero_kanban.group_tablero_user,tablero_kanban.group_tablero_admin" 
+              web_icon="tablero_kanban,static/description/icon.png"/>
+    
+    <menuitem id="menu_kanban_main" name="Ver Tablero" 
+              parent="menu_kanban_root" action="action_tablero_kanban_caletti"/>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_tarea_vencida" model="mail.template">
+            <field name="name">Tablero: Alerta de Tarea Vencida (Corporativo)</field>
+            <field name="model_id" ref="tablero_kanban.model_tablero_tarea"/>
+            <field name="subject">⚠️ Tarea Vencida: {{ object.name }}</field>
+            <field name="email_from">{{ object.user_id.company_id.email or 'notifications@caletti.com.mx' }}</field>
+            <field name="email_to">{{ object.user_id.email }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-family: 'Helvetica', sans-serif; background-color: #f4f4f4;">
+                    <table width="100%" style="background-color: #f4f4f4; padding: 20px;">
+                        <tr>
+                            <td align="center">
+                                <img src="https://caletti.com.mx/odoo17/caletti_odoo.png" 
+                                     style="padding: 0px; margin: 0px; height: auto; width: 180px;" 
+                                     alt="Caletti Studio"/>
+                                
+                                <table width="600" style="background-color: #ffffff; border-radius: 8px; margin-top: 20px; border-collapse: separate; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                    <tr>
+                                        <td style="padding: 40px;">
+                                            <h2 t-attf-style="color: {{ object.user_id.company_id.color or '#875A7B' }}; margin-top: 0; font-size: 24px;">
+                                                ¡Atención, Tarea Vencida!
+                                            </h2>
+                                            <p style="font-size: 16px; color: #333;">Hola <strong><t t-out="object.user_id.name"/></strong>,</p>
+                                            <p style="font-size: 15px; color: #555; line-height: 1.5;">
+                                                Te notificamos que una de tus tareas en el tablero ha superado su fecha límite de entrega.
+                                            </p>
+                                            
+                                            <div style="margin: 25px 0; padding: 20px; border-left: 4px solid #d9534f; background-color: #fdf7f7;">
+                                                <span style="font-size: 14px; color: #777; text-transform: uppercase;">Tarea:</span><br/>
+                                                <strong style="font-size: 18px; color: #d9534f;"><t t-out="object.name"/></strong><br/>
+                                                <span style="font-size: 14px; color: #777; margin-top: 10px; display: inline-block;">Fecha de vencimiento:</span><br/>
+                                                <strong style="color: #333;"><t t-out="object.date_deadline"/></strong>
+                                            </div>
+                                            
+                                            <p style="font-size: 14px; color: #888;">
+                                                Por favor, revisa el tablero para actualizar el estado o coordinar una nueva fecha.
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px; background-color: #f9f9f9; text-align: center; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                                            <p style="font-size: 12px; color: #aaa; margin: 0;">
+                                                © <t t-out="object.user_id.company_id.name"/> | Sistema de Gestión Automatizado
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

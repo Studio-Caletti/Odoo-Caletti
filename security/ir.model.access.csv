@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tablero_user,tablero.user,model_tablero_tarea,tablero_kanban.group_tablero_user,1,1,0,0
+access_tablero_manager,tablero.manager,model_tablero_tarea,tablero_kanban.group_tablero_manager,1,1,1,0
+access_tablero_admin,tablero.admin,model_tablero_tarea,tablero_kanban.group_tablero_admin,1,1,1,1
+access_tablero_tarea_portal,tablero.tarea.portal,model_tablero_tarea,base.group_portal,1,0,0,0

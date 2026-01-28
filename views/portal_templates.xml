@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- 1. Botón en /my --> 
+
+    <template id="portal_my_home_tareas_link" inherit_id="portal.portal_my_home" name="Portal My Home Tareas Link"> 
+        <xpath expr="//div[@class='o_portal_my_home']" position="inside"> <div class="o_portal_section"> <p></p><h3>Mis Tareas</h3> <p> <a class="btn btn-primary" href="/my/tareas"> Ver tablero de tareas </a> </p> </div> 
+        </xpath> 
+    </template>
+
+
+
+    <template id="portal_my_home_menu_tareas" name="Portal layout : Tareas menu entry" inherit_id="portal.portal_breadcrumbs" priority="1">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'tareas_caletti' or tarea" t-attf-class="breadcrumb-item #{'active ' if not tarea else ''}">
+                <a t-if="tarea" href="/my/tareas">Proyectos</a>
+                <t t-else="">Proyectos</t>
+            </li>
+            <li t-if="tarea" class="breadcrumb-item active">
+                <span t-field="tarea.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_tareas" name="Show Tareas" inherit_id="portal.portal_my_home" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis Proyectos</t>
+                <t t-set="url" t-value="'/my/tareas'"/>
+                <t t-set="placeholder">Seguimiento en tiempo real Caletti Studio tareas</t>
+                <t t-set="count" t-value="tarea_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_tareas_template" name="Mis Tareas Caletti">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Portafolio de Proyectos Activos</t>
+            </t>
+            
+            <div class="mt-4 mb-5">
+                <h2 class="h4">Hola, <t t-esc="user_id.partner_id.name"/>.</h2>
+                <p class="text-muted">Aquí puedes supervisar el avance de tus servicios contratados.</p>
+            </div>
+
+            <t t-if="not tareas">
+                <div class="alert alert-info">Aún no tienes proyectos registrados.</div>
+            </t>
+
+            <div t-if="tareas" class="table-responsive rounded shadow-sm border bg-white">
+                <table class="table table-hover m-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Proyecto</th>
+                            <th>Entrega Estimada</th>
+                            <th class="text-center">Avance</th>
+                            <th class="text-end pe-4">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="tareas" t-as="tarea">
+                            <tr class="align-middle" style="cursor: pointer;" t-attf-onclick="window.location.href='/my/tarea/#{tarea.id}'">
+                                <td class="ps-4">
+                                    <strong class="text-primary"><span t-field="tarea.name"/></strong>
+                                </td>
+                                <td class="text-end">
+    <span t-field="tarea.date_deadline" 
+          t-attf-class="{{ 'text-danger fw-bold' if tarea.is_overdue and tarea.state != 'hecho' else '' }}"/>
+
+    <t t-if="tarea.is_overdue and tarea.state != 'hecho'">
+        <br/>
+        <span class="badge rounded-pill text-bg-danger" style="font-size: 0.65rem;">
+            <i class="fa fa-exclamation-circle"/> RETRASO
+        </span>
+    </t>
+</td>
+                                <td class="text-center" style="width: 25%;">
+                                    <div class="progress" style="height: 8px;">
+                                        <div t-attf-class="progress-bar #{'bg-info' if tarea.state == 'nuevo' else 'bg-warning' if tarea.state == 'proceso' else 'bg-success'}" 
+                                             role="progressbar" 
+                                             t-attf-style="width: #{'15%' if tarea.state == 'nuevo' else '60%' if tarea.state == 'proceso' else '100%'}"/>
+                                    </div>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <span t-attf-class="badge rounded-pill p-2 px-3 #{'text-bg-info' if tarea.state == 'nuevo' else 'text-bg-warning' if tarea.state == 'proceso' else 'text-bg-success'}">
+                                        <t t-esc="dict(tarea._fields['state'].selection).get(tarea.state).upper()"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_tarea_page" name="Detalle de Tarea">
+        <t t-call="portal.portal_layout">
+            <div class="container bg-white pb-5 shadow-lg rounded-3 border-0 mt-3 overflow-hidden">
+                <div class="row bg-light border-bottom p-4 align-items-center">
+                    <div class="col-md-8">
+                        <small class="text-uppercase text-muted fw-bold">Detalle del Proyecto</small>
+                        <h2 class="text-dark mb-0"><span t-field="tarea.name"/></h2>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span t-attf-class="fs-6 badge rounded-pill p-2 px-4 #{'text-bg-info' if tarea.state == 'nuevo' else 'text-bg-warning' if tarea.state == 'proceso' else 'text-bg-success'}">
+                            <t t-esc="dict(tarea._fields['state'].selection).get(tarea.state)"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row p-4">
+                    <div class="col-12 col-lg-8">
+                        <div class="mb-5">
+                            <h5 class="fw-bold"><i class="fa fa-file-text-o me-2 text-primary"/>Objetivo y Descripción</h5>
+                            <div t-field="tarea.description" class="p-4 border rounded-3 bg-light lead shadow-sm" style="font-size: 1rem;"/>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3"><i class="fa fa-tasks me-2 text-primary"/>Progreso de Ejecución</h5>
+                            <div class="progress" style="height: 25px; border-radius: 50px;">
+                                <div t-attf-class="progress-bar progress-bar-striped progress-bar-animated #{'bg-info text-dark' if tarea.state == 'nuevo' else 'bg-warning text-dark' if tarea.state == 'proceso' else 'bg-success'}" 
+                                     role="progressbar" 
+                                     t-attf-style="width: #{'20%' if tarea.state == 'nuevo' else '65%' if tarea.state == 'proceso' else '100%'}">
+                                     <t t-if="tarea.state == 'nuevo'">FASE DE ARRANQUE</t>
+                                     <t t-if="tarea.state == 'proceso'">PRODUCCIÓN ACTIVA</t>
+                                     <t t-if="tarea.state == 'hecho'">¡PROYECTO COMPLETADO!</t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4 ps-lg-5">
+                        <div class="card border-0 bg-light rounded-3 p-3 mb-4">
+                            <h6 class="text-muted fw-bold border-bottom pb-2 mb-3">DATOS CLAVE:</h6>
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">FECHA DE ENTREGA:</label>
+                                <strong class="fs-5"><span t-field="tarea.date_deadline" t-options='{"widget": "date"}'/></strong>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">PROYECTO ID:</label>
+                                <strong>#<t t-esc="tarea.id"/></strong>
+                            </div>
+                            <div class="mt-4">
+                                <a href="mailto:ana@calettistudio.com" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="fa fa-envelope me-1"/> Contactar a Ana Caletti
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row p-4 border-top">
+                    <div class="col-12">
+                        <h4 class="fw-bold mb-4 text-secondary"><i class="fa fa-comments me-2"/>Canal Directo de Comunicación</h4> <label class="text-muted small d-block">Chatter</label>
+                        <div class="bg-light p-3 rounded-3 shadow-sm">
+                            <t t-call="portal.message_thread">
+                                <t t-set="object" t-value="tarea"/>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
