@@ -1,11 +1,31 @@
 {
     'name': 'Tablero Kanban Caletti',
-    'category': 'Project/Management', # 'Extra Tools' es muy genérico, esta es más precisa
-    'version': '17.0.1.2', # Indica compatibilidad nativa con Odoo 17
+    'category': 'Project/Management',
+    'version': '17.0.1.2', 
     'summary': 'Gestión visual de tareas con Business Intelligence y Portal de Cliente',
+    'description': """
+        Tablero Kanban Avanzado - Caletti Studio
+        =========================================
+        
+        Características principales:
+        * Sistema de alertas automatizado
+        * Portal de cliente personalizado
+        * Vistas de análisis BI (Gráfico/Pivote)
+        * Integración total con Chatter
+        * Sistema de semáforos visuales
+        * Gestión de plazos y retrasos
+        
+        Ideal para agencias creativas y equipos de proyecto.
+    """,
+
     'author': 'Carlos Caletti',
-    'license': 'LGPL-3', # Muy importante para ser Partner
+    'website': 'https://studio.caletti.com.mx',
+    'license': 'LGPL-3', 
+    'price': 0.00,
+    'currency': 'MXN',
+    'support': 'hola@cstudio.caletti.com.mx',
     'depends': ['base', 'mail', 'portal'],
+    
     'data': [
         'security/security_groups.xml',
         'security/ir.model.access.csv',
