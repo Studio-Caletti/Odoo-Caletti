@@ -19,6 +19,10 @@ class TableroTarea(models.Model):
     description = fields.Text(string='Detalles')
     date_deadline = fields.Date(string='Fecha Límite', tracking=True)
 
+    # --- NUEVOS CAMPOS V2 (NÚCLEO ROBUSTO) ---
+    progress = fields.Float(string='Progreso (%)', default=0.0, tracking=True)
+    # -----------------------------------------
+
     priority = fields.Selection([
         ('0', 'Baja'),
         ('1', 'Normal'),
@@ -31,7 +35,8 @@ class TableroTarea(models.Model):
     kanban_state = fields.Selection([
         ('normal', 'A tiempo'),
         ('blocked', 'VENCIDA'),
-        ('done', 'PRÓXIMA (2 días)')
+        ('done', 'PRÓXIMA (2 días)'),
+        ('completed', 'COMPLETADA') # Nueva opción para el semáforo inteligente
     ], string='Estado Kanban', compute="_compute_kanban_state", store=True, default='normal')
 
     partner_id = fields.Many2one(
@@ -46,12 +51,18 @@ class TableroTarea(models.Model):
     date_finished = fields.Datetime(string='Fecha de Finalización', readonly=True)
     duration_days = fields.Float(string='Días de Ejecución', compute='_compute_duration', store=True)
 
-    @api.depends('date_deadline', 'state')
+    # --- LÓGICA DE SEMÁFORO MEJORADA V2 ---
+    @api.depends('date_deadline', 'state', 'progress')
     def _compute_kanban_state(self):
-        # Usamos fields.Date.today() que es la forma nativa de Odoo
         today = fields.Date.today()
         for record in self:
-            if record.date_deadline and record.state != 'hecho':
+            # Lógica prioritaria: Si está terminada o al 100%
+            if record.state == 'hecho' or record.progress >= 100.0:
+                record.is_overdue = False
+                record.kanban_state = 'completed'
+            
+            # Lógica de tiempos si no está terminada
+            elif record.date_deadline:
                 overdue = record.date_deadline < today
                 record.is_overdue = overdue
                 
@@ -75,7 +86,8 @@ class TableroTarea(models.Model):
                 record.duration_days = 0
 
     def action_finalizar_tarea(self):
-        return self.write({'state': 'hecho'})
+        # Al finalizar por botón, forzamos el progreso al 100%
+        return self.write({'state': 'hecho', 'progress': 100.0})
 
     def write(self, vals):
         if 'state' in vals:
@@ -84,6 +96,7 @@ class TableroTarea(models.Model):
                 vals['date_started'] = fields.Datetime.now()
             elif new_state == 'hecho':
                 vals['date_finished'] = fields.Datetime.now()
+                vals['progress'] = 100.0 # Aseguramos progreso al finalizar
                 vals['color'] = 10 # Verde Caletti
                 for record in self:
                     record.message_post(body="✅ ¡Excelente! Esta tarea ha sido finalizada con éxito.")
@@ -94,8 +107,7 @@ class TableroTarea(models.Model):
         """Función que ejecuta el ir.cron diariamente"""
         today = fields.Date.today()
         
-        # 1. Forzamos la actualización de is_overdue para las tareas que acaban de vencer
-        # Esto soluciona el problema de que el campo está 'stale' (viejo) en la DB
+        # 1. Actualización de estados
         tasks_to_update = self.search([
             ('state', '!=', 'hecho'),
             ('date_deadline', '<', today),
@@ -107,15 +119,14 @@ class TableroTarea(models.Model):
         # 2. Buscamos la plantilla
         template = self.env.ref('tablero_kanban.email_template_tarea_vencida', raise_if_not_found=False)
         
-        # 3. Buscamos tareas que ESTÉN vencidas (ahora sí actualizado) y no finalizadas
+        # 3. Solo enviamos si no está finalizada y no está al 100%
         overdue_tasks = self.search([
             ('is_overdue', '=', True),
-            ('state', '!=', 'hecho')
+            ('state', '!=', 'hecho'),
+            ('progress', '<', 100.0)
         ])
         
         for task in overdue_tasks:
-            # Dejamos evidencia en el chatter
             task.message_post(body=f"⚠️ Alerta automática: Tarea vencida. Correo enviado a {task.user_id.name}.")
-            # Enviamos el correo corporativo
             if template:
                 template.send_mail(task.id, force_send=True)
