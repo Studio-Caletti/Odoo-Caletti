@@ -37,10 +37,10 @@
         'data/mail_template_data.xml',
         'data/ir_cron.xml',
     ],
-   # 'demo': [
-   #     'demo/demo_data.xml',
-   # ],
-   # 
+    'demo': [
+        'demo/demo_data.xml',
+    ],
+    
     'images': [
         'static/description/screenshot_kanban.png',
         'static/description/screenshot_kanban_detalle.png',
