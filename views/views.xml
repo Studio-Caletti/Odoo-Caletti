@@ -154,9 +154,8 @@
         <field name="name">tablero.tarea.graph</field>
         <field name="model">tablero.tarea</field>
         <field name="arch" type="xml">
-            <graph string="Productividad Caletti Studio" type="bar" stacked="True" sample="1">
+            <graph string="Productividad Caletti Studio" type="bar" sample="1">
                 <field name="user_id" type="row"/>
-                <field name="state" type="col"/>
                 <field name="progress" type="measure"/> </graph>
         </field>
     </record>
@@ -210,4 +209,21 @@
     
     <menuitem id="menu_kanban_main" name="Ver Tablero" 
               parent="menu_kanban_root" action="action_tablero_kanban_caletti"/>
+
+    <record id="action_tablero_analisis" model="ir.actions.act_window">
+    <field name="name">Dashboard de Productividad</field>
+    <field name="res_model">tablero.tarea</field>
+    <field name="view_mode">graph,pivot</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Aquí aparecerán las estadísticas de avance una vez que Ana empiece a reportar progresos.
+        </p>
+    </field>
+    </record>
+
+    <menuitem id="menu_kanban_analisis" name="Análisis" 
+          parent="menu_kanban_root" 
+          action="action_tablero_analisis" 
+          groups="tablero_kanban.group_tablero_admin"
+          sequence="20"/>
 </odoo>
