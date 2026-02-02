@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-        <!-- 1. Botón en /my --> 
-
     <template id="portal_my_home_tareas_link" inherit_id="portal.portal_my_home" name="Portal My Home Tareas Link"> 
-        <xpath expr="//div[@class='o_portal_my_home']" position="inside"> <div class="o_portal_section"> <p></p><h3>Mis Tareas</h3> <p> <a class="btn btn-primary" href="/my/tareas"> Ver tablero de tareas </a> </p> </div> 
+        <xpath expr="//div[@class='o_portal_my_home']" position="inside"> 
+            <div class="o_portal_section"> 
+                <p></p><h3>Mis Tareas</h3> 
+                <p> <a class="btn btn-primary" href="/my/tareas"> Ver tablero de tareas </a> </p> 
+            </div> 
         </xpath> 
     </template>
-
-
 
     <template id="portal_my_home_menu_tareas" name="Portal layout : Tareas menu entry" inherit_id="portal.portal_breadcrumbs" priority="1">
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
@@ -55,7 +54,7 @@
                         <tr>
                             <th class="ps-4">Proyecto</th>
                             <th>Entrega Estimada</th>
-                            <th class="text-center">Avance</th>
+                            <th class="text-center">Avance Real</th>
                             <th class="text-end pe-4">Estado</th>
                         </tr>
                     </thead>
@@ -66,22 +65,23 @@
                                     <strong class="text-primary"><span t-field="tarea.name"/></strong>
                                 </td>
                                 <td class="text-end">
-    <span t-field="tarea.date_deadline" 
-          t-attf-class="{{ 'text-danger fw-bold' if tarea.is_overdue and tarea.state != 'hecho' else '' }}"/>
-
-    <t t-if="tarea.is_overdue and tarea.state != 'hecho'">
-        <br/>
-        <span class="badge rounded-pill text-bg-danger" style="font-size: 0.65rem;">
-            <i class="fa fa-exclamation-circle"/> RETRASO
-        </span>
-    </t>
-</td>
+                                    <span t-field="tarea.date_deadline" 
+                                          t-attf-class="{{ 'text-danger fw-bold' if tarea.is_overdue and tarea.state != 'hecho' else '' }}"/>
+                                    <t t-if="tarea.is_overdue and tarea.state != 'hecho'">
+                                        <br/>
+                                        <span class="badge rounded-pill text-bg-danger" style="font-size: 0.65rem;">
+                                            <i class="fa fa-exclamation-circle"/> RETRASO
+                                        </span>
+                                    </t>
+                                </td>
                                 <td class="text-center" style="width: 25%;">
-                                    <div class="progress" style="height: 8px;">
+                                    <div class="progress" style="height: 12px; border-radius: 10px;">
                                         <div t-attf-class="progress-bar #{'bg-info' if tarea.state == 'nuevo' else 'bg-warning' if tarea.state == 'proceso' else 'bg-success'}" 
                                              role="progressbar" 
-                                             t-attf-style="width: #{'15%' if tarea.state == 'nuevo' else '60%' if tarea.state == 'proceso' else '100%'}"/>
+                                             t-attf-style="width: #{tarea.progress}%;"
+                                             t-att-aria-valuenow="tarea.progress" aria-valuemin="0" aria-valuemax="100"/>
                                     </div>
+                                    <small class="text-muted"><t t-esc="int(tarea.progress)"/>%</small>
                                 </td>
                                 <td class="text-end pe-4">
                                     <span t-attf-class="badge rounded-pill p-2 px-3 #{'text-bg-info' if tarea.state == 'nuevo' else 'text-bg-warning' if tarea.state == 'proceso' else 'text-bg-success'}">
@@ -120,15 +120,17 @@
                         
                         <div class="mb-4">
                             <h5 class="fw-bold mb-3"><i class="fa fa-tasks me-2 text-primary"/>Progreso de Ejecución</h5>
-                            <div class="progress" style="height: 25px; border-radius: 50px;">
+                            <div class="progress" style="height: 30px; border-radius: 50px;">
                                 <div t-attf-class="progress-bar progress-bar-striped progress-bar-animated #{'bg-info text-dark' if tarea.state == 'nuevo' else 'bg-warning text-dark' if tarea.state == 'proceso' else 'bg-success'}" 
                                      role="progressbar" 
-                                     t-attf-style="width: #{'20%' if tarea.state == 'nuevo' else '65%' if tarea.state == 'proceso' else '100%'}">
-                                     <t t-if="tarea.state == 'nuevo'">FASE DE ARRANQUE</t>
-                                     <t t-if="tarea.state == 'proceso'">PRODUCCIÓN ACTIVA</t>
-                                     <t t-if="tarea.state == 'hecho'">¡PROYECTO COMPLETADO!</t>
+                                     t-attf-style="width: #{tarea.progress}%;">
+                                     <t t-esc="int(tarea.progress)"/>% COMPLETADO
                                 </div>
                             </div>
+                            <p class="mt-2 text-muted small">
+                                <i class="fa fa-info-circle me-1"/> 
+                                Este indicador representa el avance real reportado por el equipo de Caletti Studio.
+                            </p>
                         </div>
                     </div>
 
@@ -154,7 +156,8 @@
 
                 <div class="row p-4 border-top">
                     <div class="col-12">
-                        <h4 class="fw-bold mb-4 text-secondary"><i class="fa fa-comments me-2"/>Canal Directo de Comunicación</h4> <label class="text-muted small d-block">Chatter</label>
+                        <h4 class="fw-bold mb-4 text-secondary"><i class="fa fa-comments me-2"/>Canal Directo de Comunicación</h4> 
+                        <label class="text-muted small d-block">Chatter</label>
                         <div class="bg-light p-3 rounded-3 shadow-sm">
                             <t t-call="portal.message_thread">
                                 <t t-set="object" t-value="tarea"/>
