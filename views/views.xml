@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+# --------------------------------------------------------------------------
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#   
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA -->
+
+<!-- Lead Architect & Developer: Carlos Caletti - 2026 -->
+
+
+<!-- Define el propósito del motor visual y la lógica de "Visual Awareness". -->
+
 <odoo>
     <record id="view_tablero_tarea_kanban" model="ir.ui.view">
         <field name="name">tablero.tarea.kanban</field>
         <field name="model">tablero.tarea</field>
         <field name="arch" type="xml">
+<!-- Se cargan los campos necesarios para el renderizado del template QWeb. -->            
             <kanban default_group_by="state" quick_create="true" class="o_kanban_small_column" sample="1">
                 <field name="color"/>
                 <field name="priority"/>
@@ -12,7 +25,9 @@
                 <field name="partner_id"/>
                 <field name="user_id"/>
                 <field name="is_overdue" invisible="1"/>
-                <field name="progress"/> <header>
+                <field name="progress"/> 
+                <!-- context para disparar filtros predefinidos desde el header. -->
+                <header>
                     <button class="btn btn-primary" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
                             context="{'search_default_user_id': uid}"> Mis Tareas </button>
                     <button class="btn btn-danger" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
@@ -22,25 +37,26 @@
                 </header>
 
                 <templates>
+                    <!-- Inyección de CSS dinámico para semáforos (Rojo/Naranja) -->
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_global_click shadow-sm border-rounded mb-2"
                              t-attf-style="#{record.is_overdue.raw_value ? 'border-left: 6px solid #d9534f !important;' : (record.kanban_state.raw_value == 'done' ? 'border-left: 6px solid #f0ad4e !important;' : '')}">
-                            
+                    <!-- Ribbon Identifica el disparador visual de tareas con fecha límite excedida -->    
                             <div class="ribbon ribbon-top-right" t-if="record.is_overdue.raw_value">
                                 <span class="text-bg-danger">VENCIDA</span>
                             </div>
 
                             <div class="oe_kanban_details">
                                 <strong class="o_kanban_record_title"><field name="name"/></strong>
-                                
+                    <!-- Se define la asociación del registro con el modelo res.partner -->            
                                 <div class="text-muted" t-if="record.partner_id.value">
                                     <i class="fa fa-user-circle-o" title="Cliente"/> <field name="partner_id"/>
                                 </div>
-
+                    <!--Se usa el widget progressbar con capacidad de edición directa -->
                                 <div class="mt-2 mb-2">
                                     <field name="progress" widget="progressbar" options="{'current_value': 'progress', 'max_value': 100, 'editable': true}"/>
                                 </div>
-
+                    <!-- Agrupación técnica de Prioridad, Estado y Avatar del Responsable -->
                                 <div class="o_kanban_record_bottom mt-2">
                                     <div class="oe_kanban_bottom_left">
                                         <field name="priority" widget="priority"/>
@@ -59,12 +75,13 @@
             </kanban>
         </field>
     </record>
-
+                    <!-- Vista Form define la arquitectura para gestión técnica y auditoría de tiempos -->
     <record id="view_tablero_tarea_form" model="ir.ui.view">
         <field name="name">tablero.tarea.form</field>
         <field name="model">tablero.tarea</field>
         <field name="arch" type="xml">
             <form>
+                    <!--Lógica ORM para el seteo automático de campos al finalizar -->
                 <header>
                     <button name="action_finalizar_tarea" string="Finalizar Tarea" 
                             type="object" class="oe_highlight" 
@@ -76,15 +93,16 @@
                         <label for="name" string="Nombre de la Tarea"/>
                         <h1><field name="name" placeholder="Ej. Diseño de Logotipo"/></h1>
                     </div>
-
+                    <!--Define el widget de monitoreo de avance dde la tarea en el cuerpo del formulario. -->
                     <div class="o_row mt-2 mb-4">
                         <div class="d-flex align-items-center w-100">
                             <span class="me-3 fw-bold">Avance Actual:</span>
                             <field name="progress" widget="progressbar" options="{'editable': true}" class="flex-grow-1"/>
                         </div>
                     </div>
-
+                    <!-- Display de Alerta -->
                     <group>
+                    <!--Calculo dinámico basado en date_deadline para mostrar el badge. -->
                         <group name="left_info" string="Responsabilidades">
                             <field name="user_id" widget="many2one_avatar_user"/>
                             <field name="partner_id" widget="res_partner_many2one" 
@@ -113,6 +131,7 @@
                                        nolabel="1" style="min-height: 100px;"/>
                             </div>
                         </page>
+                    <!--Metricas BIs datos crudos para el análisis de productividad (KPIs). -->
                         <page string="Métricas de Productividad" name="metrics">
                             <group>
                                 <group string="Tiempos Registrados">
@@ -126,6 +145,7 @@
                         </page>
                     </notebook>
                 </sheet>
+                    <!-- Chatter integrado, uso de mail.thread para trazabilidad y comunicación.-->
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
                     <field name="message_ids"/>
@@ -133,7 +153,7 @@
             </form>
         </field>
     </record>
-
+                    <!-- Vista Lista Tree, uso de decoraciones semánticas nativas de Odoo 17. -->
     <record id="view_tablero_tarea_tree" model="ir.ui.view">
         <field name="name">tablero.tarea.tree</field>
         <field name="model">tablero.tarea</field>
@@ -149,7 +169,7 @@
             </tree>
         </field>
     </record>
-
+                    <!--Vista Graph, representación visual para análisis de carga de trabajo. -->
     <record id="view_tablero_tarea_graph" model="ir.ui.view">
         <field name="name">tablero.tarea.graph</field>
         <field name="model">tablero.tarea</field>
@@ -159,7 +179,7 @@
                 <field name="progress" type="measure"/> </graph>
         </field>
     </record>
-
+                    <!--Vista Pivot, herramienta de BI para extracción profunda de datos. -->
     <record id="view_tablero_tarea_pivot" model="ir.ui.view">
         <field name="name">tablero.tarea.pivot</field>
         <field name="model">tablero.tarea</field>
@@ -171,7 +191,7 @@
             </pivot>
         </field>
     </record>
-
+                    <!--Motor de Busqueda, define los filtros lógicos y agrupaciones para auditoría diaria.-->
     <record id="view_tablero_tarea_search" model="ir.ui.view">
         <field name="name">tablero.tarea.search</field>
         <field name="model">tablero.tarea</field>
@@ -194,6 +214,8 @@
         </field>
     </record>
 
+                <!--Accion Window, configura el comportamiento de las interfaces permitidas para el usuario -->
+
     <record id="action_tablero_kanban_caletti" model="ir.actions.act_window">
         <field name="name">Tablero de Tareas</field>
         <field name="res_model">tablero.tarea</field>
@@ -203,20 +225,22 @@
         </field>
     </record>
 
+                <!--Jerarquia de Menús, define el acceso basado en roles (RBAC) para el sistema. -->
+
     <menuitem id="menu_kanban_root" name="Tablero Caletti" 
               groups="tablero_kanban.group_tablero_user,tablero_kanban.group_tablero_admin" 
               web_icon="tablero_kanban,static/description/icon.png"/>
     
     <menuitem id="menu_kanban_main" name="Ver Tablero" 
               parent="menu_kanban_root" action="action_tablero_kanban_caletti"/>
-
+                <!--Dashboard Admin ,indica el acceso exclusivo a métricas globales para perfiles de administración. -->
     <record id="action_tablero_analisis" model="ir.actions.act_window">
     <field name="name">Dashboard de Productividad</field>
     <field name="res_model">tablero.tarea</field>
     <field name="view_mode">graph,pivot</field>
     <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
-            Aquí aparecerán las estadísticas de avance una vez que Ana empiece a reportar progresos.
+            Aquí aparecerán las estadísticas de avance una vez que un gerente empiece a reportar progresos.
         </p>
     </field>
     </record>

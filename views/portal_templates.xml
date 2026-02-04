@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+#
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#   
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA -->
+
+<!-- Lead Architect & Developer: Carlos Caletti - 2026 -->
 <odoo>
+    <!--Crea CTA Utiliza xpath dentro del contenedor estándar de Odoo Portal, asegurando que el cliente vea el botón "Mis Tareas" -->
     <template id="portal_my_home_tareas_link" inherit_id="portal.portal_my_home" name="Portal My Home Tareas Link"> 
         <xpath expr="//div[@class='o_portal_my_home']" position="inside"> 
             <div class="o_portal_section"> 
@@ -8,7 +17,7 @@
             </div> 
         </xpath> 
     </template>
-
+    <!--Gestion de Breadcrums. Mostrar la ruta Home / Proyectos / [Nombre de Tarea] -->
     <template id="portal_my_home_menu_tareas" name="Portal layout : Tareas menu entry" inherit_id="portal.portal_breadcrumbs" priority="1">
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
             <li t-if="page_name == 'tareas_caletti' or tarea" t-attf-class="breadcrumb-item #{'active ' if not tarea else ''}">
@@ -20,7 +29,7 @@
             </li>
         </xpath>
     </template>
-
+    <!--Reutiliza el componente portal_docs_entry para mantener la consistencia visual y mostrar el número total de tareas activas (tarea_count) -->
     <template id="portal_my_home_tareas" name="Show Tareas" inherit_id="portal.portal_my_home" priority="20">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
@@ -58,6 +67,7 @@
                             <th class="text-end pe-4">Estado</th>
                         </tr>
                     </thead>
+                    <!--Plantilla de Listado (Vista Tabla), Interactividad, Semantca de colores y alerta de retraso -->
                     <tbody>
                         <t t-foreach="tareas" t-as="tarea">
                             <tr class="align-middle" style="cursor: pointer;" t-attf-onclick="window.location.href='/my/tarea/#{tarea.id}'">
@@ -95,7 +105,7 @@
             </div>
         </t>
     </template>
-
+                <!--Vista de Detalle: Contenedor principal para la información extendida de una tarea específica -->
     <template id="portal_tarea_page" name="Detalle de Tarea">
         <t t-call="portal.portal_layout">
             <div class="container bg-white pb-5 shadow-lg rounded-3 border-0 mt-3 overflow-hidden">
@@ -153,7 +163,7 @@
                         </div>
                     </div>
                 </div>
-
+                    <!--Integracion del Chatter como canal de comunicación -->
                 <div class="row p-4 border-top">
                     <div class="col-12">
                         <h4 class="fw-bold mb-4 text-secondary"><i class="fa fa-comments me-2"/>Canal Directo de Comunicación</h4> 
