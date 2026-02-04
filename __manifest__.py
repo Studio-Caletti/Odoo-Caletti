@@ -1,7 +1,7 @@
 {
     'name': 'Tablero Kanban Caletti',
     'category': 'Project/Management',
-    'version': '17.0.1.2', 
+    'version': '17.0.2.0.0', 
     'summary': 'Gestión visual de tareas con Business Intelligence y Portal de Cliente',
     'description': """
         Tablero Kanban Avanzado - Caletti Studio
@@ -14,6 +14,8 @@
         * Integración total con Chatter
         * Sistema de semáforos visuales
         * Gestión de plazos y retrasos
+        * Eventos automáticos de seguimiento
+        * Comunicación y trazabilidad temporal
         
         Ideal para agencias creativas y equipos de proyecto.
     """,
