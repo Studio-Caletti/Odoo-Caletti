@@ -4,7 +4,7 @@
 
 ---
 
-## <a name="español"></a> 🇪🇸 Español
+## <a name="español"></a> 🇪🇸 Español <img src="https://flagcdn.com/w20/es.png" width="20">
 
 ### 📄 Descripción
 El **Tablero Kanban Caletti Core V2** no es solo un gestor de tareas; es un ecosistema de **Business Intelligence** y **Experiencia de Cliente** diseñado para Odoo 17. Este módulo constituye el pilar fundamental de nuestra arquitectura modular, integrando una lógica de estados robusta que no solo actualiza campos sino que **dispara eventos automáticos de seguimiento, comunicación y trazabilidad temporal**.
@@ -18,7 +18,7 @@ El **Tablero Kanban Caletti Core V2** no es solo un gestor de tareas; es un ecos
 ### 🛠️ Especificaciones Técnicas (Arquitectura)
 - **Extensión del Core**: Herencia avanzada de `portal.portal_my_home` y controladores web especializados.
 - **Lógica de Negocio**: Implementación robusta de métodos ORM, decoradores `@api.depends` y lógica de validación de fechas.
-- **🛡️Seguridad (RBAC)**: Reglas de registro (Record Rules) que garantizan el aislamiento de datos por cliente y jerarquía interna (User, Manager, Admin, Client).
+- **Seguridad (RBAC)🛡️**: Reglas de registro (Record Rules) que garantizan el aislamiento de datos por cliente y jerarquía interna (User, Manager, Admin, Client).
 
 
 ### ⚙️ Lógica de Estado Robusta
@@ -29,9 +29,9 @@ El núcleo del módulo implementa una automatización proactiva:
 
 ---
 
-## <a name="english"></a> 🇺🇸 English
+## <a name="english"></a> 🇺🇸 English <img src="https://flagcdn.com/w20/us.png" width="20">
 
-### 📄 Description
+### 📄 Description 
 The **Caletti Core V2** Kanban Board is not just a task manager; it is a **Business Intelligence** and Customer Experience ecosystem designed for Odoo 17. This module forms the fundamental pillar of our modular architecture, integrating a robust state logic that not only updates fields but also **triggers automatic events for tracking, communication, and time traceability**.
 
 ### 📌 Version 2.0 Key Pillars
@@ -42,7 +42,7 @@ The **Caletti Core V2** Kanban Board is not just a task manager; it is a **Busin
 ### 🛠️ Technical Specifications (Arquitecture)
 - **Core Extension**: Advanced inheritance from portal.portal_my_home and specialized web controllers.
 - **Business Logic**: Robust implementation of ORM methods, @api.depends decorators, and date validation logic.
-- **Security (RBAC)**: Record Rules that ensure data isolation by client and internal hierarchy (User, Manager, Admin, Client).
+- **Security (RBAC)🛡️**: Record Rules that ensure data isolation by client and internal hierarchy (User, Manager, Admin, Client).
 ### ⚙️ Robust State Logic
 
 The core of the module implements proactive automation:
@@ -52,7 +52,7 @@ The core of the module implements proactive automation:
 - **Communication**: Integrated email notifications for critical milestones and overdue tasks.
 ---
 
-## <a name="italiano"></a> 🇮🇹 Italiano
+## <a name="italiano"></a> 🇮🇹 Italiano <img src="https://flagcdn.com/w20/it.png" width="20">
 
 ### 📄 Descrizione
 **Caletti Core V2 Kanban Board** non è solo un task manager; è un ecosistema di **Business Intelligence e Customer Experience** progettato per Odoo 17. Questo modulo costituisce il pilastro fondamentale della nostra architettura modulare, integrando una logica di stato robusta che non solo aggiorna i campi, ma **attiva anche eventi automatici per il monitoraggio, la comunicazione e la tracciabilità temporale**.
@@ -66,7 +66,7 @@ The core of the module implements proactive automation:
 ### 🛠️ Specifiche tecniche (architettura)
 - **Estensione Core**: Ereditarietà avanzata da portal.portal_my_home e controller web specializzati.
 - **Logica di business**: Implementazione robusta di metodi ORM, decoratori @api.depends e logica di convalida delle date.
-- **Sicurezza (RBAC)**: Regole di registrazione che garantiscono l'isolamento dei dati per client e gerarchia interna (Utente, Manager, Amministratore, Client).
+- **Sicurezza (RBAC)🛡️**: Regole di registrazione che garantiscono l'isolamento dei dati per client e gerarchia interna (Utente, Manager, Amministratore, Client).
 
 ### ⚙️ Logica di Stato Robusta
 Il cuore del modulo implementa l'automazione proattiva:
@@ -85,6 +85,8 @@ Il cuore del modulo implementa l'automazione proattiva:
 | **Avatar** | `many2one_avatar_user` | Identificación rápida del responsable de la tarea. |
 | **Semáforo** | `state_selection` | Estatus de salud (Punto verde/rojo/amarillo). |
 
+---
+
 ### 🚀 Nota Estratégica: Expansión Modular
 Este módulo ha sido concebido como una **Base Maestra (Core V2)**. Su arquitectura está preparada para una bifurcación estratégica en dos vertientes de crecimiento:
 1. **Vertical Helpdesk**: Un sistema de tickets funcional y práctico con una curva de aprendizaje mínima.
@@ -92,16 +94,13 @@ Este módulo ha sido concebido como una **Base Maestra (Core V2)**. Su arquitect
 
 ### 🚀 Strategic Note: Modular Expansion
 This module has been designed as a Master Base (Core V2). Its architecture is prepared for strategic branching into two growth paths:
+1. **Vertical Helpdesk**: A functional and practical ticketing system with a minimal learning curve.
+2. **Vertical Project Tracking**: In-depth management of stages, responsible parties, and reports from collaborators and staff.
 
-1.**Vertical Helpdesk**: A functional and practical ticketing system with a minimal learning curve.
-
-2.**Vertical Project Tracking**: In-depth management of stages, responsible parties, and reports from collaborators and staff.
 ### 🚀 Nota strategica: Espansione modulare
 Questo modulo è stato progettato come **Master Base (Core V2)**. La sua architettura è predisposta per la ramificazione strategica in due percorsi di crescita:
-
-1.**Helpdesk verticale**: un sistema di ticketing funzionale e pratico con una curva di apprendimento minima.
-
-2.**Monitoraggio verticale del progetto**: gestione approfondita di fasi, responsabili e report da parte di collaboratori e personale.
+1. **Helpdesk verticale**: un sistema di ticketing funzionale e pratico con una curva di apprendimento minima.
+2. **Monitoraggio verticale del progetto**: gestione approfondita di fasi, responsabili e report da parte di collaboratori e personale.
 
 ---
 
@@ -141,3 +140,9 @@ tablero_kanban/
 └── __manifest__.py       # Module metadata & dependencies
 ```
 **Carlos Caletti** - ** *Lead Architect & Developer*
+---
+<p align="left">
+  <a href="https://studio.caletti.com.mx">
+    <img src="https://img.shields.io/badge/Visitanos-CALETII%20STUDIO-blue?style=for-the-badge&logo=odoo&logoColor=%23714B67&logoSize=auto&labelColor=lightgray&color=8A2BE2" />
+  </a>
+</p>
