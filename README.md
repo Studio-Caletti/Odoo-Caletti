@@ -140,3 +140,9 @@ tablero_kanban/
 └── __manifest__.py       # Module metadata & dependencies
 ```
 **Carlos Caletti** - ** *Lead Architect & Developer*
+---
+<p align="left">
+  <a href="https://studio.caletti.com.mx">
+    <img src="https://img.shields.io/badge/Visitanos-CALETII%20STUDIO-blue?style=for-the-badge&logo=odoo&logoColor=%23714B67&logoSize=auto&labelColor=lightgray&color=8A2BE2" />
+  </a>
+</p>
