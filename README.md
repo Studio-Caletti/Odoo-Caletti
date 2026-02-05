@@ -31,7 +31,7 @@ El núcleo del módulo implementa una automatización proactiva:
 
 ## <a name="english"></a> 🇺🇸 English
 
-### 📄 Description
+### 📄 Description <img src="https://flagcdn.com/w20/us.png" width="20">
 The **Caletti Core V2** Kanban Board is not just a task manager; it is a **Business Intelligence** and Customer Experience ecosystem designed for Odoo 17. This module forms the fundamental pillar of our modular architecture, integrating a robust state logic that not only updates fields but also **triggers automatic events for tracking, communication, and time traceability**.
 
 ### 📌 Version 2.0 Key Pillars
