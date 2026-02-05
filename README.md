@@ -85,6 +85,8 @@ Il cuore del modulo implementa l'automazione proattiva:
 | **Avatar** | `many2one_avatar_user` | Identificación rápida del responsable de la tarea. |
 | **Semáforo** | `state_selection` | Estatus de salud (Punto verde/rojo/amarillo). |
 
+---
+
 ### 🚀 Nota Estratégica: Expansión Modular
 Este módulo ha sido concebido como una **Base Maestra (Core V2)**. Su arquitectura está preparada para una bifurcación estratégica en dos vertientes de crecimiento:
 1. **Vertical Helpdesk**: Un sistema de tickets funcional y práctico con una curva de aprendizaje mínima.
