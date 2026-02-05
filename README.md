@@ -4,7 +4,7 @@
 
 ---
 
-## <a name="español"></a> 🇪🇸 Español
+## <a name="español"></a> 🇪🇸 Español <img src="https://flagcdn.com/w20/es.png" width="20">
 
 ### 📄 Descripción
 El **Tablero Kanban Caletti Core V2** no es solo un gestor de tareas; es un ecosistema de **Business Intelligence** y **Experiencia de Cliente** diseñado para Odoo 17. Este módulo constituye el pilar fundamental de nuestra arquitectura modular, integrando una lógica de estados robusta que no solo actualiza campos sino que **dispara eventos automáticos de seguimiento, comunicación y trazabilidad temporal**.
@@ -29,9 +29,9 @@ El núcleo del módulo implementa una automatización proactiva:
 
 ---
 
-## <a name="english"></a> 🇺🇸 English
+## <a name="english"></a> 🇺🇸 English <img src="https://flagcdn.com/w20/us.png" width="20">
 
-### 📄 Description <img src="https://flagcdn.com/w20/us.png" width="20">
+### 📄 Description 
 The **Caletti Core V2** Kanban Board is not just a task manager; it is a **Business Intelligence** and Customer Experience ecosystem designed for Odoo 17. This module forms the fundamental pillar of our modular architecture, integrating a robust state logic that not only updates fields but also **triggers automatic events for tracking, communication, and time traceability**.
 
 ### 📌 Version 2.0 Key Pillars
@@ -52,7 +52,7 @@ The core of the module implements proactive automation:
 - **Communication**: Integrated email notifications for critical milestones and overdue tasks.
 ---
 
-## <a name="italiano"></a> 🇮🇹 Italiano
+## <a name="italiano"></a> 🇮🇹 Italiano <img src="https://flagcdn.com/w20/it.png" width="20">
 
 ### 📄 Descrizione
 **Caletti Core V2 Kanban Board** non è solo un task manager; è un ecosistema di **Business Intelligence e Customer Experience** progettato per Odoo 17. Questo modulo costituisce il pilastro fondamentale della nostra architettura modulare, integrando una logica di stato robusta che non solo aggiorna i campi, ma **attiva anche eventi automatici per il monitoraggio, la comunicazione e la tracciabilità temporale**.
@@ -94,13 +94,13 @@ Este módulo ha sido concebido como una **Base Maestra (Core V2)**. Su arquitect
 
 ### 🚀 Strategic Note: Modular Expansion
 This module has been designed as a Master Base (Core V2). Its architecture is prepared for strategic branching into two growth paths:
-1.**Vertical Helpdesk**: A functional and practical ticketing system with a minimal learning curve.
-2.**Vertical Project Tracking**: In-depth management of stages, responsible parties, and reports from collaborators and staff.
+1. **Vertical Helpdesk**: A functional and practical ticketing system with a minimal learning curve.
+2. **Vertical Project Tracking**: In-depth management of stages, responsible parties, and reports from collaborators and staff.
 
 ### 🚀 Nota strategica: Espansione modulare
 Questo modulo è stato progettato come **Master Base (Core V2)**. La sua architettura è predisposta per la ramificazione strategica in due percorsi di crescita:
-1.**Helpdesk verticale**: un sistema di ticketing funzionale e pratico con una curva di apprendimento minima.
-2.**Monitoraggio verticale del progetto**: gestione approfondita di fasi, responsabili e report da parte di collaboratori e personale.
+1. **Helpdesk verticale**: un sistema di ticketing funzionale e pratico con una curva di apprendimento minima.
+2. **Monitoraggio verticale del progetto**: gestione approfondita di fasi, responsabili e report da parte di collaboratori e personale.
 
 ---
 
