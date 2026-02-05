@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- CALETTI STUDIO - Core V2: Definición de la Infraestructura de Seguridad y Jerarquía de Roles -->
 <odoo>
+    <!-- PERSISTENCIA DE DATOS: El atributo noupdate="1" asegura que las personalizaciones manuales de grupos en producción no sean sobrescritas por actualizaciones del módulo. -->
     <data noupdate="1">
-        
+        <!-- CATEGORIZACIÓN: Crea una sección exclusiva en el formulario de usuario de Odoo para agrupar los niveles de acceso de Caletti Studio. -->
         <record id="module_category_tablero_caletti" model="ir.module.category">
             <field name="name">Gestión de Tablero Caletti</field>
             <field name="description">Niveles de acceso para Caletti Studio</field>
             <field name="sequence">10</field>
         </record>
-
+        <!-- ROL BASE (USUARIO): Hereda de base.group_user para garantizar acceso a las funciones internas estándar de Odoo. -->
         <record id="group_tablero_user" model="res.groups">
             <field name="name">Usuario: Solo mis tareas</field>
             <field name="category_id" ref="module_category_tablero_caletti"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
-
+        <!-- ROL GERENCIAL: Implementa herencia jerárquica (implied_ids). Todo Gerente es automáticamente Usuario, sumando permisos de supervisión. -->
         <record id="group_tablero_manager" model="res.groups">
             <field name="name">Gerente: Gestión de Tareas</field>
             <field name="category_id" ref="module_category_tablero_caletti"/>
             <field name="implied_ids" eval="[(4, ref('group_tablero_user'))]"/>
         </record>
-
+        <!-- ROL ADMINISTRATIVO: Nivel de control total. Hereda del Gerente y se auto-asigna a los usuarios raíz del sistema para evitar bloqueos de configuración. -->
         <record id="group_tablero_admin" model="res.groups">
             <field name="name">Administrador: Control Total</field>
             <field name="category_id" ref="module_category_tablero_caletti"/>
             <field name="implied_ids" eval="[(4, ref('group_tablero_manager'))]"/>
+        <!-- PROVISIONAMIENTO: Vincula automáticamente al administrador del sistema (admin) y al superusuario (root) al grupo de control total. -->
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
         
     </data>
+
 </odoo>

@@ -1,4 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CALETTI STUDIO - Core V2: Infraestructura de Reporteo PDF y Auditoría de Tareas -->
 <odoo>
+    <!-- ACCIÓN DE REPORTE: Define el disparador y el vínculo del modelo con el motor de renderizado QWeb PDF. -->
     <record id="action_report_tarea" model="ir.actions.report">
         <field name="name">Imprimir Tarea Caletti</field>
         <field name="model">tablero.tarea</field>
@@ -6,12 +9,14 @@
         <field name="report_name">tablero_kanban.report_tarea_template</field>
         <field name="binding_model_id" ref="model_tablero_tarea"/> <field name="binding_type">report</field>
     </record>
-
+    <!-- VINCULACIÓN: Registra el botón de impresión directamente en el menú "Acción" del formulario de tareas. -->
     <template id="report_tarea_template">
     <t t-call="web.html_container">
+    <!-- TEMPLATE MAESTRO: Estructura base del reporte que procesa la colección de registros (docs). -->
         <t t-foreach="docs" t-as="doc">
             <t t-call="web.external_layout">
                 <div class="page">
+    <!-- BRANDING DINÁMICO: Inyección de CSS para replicar la paleta de colores del Kanban en el documento impreso. -->
                     <style>
                         .color-bar { width: 10px; height: 50px; display: inline-block; margin-right: 15px; vertical-align: middle; }
                         .color-0 { background-color: #714B67; } /* Color por defecto (Púrpura Odoo) */
@@ -21,7 +26,7 @@
                         .color-7 { background-color: #2C8397; } .color-8 { background-color: #475577; }
                         .color-9 { background-color: #D6145F; } .color-10 { background-color: #30C381; }
                     </style>
-
+    <!-- VISUAL IDENTIFIER: Renderizado de la barra de color seleccionada por el usuario para coherencia visual 360°. -->
                     <div class="mt-4">
                         <div t-attf-class="color-bar color-#{doc.color or 0}"></div>
                         <h2 style="display: inline-block; vertical-align: middle;">
@@ -29,12 +34,13 @@
                         </h2>
                     </div>
                     
-                    <hr/>
-                    
+    <!-- ESTRUCTURA DE CABECERA: Organización de metadatos críticos para la identificación rápida de la tarea. -->
+                    <hr/>                    
                     <div class="row mt-4">
                         <div class="col-6">
                             <strong>Responsable:</strong> <p t-field="doc.user_id.name"/>
                         </div>
+    <!-- LÓGICA SEMÁNTICA: Badge de estado dinámico que traduce el workflow técnico a etiquetas visuales legibles. -->
                         <div class="col-6 text-end">
                             <strong>Estado:</strong> 
                                 <p>

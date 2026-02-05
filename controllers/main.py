@@ -1,8 +1,15 @@
+# --------------------------------------------------------------------------
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#   
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# --------------------------------------------------------------------------
 from odoo import http, _
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 from collections import OrderedDict
-
+# EXTENSIÓN DE PORTAL: Sobrescribe la clase CustomerPortal para integrar la lógica de Caletti Studio en el ecosistema nativo de Odoo
 class CalettiPortal(CustomerPortal):
 
     def _prepare_home_portal_values(self, counters):
