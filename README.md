@@ -139,7 +139,7 @@ tablero_kanban/
 ├── report/               # QWeb PDF Templates & Branding
 └── __manifest__.py       # Module metadata & dependencies
 ```
-**Carlos Caletti** - ** *Lead Architect & Developer*
+**Carlos Caletti** - ** *Lead Architect & Developer* 2026
 ---
 <p align="left">
   <a href="https://studio.caletti.com.mx">
