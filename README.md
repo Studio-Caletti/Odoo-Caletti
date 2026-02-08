@@ -9,11 +9,15 @@
 ### 📄 Descripción
 El **Tablero Kanban Caletti Core V2** no es solo un gestor de tareas; es un ecosistema de **Business Intelligence** y **Experiencia de Cliente** diseñado para Odoo 17. Este módulo constituye el pilar fundamental de nuestra arquitectura modular, integrando una lógica de estados robusta que no solo actualiza campos sino que **dispara eventos automáticos de seguimiento, comunicación y trazabilidad temporal**.
 
+El **Core V2** marca la transición hacia una **Arquitectura Modular Escalable**, donde un núcleo robusto (Core) puede ser extendido mediante módulos especializados sin comprometer la integridad del sistema principal.
+
 ### 📌 Pilares de la Versión 2.0
 - **Backend de Alto Rendimiento**: Interfaz Kanban evolucionada con **Header Dinámico** para filtrado rápido y **Visual Awareness** (cintas y bordes de color) que dictan el ritmo operativo.
 - **Portal de Cliente 360°**: Transformamos el portal estándar en un centro de mando para el cliente, con barras de progreso animadas, acceso táctil optimizado y transparencia total vía Chatter.
 - **Reporting & BI**: Salidas documentales en PDF (QWeb) con identidad visual dinámica y vistas de análisis (Pivote/Gráfico) para la toma de decisiones basada en datos reales (`duration_days`).
 - **Comunicación Proactiva**: Integración total con el Chatter de Odoo, gestión de pestañas para una trazabilidad total de la comunicación, y sistema de notificaciones automáticas vía email para hitos críticos y tareas vencidas.
+- **Ecosistema Extensible**: Implementación de una arquitectura de "Módulo Base + Extensiones" que permite inyectar funcionalidades de soporte técnico (Ticketing) sin sobrecargar el Core, manteniendo la base de datos limpia y eficiente.
+- **Helpdesk Vertical**: Primera extensión oficial que integra un sistema de Ticketing avanzado con priorización y flujos de soporte técnico independientes.
 
 ### 🛠️ Especificaciones Técnicas (Arquitectura)
 - **Extensión del Core**: Herencia avanzada de `portal.portal_my_home` y controladores web especializados.
@@ -34,11 +38,14 @@ El núcleo del módulo implementa una automatización proactiva:
 ### 📄 Description 
 The **Caletti Core V2** Kanban Board is not just a task manager; it is a **Business Intelligence** and Customer Experience ecosystem designed for Odoo 17. This module forms the fundamental pillar of our modular architecture, integrating a robust state logic that not only updates fields but also **triggers automatic events for tracking, communication, and time traceability**.
 
+The **Core V2** framework allows a high-performance Core that manages time-tracking and project logic, which can be seamlessly extended with specialized functional layers like our new **Helpdesk module**.
+
 ### 📌 Version 2.0 Key Pillars
 - **High-Performance Backend**: Evolved Kanban UI with **Dynamic Headers** for instant filtering and **Visual Awareness** (ribbons and color-coded borders) to drive operational pace.
 - **360° Customer Portal**: We turn the standard portal into a client command center, featuring animated progress bars, touch-optimized UX, and full transparency through integrated Chatter.
 - **Reporting & BI**: QWeb PDF reports with dynamic visual branding and native analytical views (Pivot/Graph) for data-driven decision-making based on lead times (`duration_days`).
 - **Proactive Communication**: Full integration with Odoo's Chatter, tab management for complete communication traceability, and automatic email notification system for critical milestones and overdue tasks.
+- **Advanced Helpdesk**: Integrated ticketing extension with priority widgets and dedicated workflows for technical support.
 ### 🛠️ Technical Specifications (Arquitecture)
 - **Core Extension**: Advanced inheritance from portal.portal_my_home and specialized web controllers.
 - **Business Logic**: Robust implementation of ORM methods, @api.depends decorators, and date validation logic.
@@ -57,11 +64,14 @@ The core of the module implements proactive automation:
 ### 📄 Descrizione
 **Caletti Core V2 Kanban Board** non è solo un task manager; è un ecosistema di **Business Intelligence e Customer Experience** progettato per Odoo 17. Questo modulo costituisce il pilastro fondamentale della nostra architettura modulare, integrando una logica di stato robusta che non solo aggiorna i campi, ma **attiva anche eventi automatici per il monitoraggio, la comunicazione e la tracciabilità temporale**.
 
+Il **Core V2** è ora un framework separa la logica principale di gestione dei tempi e dei progetti (Core) dalle estensioni funzionali specifiche, come il nuovo **modulo Helpdesk** per l'assistenza tecnica.
+
 ### 📌 Pilastri della Versione 2.0
 - **Backend ad Alte Prestazioni**: Interfaccia Kanban evoluta con **Header Dinamico** e **Visual Awareness** (ribbon e bordi colorati) per una gestione operativa immediata.
 - **Portale Clienti 360°**: Un centro di controllo per il cliente con barre di progressione animate e trasparenza totale tramite l'integrazione del Chatter.
 - **Reporting & BI**: Report PDF (QWeb) con identità visiva dinamica e viste analitiche (Pivot/Grafico) per decisioni basate su dati reali di esecuzione.
 - **Comunicazione proattiva**: integrazione completa con Chatter di Odoo, gestione delle schede per una completa tracciabilità delle comunicazioni e sistema di notifica automatica via e-mail per traguardi critici e attività in ritardo.
+- **Helpdesk Integrato**: Estensione dedicata al supporto tecnico con gestione delle priorità e flussi di lavoro separati.
 
 ### 🛠️ Specifiche tecniche (architettura)
 - **Estensione Core**: Ereditarietà avanzata da portal.portal_my_home e controller web specializzati.
@@ -87,19 +97,24 @@ Il cuore del modulo implementa l'automazione proattiva:
 
 ---
 
-### 🚀 Nota Estratégica: Expansión Modular
-Este módulo ha sido concebido como una **Base Maestra (Core V2)**. Su arquitectura está preparada para una bifurcación estratégica en dos vertientes de crecimiento:
-1. **Vertical Helpdesk**: Un sistema de tickets funcional y práctico con una curva de aprendizaje mínima.
+### 🚀 Evolución del Ecosistema: Expansión Modular Realizada
+Este módulo ha sido concebido como una **Base Maestra (Core V2)**. Lo que antes era una visión estratégica, hoy es una realidad funcional. El sistema ha evolucionado de un módulo único a un ecosistema de dos vertientes:
+
+1. **Helpdesk Extension** (tablero_kanban_helpdesk) 🆕: Un sistema de tickets totalmentefuncional y práctico con una curva de aprendizaje mínima.
+- **Tiketing Especializado**: Inyecta campos de "Tipo de Ticket" y "Prioridad" (estrellas) mediante herencia de modelos.
+- **Automatización de Flujo**:Acciones de ventana con context inteligente que marcan automáticamente los registros como tickets.
+- **Vistas Dedicadas**:Menús y filtros exclusivos para que el equipo de soporte (como Ana) trabaje de forma independiente al área de proyectos.
+
 2. **Vertical Project Tracking**: Gestión profunda de etapas, responsables, reportes de colaboradores y personal.
 
 ### 🚀 Strategic Note: Modular Expansion
 This module has been designed as a Master Base (Core V2). Its architecture is prepared for strategic branching into two growth paths:
-1. **Vertical Helpdesk**: A functional and practical ticketing system with a minimal learning curve.
+1. **Helpdesk Extension**: Adds a fully functional Ticketing layer. It includes priority widgets, specialized search filters, and dedicated menus, ensuring support teams have a streamlined workspace separate from project management with a minimal learning curve.
 2. **Vertical Project Tracking**: In-depth management of stages, responsible parties, and reports from collaborators and staff.
 
 ### 🚀 Nota strategica: Espansione modulare
 Questo modulo è stato progettato come **Master Base (Core V2)**. La sua architettura è predisposta per la ramificazione strategica in due percorsi di crescita:
-1. **Helpdesk verticale**: un sistema di ticketing funzionale e pratico con una curva di apprendimento minima.
+1. **Helpdesk Extension 🆕**: Aggiunge un sistema di ticketing completo con widget di priorità, filtri di ricerca specializzati e menu dedicati per il supporto tecnico, pratico con una curva di apprendimento minima.
 2. **Monitoraggio verticale del progetto**: gestione approfondita di fasi, responsabili e report da parte di collaboratori e personale.
 
 ---
@@ -110,34 +125,40 @@ Questo modulo è stato progettato come **Master Base (Core V2)**. La sua archite
 1. **Descargar** el repositorio en tu carpeta de `custom_addons`.
 2. **Dependencias**: Asegúrate de tener instalados los módulos base `mail` y `portal`.
 3. **Actualizar**: Reinicia tu servidor Odoo y activa el modo desarrollador.
-4. **Instalar**: Ve al menú de Aplicaciones, haz clic en "Actualizar lista de aplicaciones" y busca `Tablero Kanban Caletti`.
+4. **Instalar**: Ve al menú de Aplicaciones, haz clic en "Actualizar lista de aplicaciones" y busca `Tablero Kanban Caletti`(Core) y luego `tablero_kanban_helpdesk`.
 
 ### 🇺🇸 English
 1. **Clone/Download** the repository into your `custom_addons` directory.
 2. **Dependencies**: Ensure Odoo's native `mail` and `portal` modules are installed.
 3. **Update**: Restart your Odoo server and enable Developer Mode.
-4. **Install**: Go to the Apps menu, click "Update Apps List", and search for `Tablero Kanban Caletti`.
+4. **Install**: Go to the Apps menu, click "Update Apps List", and search for `Tablero Kanban Caletti`(Core) first, followed by `tablero_kanban_helpdesk`.
 
 ### 🇮🇹 Italiano
 1. **Scaricare** il repository nella cartella `custom_addons`.
 2. **Dipendenze**: Assicurarsi che i moduli base `mail` e `portal` siano installati.
 3. **Aggiornare**: Riavviare il server Odoo e attivare la Modalità Sviluppatore.
-4. **Installare**: Vai al menu Applicazioni, clicca su "Aggiorna elenco applicazioni" e cerca `Tablero Kanban Caletti`.
+4. **Installare**: Vai al menu Applicazioni, clicca su "Aggiorna elenco applicazioni" e cerca `Tablero Kanban Caletti` (Core) e poi ` tablero_kanban_helpdesk`.
+
+---.
 
 
 ##Check our data/ir_cron.xml to see how automated alerts are scheduled.
 
 ### 📂 Repository Structure
 ```text
-tablero_kanban/
-├── controllers/          # Portal routing & custom logic
-├── data/                 # Cron jobs & automated alerts
-├── models/               # Task definitions & Robust State Logic (ORM)
-├── security/             # Groups & Record Rules (RBAC)
-├── static/               # Assets, Icons & Screenshots
-├── views/                # Kanban, Form, Graph, Pivot & Portal XML
-├── report/               # QWeb PDF Templates & Branding
-└── __manifest__.py       # Module metadata & dependencies
+Odoo-Caletti/
+└── tablero_kanban_caletti/   # Master Base (Core V2)
+    ├── controllers/          # Portal routing & custom logic
+    ├── data/                 # Cron jobs & automated alerts
+    ├── models/               # Task definitions & Robust State Logic (ORM)
+    ├── security/             # Groups & Record Rules (RBAC)
+    ├── static/               # Assets, Icons & Screenshots
+    ├── views/                # Kanban, Form, Graph, Pivot & Portal XML
+    ├── report/               # QWeb PDF Templates & Branding
+└── tablero_kanban_helpdesk/  # NEW: Helpdesk Extension
+    ├── models/               # Inheritance & Ticket Logic
+    └── views/                # Specialized Menus & Priority Widgets
+__manifest__.py       # Module metadata & dependencies
 ```
 **Carlos Caletti** - ** *Lead Architect & Developer* 2026
 ---
