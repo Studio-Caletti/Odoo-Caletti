@@ -46,7 +46,7 @@
 
         <menuitem id="menu_tablero_tickets" 
                   name="Tickets" 
-                  parent="tablero_kanban_caletti.menu_tablero_root" 
+                  parent="tablero_kanban_caletti.menu_kanban_root" 
                   action="action_tablero_tickets" 
                   sequence="15"/>
     </data>
