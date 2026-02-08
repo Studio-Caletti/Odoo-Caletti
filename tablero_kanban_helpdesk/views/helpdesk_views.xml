@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_tablero_tarea_form_inherit_helpdesk" model="ir.ui.view">
-        <field name="name">tablero.tarea.form.inherit.helpdesk</field>
-        <field name="model">tablero.tarea</field>
-        <field name="inherit_id" ref="tablero_kanban_caletti.view_tablero_tarea_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="es_ticket"/>
-                <field name="tipo_ticket" invisible="not es_ticket" required="es_ticket"/>
-                <field name="prioridad_ticket" widget="priority" invisible="not es_ticket"/>
-                <field name="ticket_ref" invisible="not es_ticket or not ticket_ref"/>
-            </xpath>
-        </field>
-    </record>
-    <record id="view_tablero_tarea_search_inherit_helpdesk" model="ir.ui.view">
-    <field name="name">tablero.tarea.search.inherit.helpdesk</field>
-    <field name="model">tablero.tarea</field>
-    <field name="inherit_id" ref="tablero_kanban_caletti.view_tablero_tarea_search"/>
-    <field name="arch" type="xml">
-        <xpath expr="//search" position="inside">
-            <separator/>
-            <filter string="Es Ticket" name="filter_tickets" domain="[('es_ticket', '=', True)]"/>
-        </xpath>
-        
-        <xpath expr="//group" position="inside">
-            <filter string="Tipo de Ticket" name="group_tipo" context="{'group_by': 'tipo_ticket'}"/>
-            <filter string="Prioridad Ticket" name="group_prioridad" context="{'group_by': 'prioridad_ticket'}"/>
-        </xpath>
-    </field>
-</record>
+    <data>
+        <record id="view_tablero_tarea_form_inherit_helpdesk" model="ir.ui.view">
+            <field name="name">tablero.tarea.form.inherit.helpdesk</field>
+            <field name="model">tablero.tarea</field>
+            <field name="inherit_id" ref="tablero_kanban_caletti.view_tablero_tarea_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="es_ticket"/>
+                    <field name="tipo_ticket" invisible="not es_ticket" required="es_ticket"/>
+                    <field name="prioridad_ticket" widget="priority" invisible="not es_ticket"/>
+                    <field name="ticket_ref" invisible="not es_ticket or not ticket_ref"/>
+                </xpath>
+            </field>
+        </record>
 
-<record id="action_tablero_tickets" model="ir.actions.act_window">
-    <field name="name">Tickets de Soporte</field>
-    <field name="res_model">tablero.tarea</field>
-    <field name="view_mode">kanban,tree,form</field>
-    <field name="domain">[('es_ticket', '=', True)]</field>
-    <field name="context">{'default_es_ticket': True, 'search_default_filter_tickets': 1}</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            ¡No hay tickets pendientes!
-        </p>
-    </field>
-</record>
+        <record id="view_tablero_tarea_search_inherit_helpdesk" model="ir.ui.view">
+            <field name="name">tablero.tarea.search.inherit.helpdesk</field>
+            <field name="model">tablero.tarea</field>
+            <field name="inherit_id" ref="tablero_kanban_caletti.view_tablero_tarea_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='my_tasks']" position="after">
+                    <separator/>
+                    <filter string="Es Ticket" name="filter_tickets" domain="[('es_ticket', '=', True)]"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter string="Tipo de Ticket" name="group_tipo" context="{'group_by': 'tipo_ticket'}"/>
+                    <filter string="Prioridad Ticket" name="group_prioridad" context="{'group_by': 'prioridad_ticket'}"/>
+                </xpath>
+            </field>
+        </record>
 
-<menuitem id="menu_tablero_tickets" 
-          name="Tickets" 
-          parent="tablero_kanban_caletti.menu_tablero_root" 
-          action="action_tablero_tickets" 
-          sequence="15"/>
+        <record id="action_tablero_tickets" model="ir.actions.act_window">
+            <field name="name">Tickets de Soporte</field>
+            <field name="res_model">tablero.tarea</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('es_ticket', '=', True)]</field>
+            <field name="context">{'default_es_ticket': True, 'search_default_filter_tickets': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    ¡No hay tickets pendientes!
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_tablero_tickets" 
+                  name="Tickets" 
+                  parent="tablero_kanban_caletti.menu_tablero_root" 
+                  action="action_tablero_tickets" 
+                  sequence="15"/>
+    </data>
 </odoo>
