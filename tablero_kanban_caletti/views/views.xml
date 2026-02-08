@@ -12,6 +12,18 @@
 <!-- Define el propósito del motor visual y la lógica de "Visual Awareness". -->
 
 <odoo>
+
+     <!--Accion Window, configura el comportamiento de las interfaces permitidas para el usuario -->
+
+    <record id="action_tablero_kanban_caletti" model="ir.actions.act_window">
+        <field name="name">Tablero de Tareas</field>
+        <field name="res_model">tablero.tarea</field>
+        <field name="view_mode">kanban,tree,form,graph,pivot</field> 
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">¡Crea tu primera tarea para Caletti Studio!</p>
+        </field>
+    </record>
+    
     <record id="view_tablero_tarea_kanban" model="ir.ui.view">
         <field name="name">tablero.tarea.kanban</field>
         <field name="model">tablero.tarea</field>
@@ -214,16 +226,7 @@
         </field>
     </record>
 
-                <!--Accion Window, configura el comportamiento de las interfaces permitidas para el usuario -->
-
-    <record id="action_tablero_kanban_caletti" model="ir.actions.act_window">
-        <field name="name">Tablero de Tareas</field>
-        <field name="res_model">tablero.tarea</field>
-        <field name="view_mode">kanban,tree,form,graph,pivot</field> 
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">¡Crea tu primera tarea para Caletti Studio!</p>
-        </field>
-    </record>
+               
 
                 <!--Jerarquia de Menús, define el acceso basado en roles (RBAC) para el sistema. -->
 
