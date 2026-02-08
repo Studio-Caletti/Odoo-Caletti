@@ -5,7 +5,7 @@
         <record id="rule_tablero_tarea_usuario" model="ir.rule">
             <field name="name">Tareas Personales: Solo Responsable</field>
             <field name="model_id" ref="model_tablero_tarea"/>
-            <field name="groups" eval="[(4, ref('tablero_kanban.group_tablero_user'))]"/>
+            <field name="groups" eval="[(4, ref('tablero_kanban_caletti.group_tablero_user'))]"/>
             <field name="domain_force">[('user_id', '=', user.id)]</field>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -16,7 +16,7 @@
         <record id="rule_tablero_tarea_gerente" model="ir.rule">
             <field name="name">Gestión Total: Gerente y Admin</field>
             <field name="model_id" ref="model_tablero_tarea"/>
-            <field name="groups" eval="[(4, ref('tablero_kanban.group_tablero_manager')), (4, ref('tablero_kanban.group_tablero_admin'))]"/>
+            <field name="groups" eval="[(4, ref('tablero_kanban_caletti.group_tablero_manager')), (4, ref('tablero_kanban_caletti.group_tablero_admin'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field> </record>
 
     </data>

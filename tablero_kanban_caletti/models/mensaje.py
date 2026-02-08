@@ -154,7 +154,7 @@ class TableroTarea(models.Model):
             tasks_to_update._compute_kanban_state()
 
         # 2. Localizar la plantilla de correo definida en XML
-        template = self.env.ref('tablero_kanban.email_template_tarea_vencida', raise_if_not_found=False)
+        template = self.env.ref('tablero_kanban_caletti.email_template_tarea_vencida', raise_if_not_found=False)
         
         # 3. Filtrar tareas vencidas no finalizadas para envío de alertas
         overdue_tasks = self.search([

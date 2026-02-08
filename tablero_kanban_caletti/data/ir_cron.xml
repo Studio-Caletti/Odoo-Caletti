@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="ir_cron_check_tareas_vencidas" model="ir.cron">
             <field name="name">Tablero Caletti: Revisar Vencimientos</field>
-            <field name="model_id" ref="tablero_kanban.model_tablero_tarea"/>
+            <field name="model_id" ref="tablero_kanban_caletti.model_tablero_tarea"/>
             <field name="state">code</field>
             <field name="code">model._cron_check_overdue_tasks()</field>
             <field name="interval_number">1</field>

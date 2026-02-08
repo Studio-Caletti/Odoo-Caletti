@@ -6,7 +6,7 @@
         <field name="name">Imprimir Tarea Caletti</field>
         <field name="model">tablero.tarea</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">tablero_kanban.report_tarea_template</field>
+        <field name="report_name">tablero_kanban_caletti.report_tarea_template</field>
         <field name="binding_model_id" ref="model_tablero_tarea"/> <field name="binding_type">report</field>
     </record>
     <!-- VINCULACIÓN: Registra el botón de impresión directamente en el menú "Acción" del formulario de tareas. -->

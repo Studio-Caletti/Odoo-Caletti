@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="email_template_tarea_vencida" model="mail.template">
             <field name="name">Tablero: Alerta de Tarea Vencida (Corporativo)</field>
-            <field name="model_id" ref="tablero_kanban.model_tablero_tarea"/>
+            <field name="model_id" ref="tablero_kanban_caletti.model_tablero_tarea"/>
             <field name="subject">⚠️ Tarea Vencida: {{ object.name }}</field>
             <field name="email_from">{{ object.user_id.company_id.email or 'notifications@caletti.com.mx' }}</field>
             <field name="email_to">{{ object.user_id.email }}</field>

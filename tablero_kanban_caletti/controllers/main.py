@@ -71,7 +71,7 @@ class CalettiPortal(CustomerPortal):
             'search_in': search_in,
             'search': search,
         })
-        return request.render("tablero_kanban.portal_my_tareas_template", values)
+        return request.render("tablero_kanban_caletti.portal_my_tareas_template", values)
 
     @http.route(['/my/tarea/<int:tarea_id>'], type='http', auth="user", website=True)
     def portal_my_tarea_detail(self, tarea_id, **kw):
@@ -87,4 +87,4 @@ class CalettiPortal(CustomerPortal):
             'tarea': tarea,
             'page_name': 'tareas_caletti', # Mantiene el breadcrumb activo
         }
-        return request.render("tablero_kanban.portal_tarea_page", values)
+        return request.render("tablero_kanban_caletti.portal_tarea_page", values)

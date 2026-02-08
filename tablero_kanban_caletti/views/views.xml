@@ -28,11 +28,11 @@
                 <field name="progress"/> 
                 <!-- context para disparar filtros predefinidos desde el header. -->
                 <header>
-                    <button class="btn btn-primary" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
+                    <button class="btn btn-primary" name="%(tablero_kanban_caletti.action_tablero_kanban_caletti)d" type="action" 
                             context="{'search_default_user_id': uid}"> Mis Tareas </button>
-                    <button class="btn btn-danger" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
+                    <button class="btn btn-danger" name="%(tablero_kanban_caletti.action_tablero_kanban_caletti)d" type="action" 
                             context="{'search_default_overdue': 1}"> ¡VENCIDAS! </button>
-                    <button class="btn btn-warning" name="%(tablero_kanban.action_tablero_kanban_caletti)d" type="action" 
+                    <button class="btn btn-warning" name="%(tablero_kanban_caletti.action_tablero_kanban_caletti)d" type="action" 
                             context="{'search_default_urgent': 1}"> Urgentes </button>
                 </header>
 
@@ -228,8 +228,8 @@
                 <!--Jerarquia de Menús, define el acceso basado en roles (RBAC) para el sistema. -->
 
     <menuitem id="menu_kanban_root" name="Tablero Caletti" 
-              groups="tablero_kanban.group_tablero_user,tablero_kanban.group_tablero_admin" 
-              web_icon="tablero_kanban,static/description/icon.png"/>
+              groups="tablero_kanban_caletti.group_tablero_user,tablero_kanban_caletti.group_tablero_admin" 
+              web_icon="tablero_kanban_caletti,static/description/icon.png"/>
     
     <menuitem id="menu_kanban_main" name="Ver Tablero" 
               parent="menu_kanban_root" action="action_tablero_kanban_caletti"/>
@@ -248,6 +248,6 @@
     <menuitem id="menu_kanban_analisis" name="Análisis" 
           parent="menu_kanban_root" 
           action="action_tablero_analisis" 
-          groups="tablero_kanban.group_tablero_admin"
+          groups="tablero_kanban_caletti.group_tablero_admin"
           sequence="20"/>
 </odoo>
