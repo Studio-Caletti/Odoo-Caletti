@@ -8,7 +8,7 @@
     'website': 'https://studio.caletti.com.mx',
     'depends': ['tablero_kanban_caletti'], # Aquí es donde ocurre la magia de la integración
     'data': [
-        # Aquí irán los nuevos XML de tickets
+        'views/helpdesk_views.xml',# Aquí irán los nuevos XML de tickets
     ],
     'installable': True,
     'application': False,
