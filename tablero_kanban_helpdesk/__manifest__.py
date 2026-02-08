@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Tablero Kanban - Helpdesk Extension',
+    'version': '1.0',
+    'category': 'Services/Helpdesk',
+    'summary': 'Extensión de Tickets para el Core de Caletti Studio',
+    'author': 'Carlos Caletti',
+    'website': 'https://studio.caletti.com.mx',
+    'depends': ['tablero_kanban_caletti'], # Aquí es donde ocurre la magia de la integración
+    'data': [
+        # Aquí irán los nuevos XML de tickets
+    ],
+    'installable': True,
+    'application': False,
+}
