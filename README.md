@@ -31,6 +31,11 @@ El núcleo del módulo implementa una automatización proactiva:
 - **Tracking Temporal**: Captura automática de hitos (Inicio/Fin) al cambiar estados.
 - **Comunicación**: Notificaciones por email integradas para hitos críticos y tareas vencidas.
 
+### 🎯 Casos de Uso
+- **Agencias creativas**: Seguimiento de proyectos con clientes en tiempo real.
+- **Equipos de soporte técnico**: HelpDesk con tickets aislados por cliente.
+- **Consultorías**: Reportes BI para medir productividad y tiempos de entrega.
+
 ---
 
 ## <a name="english"></a> 🇺🇸 English <img src="https://flagcdn.com/w20/us.png" width="20">
@@ -46,6 +51,7 @@ The **Core V2** framework allows a high-performance Core that manages time-track
 - **Reporting & BI**: QWeb PDF reports with dynamic visual branding and native analytical views (Pivot/Graph) for data-driven decision-making based on lead times (`duration_days`).
 - **Proactive Communication**: Full integration with Odoo's Chatter, tab management for complete communication traceability, and automatic email notification system for critical milestones and overdue tasks.
 - **Advanced Helpdesk**: Integrated ticketing extension with priority widgets and dedicated workflows for technical support.
+
 ### 🛠️ Technical Specifications (Arquitecture)
 - **Core Extension**: Advanced inheritance from portal.portal_my_home and specialized web controllers.
 - **Business Logic**: Robust implementation of ORM methods, @api.depends decorators, and date validation logic.
@@ -57,6 +63,13 @@ The core of the module implements proactive automation:
 - **Monitoring Cron**: Daily review of due dates and updates to status indicators.
 - **Time Tracking**: Automatic capture of milestones (Start/Finish) when statuses change.
 - **Communication**: Integrated email notifications for critical milestones and overdue tasks.
+
+###🎯 Use Cases
+
+- **Creative agencies**: Real-time project tracking with clients.
+- **Support teams**: HelpDesk with client-isolated tickets.
+- **Consulting firms**: BI reports to measure productivity and delivery times.
+
 ---
 
 ## <a name="italiano"></a> 🇮🇹 Italiano <img src="https://flagcdn.com/w20/it.png" width="20">
@@ -84,7 +97,14 @@ Il cuore del modulo implementa l'automazione proattiva:
 - **Monitoraggio Cron**: revisione giornaliera delle scadenze e aggiornamenti semaforici.
 - **Monitoraggio del tempo**: acquisizione automatica delle milestone (inizio/fine) al variare dello stato.
 - **Comunicazione**: notifiche e-mail integrate per milestone critiche e attività in ritardo.
+
+### 🎯 Casi d’Uso
+- **Agenzie creative**: Monitoraggio progetti in tempo reale con i clienti.
+- **Team di supporto**: HelpDesk con ticket isolati per cliente.
+- **Società di consulenza**: Report BI per misurare produttività e tempi di consegna.
+
 ---
+
 
 ### 📊 Resumen de Componentes / Components Summary / Riepilogo dei componenti
 

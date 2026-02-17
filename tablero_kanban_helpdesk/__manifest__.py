@@ -6,9 +6,9 @@
     'summary': 'Extensión de Tickets para el Core de Caletti Studio',
     'author': 'Carlos Caletti',
     'website': 'https://studio.caletti.com.mx',
-    'depends': ['tablero_kanban_caletti'], # Aquí es donde ocurre la magia de la integración
+    'depends': ['tablero_kanban_caletti'], # La base para la integración 
     'data': [
-        'views/helpdesk_views.xml',# Aquí irán los nuevos XML de tickets
+        'views/helpdesk_views.xml',# Aquí los nuevos XML de tickets
     ],
     'installable': True,
     'application': False,
