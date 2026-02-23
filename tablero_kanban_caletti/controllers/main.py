@@ -140,7 +140,7 @@ class CalettiPortal(CustomerPortal):
         
         comment = post.get('comment', '').strip()
         if comment:
-            tarea.message_post(
+            tarea.sudo().message_post(
                 body=comment,
                 author_id=request.env.user.partner_id.id,
                 message_type='comment',
