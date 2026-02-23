@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- === VISTA PORTAL: LISTA DE TICKETS CALETTI=== -->
+    <template id="portal_my_tickets_template" name="Mis Tickets de Soporte">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Tickets de Soporte</t>
+            </t>
+
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3>Mis Tickets</h3>
+                            <a href="/my/ticket/nuevo" class="btn btn-primary">
+                                <i class="fa fa-plus"/> Crear Nuevo Ticket
+                            </a>
+                        </div>
+
+                        <t t-if="not tickets">
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle"/> No tienes tickets registrados.
+                            </div>
+                        </t>
+
+                        <t t-else="">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Referencia</th>
+                                            <th>Asunto</th>
+                                            <th>Tipo</th>
+                                            <th>Prioridad</th>
+                                            <th>Estado</th>
+                                            <th>Fecha</th>
+                                            <th class="text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="tickets" t-as="ticket">
+                                            <tr>
+                                                <td>
+                                                    <strong t-field="ticket.ticket_ref"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="ticket.name"/>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info" t-field="ticket.tipo_ticket"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="ticket.prioridad_ticket == '3'">
+                                                        <span class="badge badge-danger">Crítica</span>
+                                                    </t>
+                                                    <t t-elif="ticket.prioridad_ticket == '2'">
+                                                        <span class="badge badge-warning">Alta</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="badge badge-secondary" t-field="ticket.prioridad_ticket"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="ticket.state == 'hecho'">
+                                                        <span class="badge badge-success">Resuelto</span>
+                                                    </t>
+                                                    <t t-elif="ticket.state == 'proceso'">
+                                                        <span class="badge badge-primary">En Proceso</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="badge badge-secondary">Nuevo</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span t-field="ticket.create_date" t-options='{"widget": "date"}'/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a t-attf-href="/my/ticket/#{ticket.id}" class="btn btn-sm btn-secondary">
+                                                        <i class="fa fa-eye"/> Ver
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Paginador -->
+                            <div t-if="pager" class="o_portal_pager text-center">
+                                <t t-call="portal.pager"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- === VISTA PORTAL: CREAR TICKET === -->
+    <template id="portal_create_ticket_template" name="Crear Ticket">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-ticket"/> Crear Nuevo Ticket de Soporte
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="/my/ticket/submit" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                    <div class="form-group">
+                                        <label for="ticket_asunto" class="font-weight-bold">
+                                            Asunto <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="ticket_asunto" 
+                                               name="asunto" 
+                                               required="required"
+                                               placeholder="Describe brevemente tu problema o consulta"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="ticket_tipo" class="font-weight-bold">
+                                            Tipo de Ticket <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-control" id="ticket_tipo" name="tipo" required="required">
+                                            <option value="">-- Selecciona un tipo --</option>
+                                            <option value="soporte">Soporte Técnico</option>
+                                            <option value="facturacion">Facturación</option>
+                                            <option value="mejora">Solicitud de Mejora</option>
+                                            <option value="error">Reporte de Error</option>
+                                            <option value="consulta">Consulta General</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="ticket_prioridad" class="font-weight-bold">
+                                            Prioridad <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-control" id="ticket_prioridad" name="prioridad" required="required">
+                                            <option value="1" selected="selected">Media</option>
+                                            <option value="0">Baja</option>
+                                            <option value="2">Alta</option>
+                                            <option value="3">Crítica (Urgente)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="ticket_descripcion" class="font-weight-bold">
+                                            Descripción <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea class="form-control" 
+                                                  id="ticket_descripcion" 
+                                                  name="descripcion" 
+                                                  rows="6" 
+                                                  required="required"
+                                                  placeholder="Proporciona todos los detalles posibles sobre tu solicitud..."></textarea>
+                                        <small class="form-text text-muted">
+                                            Cuanta más información proporciones, más rápido podremos ayudarte.
+                                        </small>
+                                    </div>
+
+                                    <!-- Opcional: Campo para adjuntos (requiere configuración adicional) -->
+                                    <!--
+                                    <div class="form-group">
+                                        <label for="ticket_adjunto">Archivos Adjuntos</label>
+                                        <input type="file" class="form-control-file" id="ticket_adjunto" name="adjunto" multiple="multiple"/>
+                                        <small class="form-text text-muted">Puedes adjuntar capturas de pantalla o documentos relevantes.</small>
+                                    </div>
+                                    -->
+
+                                    <div class="form-group text-right mt-4">
+                                        <a href="/my/tickets" class="btn btn-secondary mr-2">
+                                            <i class="fa fa-times"/> Cancelar
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-paper-plane"/> Enviar Ticket
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- === VISTA PORTAL: DETALLE DE TICKET === -->
+    <template id="portal_ticket_detail_template" name="Detalle de Ticket">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="mb-0">
+                                            <span class="text-muted">Ticket #</span>
+                                            <strong t-field="ticket.ticket_ref"/>
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <t t-if="ticket.state == 'hecho'">
+                                            <span class="badge badge-success badge-lg">Resuelto</span>
+                                        </t>
+                                        <t t-elif="ticket.state == 'proceso'">
+                                            <span class="badge badge-primary badge-lg">En Proceso</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge badge-secondary badge-lg">Nuevo</span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 t-field="ticket.name"/>
+                                <hr/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Tipo:</strong> <span t-field="ticket.tipo_ticket"/></p>
+                                        <p><strong>Prioridad:</strong> <span t-field="ticket.prioridad_ticket"/></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Creado:</strong> <span t-field="ticket.create_date" t-options='{"widget": "datetime"}'/></p>
+                                        <p t-if="ticket.date_first_response">
+                                            <strong>Primera Respuesta:</strong> 
+                                            <span t-field="ticket.date_first_response" t-options='{"widget": "datetime"}'/>
+                                            <span class="text-muted">(<t t-esc="'%.1f' % ticket.sla_hours"/> hrs)</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <h6>Descripción:</h6>
+                                <div t-field="ticket.description" class="border p-3 bg-light"/>
+                            </div>
+                        </div>
+
+                        <!-- Historial de Mensajes (Chatter) -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Conversación</h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-call="portal.message_thread">
+                                    <t t-set="object" t-value="ticket"/>
+                                    <t t-set="token" t-value="ticket.access_token"/>
+                                    <t t-set="pid" t-value="pid"/>
+                                    <t t-set="hash" t-value="hash"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar con información adicional -->
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Información</h6>
+                                <hr/>
+                                <p><strong>Responsable:</strong><br/>
+                                <span t-field="ticket.user_id"/></p>
+                                
+                                <p t-if="ticket.partner_id"><strong>Cliente:</strong><br/>
+                                <span t-field="ticket.partner_id"/></p>
+                                
+                                <p><strong>Progreso:</strong><br/>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar bg-success" 
+                                         role="progressbar" 
+                                         t-attf-style="width: #{ticket.progress}%"
+                                         t-attf-aria-valuenow="#{ticket.progress}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        <t t-esc="int(ticket.progress)"/>%
+                                    </div>
+                                </div>
+                                </p>
+
+                                <a href="/my/tickets" class="btn btn-block btn-secondary mt-3">
+                                    <i class="fa fa-arrow-left"/> Volver a Mis Tickets
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
