@@ -5,7 +5,6 @@
 #   See LICENSE file for full copyright and licensing details.
 #   
 #   Caletti Studio / MEXICO - BUENOS AIRES - ROMA -->
-
 <!-- Lead Architect & Developer: Carlos Caletti - 2026 -->
 <odoo>
     <!--Crea CTA Utiliza xpath dentro del contenedor estándar de Odoo Portal, asegurando que el cliente vea el botón "Mis Tareas" -->
@@ -17,7 +16,7 @@
             </div> 
         </xpath> 
     </template>
-    <!--Gestion de Breadcrums. Mostrar la ruta Home / Proyectos / [Nombre de Tarea] -->
+     <!--Gestion de Breadcrums. Mostrar la ruta Home / Proyectos / [Nombre de Tarea] -->
     <template id="portal_my_home_menu_tareas" name="Portal layout : Tareas menu entry" inherit_id="portal.portal_breadcrumbs" priority="1">
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
             <li t-if="page_name == 'tareas_caletti' or tarea" t-attf-class="breadcrumb-item #{'active ' if not tarea else ''}">
@@ -29,7 +28,7 @@
             </li>
         </xpath>
     </template>
-    <!--Reutiliza el componente portal_docs_entry para mantener la consistencia visual y mostrar el número total de tareas activas (tarea_count) -->
+     <!--Reutiliza el componente portal_docs_entry para mantener la consistencia visual y mostrar el número total de tareas activas (tarea_count) -->
     <template id="portal_my_home_tareas" name="Show Tareas" inherit_id="portal.portal_my_home" priority="20">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
             <t t-call="portal.portal_docs_entry">
@@ -40,7 +39,7 @@
             </t>
         </xpath>
     </template>
-
+    <!--Plantilla de Listado (Vista Tabla), Interactividad, Semantica de colores y alerta de retraso -->
     <template id="portal_my_tareas_template" name="Mis Tareas Caletti">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -61,20 +60,35 @@
                 <table class="table table-hover m-0">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4">Proyecto</th>
-                            <th>Entrega Estimada</th>
+                            <th class="ps-4">Proyecto / Ticket</th>
+                            <th class="text-center">Tipo</th>
+                            <th class="text-center">Referencia</th>
+                            <th class="text-center">Fecha Entrega</th>
                             <th class="text-center">Avance Real</th>
                             <th class="text-end pe-4">Estado</th>
                         </tr>
                     </thead>
-                    <!--Plantilla de Listado (Vista Tabla), Interactividad, Semantca de colores y alerta de retraso -->
                     <tbody>
                         <t t-foreach="tareas" t-as="tarea">
-                            <tr class="align-middle" style="cursor: pointer;" t-attf-onclick="window.location.href='/my/tarea/#{tarea.id}'">
+                            <tr class="align-middle" 
+                                t-attf-style="cursor: pointer; #{'background-color: #f8f5ff;' if tarea.es_ticket else ''}" 
+                                t-attf-onclick="window.location.href='/my/tarea/#{tarea.id}'">
+                                
                                 <td class="ps-4">
                                     <strong class="text-primary"><span t-field="tarea.name"/></strong>
                                 </td>
-                                <td class="text-end">
+                                
+                                <td class="text-center">
+                                    <span t-if="not tarea.es_ticket" class="badge rounded-pill bg-info text-dark" style="font-size: 0.7rem;">PROYECTO</span>
+                                    <span t-else="" class="badge rounded-pill text-white" style="font-size: 0.7rem; background-color: #6f42c1;">TICKET</span>
+                                </td>
+
+                                <td class="text-center">
+                                    <span t-if="tarea.es_ticket" class="fw-bold text-danger"><t t-esc="tarea.ticket_ref"/></span>
+                                    <span t-else="" class="text-muted small">#<t t-esc="tarea.id"/></span>
+                                </td>
+
+                                <td class="text-center">
                                     <span t-field="tarea.date_deadline" 
                                           t-attf-class="{{ 'text-danger fw-bold' if tarea.is_overdue and tarea.state != 'hecho' else '' }}"/>
                                     <t t-if="tarea.is_overdue and tarea.state != 'hecho'">
@@ -84,7 +98,8 @@
                                         </span>
                                     </t>
                                 </td>
-                                <td class="text-center" style="width: 25%;">
+
+                                <td class="text-center" style="width: 20%;">
                                     <div class="progress" style="height: 12px; border-radius: 10px;">
                                         <div t-attf-class="progress-bar #{'bg-info' if tarea.state == 'nuevo' else 'bg-warning' if tarea.state == 'proceso' else 'bg-success'}" 
                                              role="progressbar" 
@@ -93,6 +108,7 @@
                                     </div>
                                     <small class="text-muted"><t t-esc="int(tarea.progress)"/>%</small>
                                 </td>
+
                                 <td class="text-end pe-4">
                                     <span t-attf-class="badge rounded-pill p-2 px-3 #{'text-bg-info' if tarea.state == 'nuevo' else 'text-bg-warning' if tarea.state == 'proceso' else 'text-bg-success'}">
                                         <t t-esc="dict(tarea._fields['state'].selection).get(tarea.state).upper()"/>
@@ -105,13 +121,16 @@
             </div>
         </t>
     </template>
-                <!--Vista de Detalle: Contenedor principal para la información extendida de una tarea específica -->
+    <!--Vista de Detalle: Contenedor principal para la información extendida de una tarea o Ticket específico -->
     <template id="portal_tarea_page" name="Detalle de Tarea">
         <t t-call="portal.portal_layout">
             <div class="container bg-white pb-5 shadow-lg rounded-3 border-0 mt-3 overflow-hidden">
                 <div class="row bg-light border-bottom p-4 align-items-center">
                     <div class="col-md-8">
-                        <small class="text-uppercase text-muted fw-bold">Detalle del Proyecto</small>
+                        <small class="text-uppercase text-muted fw-bold">
+                            <t t-if="tarea.es_ticket">Detalle del Ticket de Soporte</t>
+                            <t t-else="">Detalle del Proyecto</t>
+                        </small>
                         <h2 class="text-dark mb-0"><span t-field="tarea.name"/></h2>
                     </div>
                     <div class="col-md-4 text-md-end">
@@ -149,7 +168,14 @@
                             <h6 class="text-muted fw-bold border-bottom pb-2 mb-3">DATOS CLAVE:</h6>
                             <div class="mb-3">
                                 <label class="text-muted small d-block">FECHA DE ENTREGA:</label>
-                                <strong class="fs-5"><span t-field="tarea.date_deadline" t-options='{"widget": "date"}'/></strong>
+                                <strong class="fs-5">
+                                    <span t-field="tarea.date_deadline" t-options='{"widget": "date"}' 
+                                          t-attf-class="{{ 'text-danger' if tarea.is_overdue and tarea.state != 'hecho' else '' }}"/>
+                                </strong>
+                            </div>
+                            <div t-if="tarea.es_ticket and tarea.ticket_ref" class="mb-3">
+                                <label class="text-muted small d-block">REFERENCIA TICKET:</label>
+                                <strong class="text-danger"><t t-esc="tarea.ticket_ref"/></strong>
                             </div>
                             <div class="mb-3">
                                 <label class="text-muted small d-block">PROYECTO ID:</label>
@@ -163,7 +189,7 @@
                         </div>
                     </div>
                 </div>
-                    <!--Integracion del Chatter como canal de comunicación -->
+                <!--Integracion del Chatter como canal de comunicación -->
                 <div class="row p-4 border-top">
                     <div class="col-12">
                         <h4 class="fw-bold mb-4 text-secondary"><i class="fa fa-comments me-2"/>Canal Directo de Comunicación</h4> 
