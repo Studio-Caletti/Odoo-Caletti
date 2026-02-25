@@ -192,7 +192,7 @@ Questo modulo è stato progettato come **Master Base (Core V3)**. La sua archite
 3. **Aggiornare**: Riavviare il server Odoo e attivare la Modalità Sviluppatore.
 4. **Installare**: Vai al menu Applicazioni, clicca su "Aggiorna elenco applicazioni" e cerca `Tablero Kanban Caletti` (Core) e poi ` tablero_kanban_helpdesk`.
 
----.
+---
 
 
 ## Check our data/ir_cron.xml to see how automated alerts are scheduled.
