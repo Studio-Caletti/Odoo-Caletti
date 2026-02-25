@@ -70,7 +70,7 @@ The core of the module implements proactive automation:
 - **Time Tracking**: Automatic capture of milestones (Start/Finish) when statuses change.
 - **Communication**: Integrated email notifications for critical milestones and overdue tasks.
 
-###🎯 Use Cases
+### 🎯 Use Cases
 
 - **Creative agencies**: Real-time project tracking with clients.
 - **Support teams**: HelpDesk with client-isolated tickets.
@@ -195,7 +195,7 @@ Questo modulo è stato progettato come **Master Base (Core V3)**. La sua archite
 ---.
 
 
-##Check our data/ir_cron.xml to see how automated alerts are scheduled.
+## Check our data/ir_cron.xml to see how automated alerts are scheduled.
 
 ### 🗂️Repository Structure
 ```text
