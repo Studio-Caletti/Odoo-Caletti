@@ -15,7 +15,7 @@
 ### 📄 Descripción
 El **Tablero Kanban Caletti Core V3** no es solo un gestor de tareas; es un ecosistema de **Business Intelligence** y **Experiencia de Cliente** diseñado para Odoo 17. Este módulo constituye el pilar fundamental de nuestra arquitectura modular, integrando una lógica de estados robusta que no solo actualiza campos sino que **dispara eventos automáticos de seguimiento, comunicación y trazabilidad temporal**.
 
-El **Core V2** marca la transición hacia una **Arquitectura Modular Escalable**, donde un núcleo robusto (Core) puede ser extendido mediante módulos especializados sin comprometer la integridad del sistema principal.
+El **Core V3** marca la transición hacia una **Arquitectura Modular Escalable**, donde un núcleo robusto (Core) puede ser extendido mediante módulos especializados sin comprometer la integridad del sistema principal.
 
 ### 📌 Pilares de la Versión 3.0
 - **Backend de Alto Rendimiento**: Interfaz Kanban evolucionada con **Header Dinámico** para filtrado rápido y **Visual Awareness** (cintas y bordes de color) que dictan el ritmo operativo.
@@ -49,7 +49,7 @@ El núcleo del módulo implementa una automatización proactiva:
 ### 📄 Description 
 The **Caletti Core V3** Kanban Board is not just a task manager; it is a **Business Intelligence** and Customer Experience ecosystem designed for Odoo 17. This module forms the fundamental pillar of our modular architecture, integrating a robust state logic that not only updates fields but also **triggers automatic events for tracking, communication, and time traceability**.
 
-The **Core V2** framework allows a high-performance Core that manages time-tracking and project logic, which can be seamlessly extended with specialized functional layers like our new **Helpdesk module**.
+The **Core V3** framework allows a high-performance Core that manages time-tracking and project logic, which can be seamlessly extended with specialized functional layers like our new **Helpdesk module**.
 
 ### 📌 Version 3.0 Key Pillars
 - **High-Performance Backend**: Evolved Kanban UI with **Dynamic Headers** for instant filtering and **Visual Awareness** (ribbons and color-coded borders) to drive operational pace.
