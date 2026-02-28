@@ -90,6 +90,7 @@ The **Core V3** framework allows a high-performance Core that manages time-track
 - **Core Extension**: Advanced inheritance from portal.portal_my_home and specialized web controllers.
 - **Business Logic**: Robust implementation of ORM methods, @api.depends decorators, and date validation logic.
 - **Security (RBAC)🛡️**: Record Rules that ensure data isolation by client and internal hierarchy (User, Manager, Admin, Client).
+
 ### ⚙️ Robust State Logic
 
 The core of the module implements proactive automation:
@@ -194,7 +195,6 @@ Questo modulo è stato progettato come **Master Base (Core V3)**. La sua archite
 4. **Installare**: Vai al menu Applicazioni, clicca su "Aggiorna elenco applicazioni" e cerca `Tablero Kanban Caletti` (Core) e poi ` tablero_kanban_helpdesk`.
 
 ---
-
 
 ## Check our data/ir_cron.xml to see how automated alerts are scheduled.
 
