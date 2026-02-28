@@ -42,6 +42,34 @@ El núcleo del módulo implementa una automatización proactiva:
 - **Equipos de soporte técnico**: HelpDesk con tickets aislados por cliente.
 - **Consultorías**: Reportes BI para medir productividad y tiempos de entrega.
 
+### 🎫 Sistema Helpdesk Completo (Nuevo)
+
+#### **Características Principales:**
+
+1.  **🔢 Secuencia Automática de Tickets**
+    
+    -   Generación de referencias únicas:  `TK-00001`,  `TK-00002`, etc.
+    -   Incremental y automático
+2.  **📧 Creación de Tickets por Email**
+    
+    -   Los clientes envían emails a  `soporte@caletti.com.mx`
+    -   Odoo crea tickets automáticamente
+    -   Funciona para clientes registrados y no registrados
+3.  **✉️ Emails de Confirmación Automáticos**
+    
+    -   Template profesional con branding
+    -   Incluye número de ticket, tipo, prioridad y estado
+    -   Personalizado con nombre del cliente
+4.  **⏱️ Tracking de SLA**
+    
+    -   Mide tiempo de primera respuesta
+    -   Campo  `sla_hours`  calculado automáticamente
+5.  **👥 Equipos de Soporte (Escalabilidad)**
+    
+    -   Modelo  `HelpdeskTeam`  preparado para múltiples equipos
+    -   Cada equipo puede tener su propio alias de email
+    -   Métricas por equipo
+
 ---
 
 ## <a name="english"></a> 🇺🇸 English <img src="https://flagcdn.com/w20/us.png" width="20">
@@ -77,34 +105,7 @@ The core of the module implements proactive automation:
 - **Consulting firms**: BI reports to measure productivity and delivery times.
 
 ---
-### 🎫 Sistema Helpdesk Completo (Nuevo)
 
-#### **Características Principales:**
-
-1.  **🔢 Secuencia Automática de Tickets**
-    
-    -   Generación de referencias únicas:  `TK-00001`,  `TK-00002`, etc.
-    -   Incremental y automático
-2.  **📧 Creación de Tickets por Email**
-    
-    -   Los clientes envían emails a  `soporte@caletti.com.mx`
-    -   Odoo crea tickets automáticamente
-    -   Funciona para clientes registrados y no registrados
-3.  **✉️ Emails de Confirmación Automáticos**
-    
-    -   Template profesional con branding
-    -   Incluye número de ticket, tipo, prioridad y estado
-    -   Personalizado con nombre del cliente
-4.  **⏱️ Tracking de SLA**
-    
-    -   Mide tiempo de primera respuesta
-    -   Campo  `sla_hours`  calculado automáticamente
-5.  **👥 Equipos de Soporte (Escalabilidad)**
-    
-    -   Modelo  `HelpdeskTeam`  preparado para múltiples equipos
-    -   Cada equipo puede tener su propio alias de email
-    -   Métricas por equipo
-    ---
 ## <a name="italiano"></a> 🇮🇹 Italiano <img src="https://flagcdn.com/w20/it.png" width="20">
 
 ### 📄 Descrizione
