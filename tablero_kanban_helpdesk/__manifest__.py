@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Tablero Kanban - Helpdesk Extension',
-    'version': '2.0.0', #Nueva versión
+    'version': '17.0.2.0.0', #Nueva versión
     'category': 'Services/Helpdesk',
     'summary': 'Extensión Sistema de Tickets con Mail Alias y Portal para el Core de Caletti Studio',
     'author': 'Carlos Caletti',
