@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+#  ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Vista del Vertical Creativo: Proyectos de Agencias Creativas -->
+<!-- Opción B: Acción propia con domain — aislado del Core -->
+
+<odoo>
+
+    <!-- ================================================
+         ACCIÓN DE VENTANA — PROYECTOS CREATIVOS
+         Domain filtra solo proyectos creativos.
+         Context marca automáticamente es_proyecto_creativo=True
+         al crear desde esta acción.
+    ================================================ -->
+    <record id="action_creative_project" model="ir.actions.act_window">
+        <field name="name">Proyectos Creativos</field>
+        <field name="res_model">tablero.tarea</field>
+        <field name="view_mode">kanban,tree,form,graph,pivot</field>
+        <field name="domain">[('es_proyecto_creativo', '=', True)]</field>
+        <field name="context">{
+            'default_es_proyecto_creativo': True,
+            'search_default_in_progress': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primer proyecto creativo!
+            </p>
+            <p>
+                Gestiona briefs, entregables, equipo y presupuesto
+                desde un solo lugar.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA KANBAN — PROYECTOS CREATIVOS
+         Vista propia del vertical, NO hereda del Core.
+         Muestra tipo de proyecto, estado de presupuesto
+         y contadores de brief/entregables.
+    ================================================ -->
+    <record id="view_creative_project_kanban" model="ir.ui.view">
+        <field name="name">creative.project.kanban</field>
+        <field name="model">tablero.tarea</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    quick_create="false"
+                    class="o_kanban_small_column"
+                    sample="1">
+
+                <field name="color"/>
+                <field name="priority"/>
+                <field name="date_deadline"/>
+                <field name="kanban_state"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="is_overdue" invisible="1"/>
+                <field name="progress"/>
+                <!-- Campos del vertical creativo -->
+                <field name="tipo_proyecto"/>
+                <field name="estado_presupuesto"/>
+                <field name="brief_count"/>
+                <field name="brief_aprobado"/>
+                <field name="entregable_count"/>
+                <field name="entregable_aprobado_count"/>
+                <field name="presupuesto_consumido_pct"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)}
+                                           oe_kanban_global_click shadow-sm border-rounded mb-2"
+                             t-attf-style="#{record.is_overdue.raw_value ?
+                                'border-left: 6px solid #d9534f !important;' :
+                                (record.kanban_state.raw_value == 'done' ?
+                                'border-left: 6px solid #f0ad4e !important;' : '')}">
+
+                            <!-- Ribbon VENCIDA — heredado del Core -->
+                            <div class="ribbon ribbon-top-right"
+                                 t-if="record.is_overdue.raw_value">
+                                <span class="text-bg-danger">VENCIDA</span>
+                            </div>
+
+                            <!-- Ribbon SIN BRIEF — alerta de proceso -->
+                            <div class="ribbon ribbon-top-left"
+                                 t-if="!record.brief_aprobado.raw_value">
+                                <span class="text-bg-warning">SIN BRIEF</span>
+                            </div>
+
+                            <div class="oe_kanban_details p-2">
+
+                                <!-- Tipo de proyecto badge -->
+                                <div class="mb-1">
+                                    <span class="badge rounded-pill text-bg-info"
+                                          style="font-size: 0.65rem;">
+                                        <t t-esc="record.tipo_proyecto.value or 'Sin tipo'"/>
+                                    </span>
+                                </div>
+
+                                <!-- Nombre del proyecto -->
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+
+                                <!-- Cliente -->
+                                <div class="text-muted small mt-1"
+                                     t-if="record.partner_id.value">
+                                    <i class="fa fa-building-o me-1"/>
+                                    <field name="partner_id"/>
+                                </div>
+
+                                <!-- Barra de progreso -->
+                                <div class="mt-2 mb-1">
+                                    <field name="progress"
+                                           widget="progressbar"
+                                           options="{'current_value': 'progress',
+                                                     'max_value': 100,
+                                                     'editable': true}"/>
+                                </div>
+
+                                <!-- Contadores: Brief y Entregables -->
+                                <div class="d-flex justify-content-between mt-2 mb-1"
+                                     style="font-size: 0.75rem;">
+                                    <span t-attf-class="badge #{record.brief_aprobado.raw_value ?
+                                                'text-bg-success' : 'text-bg-secondary'}">
+                                        <i class="fa fa-file-text-o me-1"/>
+                                        Brief
+                                        <t t-if="record.brief_aprobado.raw_value">✓</t>
+                                    </span>
+                                    <span class="badge text-bg-secondary">
+                                        <i class="fa fa-tasks me-1"/>
+                                        <t t-esc="record.entregable_aprobado_count.raw_value"/>
+                                        /
+                                        <t t-esc="record.entregable_count.raw_value"/>
+                                        entregables
+                                    </span>
+                                </div>
+
+                                <!-- Alerta de presupuesto -->
+                                <div t-if="record.estado_presupuesto.raw_value == 'excedido'"
+                                     class="alert alert-danger p-1 mt-1 mb-1"
+                                     style="font-size: 0.7rem;">
+                                    🔴 Presupuesto excedido
+                                </div>
+                                <div t-if="record.estado_presupuesto.raw_value == 'alerta'"
+                                     class="alert alert-warning p-1 mt-1 mb-1"
+                                     style="font-size: 0.7rem;">
+                                    ⚠️ <t t-esc="'%.0f' % record.presupuesto_consumido_pct.raw_value"/>% consumido
+                                </div>
+
+                                <!-- Footer: prioridad, estado, deadline, avatar -->
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="priority" widget="priority"/>
+                                        <field name="state"
+                                               widget="label_selection"
+                                               options="{'classes': {
+                                                   'nuevo': 'info',
+                                                   'proceso': 'warning',
+                                                   'hecho': 'success'}}"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="kanban_state"
+                                               widget="state_selection"/>
+                                        <field name="date_deadline"
+                                               widget="remaining_days"/>
+                                        <field name="user_id"
+                                               widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA FORM — PROYECTOS CREATIVOS
+         Hereda del form del Core via xpath.
+         Agrega: tipo_proyecto, presupuesto en header,
+         y tabs de Brief, Equipo, Entregables.
+    ================================================ -->
+    <record id="view_creative_project_form" model="ir.ui.view">
+        <field name="name">creative.project.form</field>
+        <field name="model">tablero.tarea</field>
+        <field name="inherit_id" ref="tablero_kanban_caletti.view_tablero_tarea_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Inyectar tipo_proyecto y estado_presupuesto
+                 debajo del título, antes del grupo principal -->
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <field name="es_proyecto_creativo" invisible="1"/>
+                        <field name="tipo_proyecto"
+                               widget="radio"
+                               invisible="not es_proyecto_creativo"
+                               options="{'horizontal': true}"/>
+                    </div>
+                    <div class="col-md-4" invisible="not es_proyecto_creativo">
+                        <div t-if="estado_presupuesto == 'excedido'"
+                             class="alert alert-danger p-2">
+                            🔴 <strong>Presupuesto Excedido</strong>
+                            (<field name="presupuesto_consumido_pct"
+                                    widget="float"
+                                    digits="[6,1]"/>%)
+                        </div>
+                        <div t-if="estado_presupuesto == 'alerta'"
+                             class="alert alert-warning p-2">
+                            ⚠️ <strong>Alerta de Presupuesto</strong>
+                            (<field name="presupuesto_consumido_pct"
+                                    widget="float"
+                                    digits="[6,1]"/>%)
+                        </div>
+                        <field name="estado_presupuesto" invisible="1"/>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Inyectar tabs creativos al final del notebook -->
+            <xpath expr="//notebook" position="inside">
+
+                <!-- TAB: BRIEF CREATIVO -->
+                <page string="📋 Brief Creativo"
+                      name="tab_brief"
+                      invisible="not es_proyecto_creativo">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <!-- Alerta si no hay brief aprobado -->
+                            <div class="alert alert-warning"
+                                 invisible="brief_aprobado">
+                                <i class="fa fa-exclamation-triangle me-2"/>
+                                <strong>Sin Brief Aprobado.</strong>
+                                No se puede iniciar producción hasta que
+                                el cliente apruebe el brief creativo.
+                            </div>
+                            <div class="alert alert-success"
+                                 invisible="not brief_aprobado">
+                                <i class="fa fa-check-circle me-2"/>
+                                <strong>Brief Aprobado.</strong>
+                                El equipo puede iniciar producción.
+                            </div>
+                        </div>
+                    </div>
+                    <field name="brief_ids"
+                           mode="tree"
+                           context="{'default_proyecto_id': active_id}">
+                        <tree>
+                            <field name="name"/>
+                            <field name="version"/>
+                            <field name="estado_brief"
+                                   widget="badge"
+                                   decoration-info="estado_brief == 'borrador'"
+                                   decoration-warning="estado_brief == 'en_revision'"
+                                   decoration-success="estado_brief == 'aprobado'"
+                                   decoration-danger="estado_brief == 'rechazado'"/>
+                            <field name="fecha_entrega_brief"/>
+                            <field name="aprobado_por_id"
+                                   widget="many2one_avatar_user"/>
+                            <field name="brief_vencido" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <!-- TAB: EQUIPO CREATIVO -->
+                <page string="👥 Equipo Creativo"
+                      name="tab_equipo"
+                      invisible="not es_proyecto_creativo">
+                    <field name="equipo_ids"
+                           context="{'default_proyecto_id': active_id}">
+                        <tree editable="bottom">
+                            <field name="tipo_colaborador"/>
+                            <field name="user_id"
+                                   widget="many2one_avatar_user"
+                                   column_invisible="tipo_colaborador != 'interno'"/>
+                            <field name="partner_id"
+                                   column_invisible="tipo_colaborador != 'externo'"/>
+                            <field name="nombre_display"/>
+                            <field name="rol"/>
+                            <field name="es_responsable"
+                                   widget="boolean_toggle"/>
+                            <field name="fecha_entrada"/>
+                            <field name="activo_en_proyecto"
+                                   widget="boolean_toggle"
+                                   readonly="1"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <!-- TAB: ENTREGABLES -->
+                <page string="📦 Entregables"
+                      name="tab_entregables"
+                      invisible="not es_proyecto_creativo">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <div class="o_stat_info text-center border rounded p-2">
+                                <span class="o_stat_value">
+                                    <field name="entregable_count"/>
+                                </span>
+                                <span class="o_stat_text d-block text-muted">
+                                    Total
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="o_stat_info text-center border rounded p-2">
+                                <span class="o_stat_value text-success">
+                                    <field name="entregable_aprobado_count"/>
+                                </span>
+                                <span class="o_stat_text d-block text-muted">
+                                    Aprobados
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="o_stat_info text-center border rounded p-2">
+                                <span class="o_stat_value">
+                                    <field name="costo_real"
+                                           widget="monetary"/>
+                                </span>
+                                <span class="o_stat_text d-block text-muted">
+                                    Costo Acumulado
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="o_stat_info text-center border rounded p-2">
+                                <span class="o_stat_value">
+                                    <field name="presupuesto_aprobado"
+                                           widget="monetary"/>
+                                </span>
+                                <span class="o_stat_text d-block text-muted">
+                                    Presupuesto
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <field name="entregable_ids"
+                           context="{'default_proyecto_id': active_id}">
+                        <tree decoration-danger="revisiones_excedidas == True"
+                              decoration-warning="revisiones_en_alerta == True"
+                              decoration-success="estado == 'entregado'">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="tipo_entregable"/>
+                            <field name="responsable_id"
+                                   widget="many2one_avatar_user"/>
+                            <field name="fecha_limite"/>
+                            <field name="fecha_entrega_cliente"/>
+                            <field name="estado"
+                                   widget="badge"
+                                   decoration-secondary="estado == 'pendiente'"
+                                   decoration-info="estado == 'en_proceso'"
+                                   decoration-warning="estado == 'en_revision'"
+                                   decoration-success="estado == 'aprobado'"
+                                   decoration-danger="estado == 'rechazado'"/>
+                            <field name="rondas_utilizadas"/>
+                            <field name="max_revisiones"/>
+                            <field name="costo_estimado"
+                                   widget="monetary"/>
+                            <field name="revisiones_excedidas" invisible="1"/>
+                            <field name="revisiones_en_alerta" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <!-- TAB: PRESUPUESTO -->
+                <page string="💰 Presupuesto"
+                      name="tab_presupuesto"
+                      invisible="not es_proyecto_creativo">
+                    <group>
+                        <group string="Presupuesto del Proyecto">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="presupuesto_aprobado"
+                                   widget="monetary"/>
+                            <field name="costo_real"
+                                   widget="monetary"/>
+                            <field name="estado_presupuesto"
+                                   widget="badge"
+                                   decoration-success="estado_presupuesto == 'ok'"
+                                   decoration-warning="estado_presupuesto == 'alerta'"
+                                   decoration-danger="estado_presupuesto == 'excedido'"/>
+                        </group>
+                        <group string="Consumo">
+                            <field name="presupuesto_consumido_pct"
+                                   widget="progressbar"
+                                   options="{'current_value': 'presupuesto_consumido_pct',
+                                             'max_value': 100,
+                                             'editable': false}"/>
+                        </group>
+                    </group>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA TREE — PROYECTOS CREATIVOS
+    ================================================ -->
+    <record id="view_creative_project_tree" model="ir.ui.view">
+        <field name="name">creative.project.tree</field>
+        <field name="model">tablero.tarea</field>
+        <field name="arch" type="xml">
+            <tree sample="1"
+                  decoration-danger="is_overdue == True"
+                  decoration-success="state == 'hecho'">
+                <field name="name"/>
+                <field name="tipo_proyecto"/>
+                <field name="partner_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="brief_aprobado"
+                       widget="boolean_toggle"
+                       readonly="1"/>
+                <field name="entregable_aprobado_count"/>
+                <field name="entregable_count"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="date_deadline" widget="remaining_days"/>
+                <field name="presupuesto_aprobado" widget="monetary"/>
+                <field name="estado_presupuesto"
+                       widget="badge"
+                       decoration-success="estado_presupuesto == 'ok'"
+                       decoration-warning="estado_presupuesto == 'alerta'"
+                       decoration-danger="estado_presupuesto == 'excedido'"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-info="state == 'nuevo'"
+                       decoration-warning="state == 'proceso'"
+                       decoration-success="state == 'hecho'"/>
+                <field name="is_overdue" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA SEARCH — PROYECTOS CREATIVOS
+    ================================================ -->
+    <record id="view_creative_project_search" model="ir.ui.view">
+        <field name="name">creative.project.search</field>
+        <field name="model">tablero.tarea</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="tipo_proyecto"/>
+                <!-- Filtros rápidos -->
+                <filter string="Mis Proyectos"
+                        name="my_projects"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter string="⚠️ Sin Brief Aprobado"
+                        name="sin_brief"
+                        domain="[('brief_aprobado', '=', False),
+                                 ('state', '!=', 'hecho')]"/>
+                <filter string="🔴 Presupuesto Excedido"
+                        name="presupuesto_excedido"
+                        domain="[('estado_presupuesto', '=', 'excedido')]"/>
+                <filter string="⚠️ Presupuesto en Alerta"
+                        name="presupuesto_alerta"
+                        domain="[('estado_presupuesto', '=', 'alerta')]"/>
+                <filter string="⏳ Vencidos"
+                        name="overdue"
+                        domain="[('is_overdue', '=', True),
+                                 ('state', '!=', 'hecho')]"/>
+                <filter string="En Proceso"
+                        name="in_progress"
+                        domain="[('state', '=', 'proceso')]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por...">
+                    <filter string="Tipo de Proyecto"
+                            name="group_tipo"
+                            context="{'group_by': 'tipo_proyecto'}"/>
+                    <filter string="Cliente"
+                            name="group_partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Responsable"
+                            name="group_user"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter string="Estado Presupuesto"
+                            name="group_presupuesto"
+                            context="{'group_by': 'estado_presupuesto'}"/>
+                    <filter string="Estado"
+                            name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================
+         ESTRUCTURA DE MENÚS — VERTICAL CREATIVO
+         Raíz propia del vertical, independiente del Core.
+    ================================================ -->
+    <menuitem id="menu_creative_root"
+              name="Caletti Creative"
+              groups="tablero_kanban_caletti.group_tablero_user,
+                      tablero_kanban_caletti.group_tablero_admin"
+              web_icon="caletti_creative,static/description/icon.png"
+              sequence="5"/>
+
+    <menuitem id="menu_creative_projects"
+              name="Proyectos"
+              parent="menu_creative_root"
+              action="action_creative_project"
+              sequence="10"/>
+</odoo>

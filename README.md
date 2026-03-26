@@ -221,6 +221,7 @@ Odoo-Caletti/
 │   │   ├── views.xml                # Kanban, Form, List, Graph, Pivot
 │   │   ├── portal_templates.xml     # Templates del portal
 │   │   └── report_tarea.xml         # Reportes PDF
+│   ├── __init__.py
 │   └── __manifest__.py
 │
 ├── tablero_kanban_helpdesk/         # MÓDULO HELPDESK
@@ -233,7 +234,28 @@ Odoo-Caletti/
 │   ├── views/
 │   │   ├── helpdesk_views.xml       # Vistas backend
 │   │   └── portal_helpdesk_views.xml # Vistas portal
+│   ├── __init__.py
 │   └── __manifest__.py
+│
+├── caletti_creative/                #MÓDULO CREATIVE
+│   ├── models/
+│   │   ├── init__.py
+│   │   ├── creative_project.py              # _inherit tablero.tarea
+│   │   ├── creative_brief.py                # modelo propio
+│   │   ├── creative_deliverable.py          # modelo propio (subtareas)
+│   │   └── creative_team_member.py          # modelo propio
+│   ├── views/                               # Vistas Backend
+│   │   ├── creative_project_views.xml       # Vista proyecto Creativo
+│   │   ├── creative_brief_views.xml         # Vista Brief Creativo
+│   │   └── creative_deliverable_views.xml   # Vista entregables
+│   ├── security/
+│   │   ├── security_groups.xml              # Grupos de seguridad
+│   │   ├── ir.model.access.csv              # Permisos de acceso
+│   │   └── ir_rule.xml                      # Record Rules (User, Manager)
+│   ├── data/
+│   │   ├── creative_data.xml                # Sequence, Template confirmación
+│   ├── init__.py
+│   └── manifest__.py
 │
 └── README.md                         # Este archivo
 ```
