@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Vista del Vertical Creativo: Brief Creativo -->
+
+<odoo>
+
+    <!-- ================================================
+         ACCIÓN DE VENTANA — BRIEFS
+         Accesible desde menú y desde botón del proyecto.
+    ================================================ -->
+    <record id="action_creative_brief" model="ir.actions.act_window">
+        <field name="name">Briefs Creativos</field>
+        <field name="res_model">creative.brief</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea el primer brief creativo!
+            </p>
+            <p>
+                El brief es el documento rector del proyecto.
+                Define objetivos, audiencia, mensaje y criterios de éxito.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA FORM — BRIEF CREATIVO
+         Estructura en 7 secciones lógicas via notebook.
+         Botones de workflow en header según estado actual.
+    ================================================ -->
+    <record id="view_creative_brief_form" model="ir.ui.view">
+        <field name="name">creative.brief.form</field>
+        <field name="model">creative.brief</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- WORKFLOW: Borrador → En Revisión -->
+                    <button name="action_enviar_a_revision"
+                            string="Enviar a Revisión"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="estado_brief != 'borrador'"/>
+
+                    <!-- WORKFLOW: En Revisión → Aprobado -->
+                    <button name="action_aprobar"
+                            string="✅ Aprobar Brief"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="estado_brief != 'en_revision'"/>
+
+                    <!-- WORKFLOW: En Revisión / Borrador → Rechazado -->
+                    <button name="action_rechazar"
+                            string="❌ Rechazar"
+                            type="object"
+                            invisible="estado_brief not in ['borrador', 'en_revision']"/>
+
+                    <!-- WORKFLOW: Rechazado → Nueva Versión -->
+                    <button name="action_nueva_version"
+                            string="🔄 Crear Nueva Versión"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="estado_brief != 'rechazado'"/>
+
+                    <!-- Statusbar visual del lifecycle -->
+                    <field name="estado_brief"
+                           widget="statusbar"
+                           statusbar_visible="borrador,en_revision,aprobado"/>
+                </header>
+
+                <sheet>
+                    <!-- ALERTA: Brief vencido -->
+                    <div class="alert alert-danger"
+                         invisible="not brief_vencido">
+                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <strong>¡Brief Vencido!</strong>
+                        La fecha límite de aprobación ha sido superada.
+                        Coordina con el cliente para actualizar la fecha.
+                        <field name="brief_vencido" invisible="1"/>
+                    </div>
+
+                    <!-- ALERTA: Brief rechazado -->
+                    <div class="alert alert-warning"
+                         invisible="estado_brief != 'rechazado'">
+                        <i class="fa fa-times-circle me-2"/>
+                        <strong>Brief Rechazado.</strong>
+                        Motivo: <field name="motivo_rechazo"
+                                       readonly="1"
+                                       nolabel="1"
+                                       style="display:inline;"/>
+                        Crea una nueva versión incorporando los cambios.
+                    </div>
+
+                    <!-- BADGE: Versión del brief -->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                type="object"
+                                name="action_nueva_version"
+                                icon="fa-code-fork"
+                                invisible="estado_brief != 'rechazado'">
+                            <field name="version"
+                                   string="Versión"
+                                   widget="statinfo"/>
+                        </button>
+                        <div class="oe_stat_button"
+                             icon="fa-calendar-check-o"
+                             invisible="not fecha_aprobacion">
+                            <field name="fecha_aprobacion"
+                                   string="Aprobado"
+                                   widget="statinfo"/>
+                        </div>
+                    </div>
+
+                    <!-- TÍTULO -->
+                    <div class="oe_title">
+                        <label for="name" string="Título del Brief"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Ej: Brief Campaña Lanzamiento Q2 2026"/>
+                        </h1>
+                    </div>
+
+                    <!-- DATOS GENERALES -->
+                    <group>
+                        <group string="Proyecto y Cliente">
+                            <field name="proyecto_id"/>
+                            <field name="cliente_id" readonly="1"/>
+                            <field name="aprobado_por_id"
+                                   readonly="1"
+                                   invisible="not aprobado_por_id"
+                                   widget="many2one_avatar_user"/>
+                        </group>
+                        <group string="Fechas y Versión">
+                            <field name="fecha_entrega_brief"/>
+                            <field name="fecha_aprobacion"
+                                   readonly="1"
+                                   invisible="not fecha_aprobacion"/>
+                            <field name="version" readonly="1"/>
+                            <field name="dias_para_vencimiento"
+                                   invisible="estado_brief not in
+                                       ['borrador', 'en_revision']"/>
+                        </group>
+                    </group>
+
+                    <!-- NOTEBOOK: 7 SECCIONES DEL BRIEF -->
+                    <notebook>
+
+                        <!-- SECCIÓN 1: CONTEXTO -->
+                        <page string="🏢 Contexto"
+                              name="tab_contexto">
+                            <group>
+                                <field name="antecedentes"
+                                       placeholder="Historia de la marca, posicionamiento actual, "
+                                                   "contexto del mercado..."/>
+                                <field name="problema_oportunidad"
+                                       placeholder="¿Qué problema resuelve este proyecto "
+                                                   "o qué oportunidad aprovecha?"/>
+                                <field name="competencia"
+                                       placeholder="¿Cómo se diferencia el cliente? "
+                                                   "¿Qué hace la competencia?"/>
+                            </group>
+                        </page>
+
+                        <!-- SECCIÓN 2: OBJETIVOS -->
+                        <page string="🎯 Objetivos"
+                              name="tab_objetivos">
+                            <group>
+                                <field name="objetivo_principal"
+                                       placeholder="Objetivo SMART: ¿Qué queremos lograr, "
+                                                   "para quién y cuándo?"/>
+                                <field name="objetivos_secundarios"
+                                       placeholder="Objetivos de apoyo al objetivo principal..."/>
+                                <field name="criterios_exito"
+                                       placeholder="¿Cómo mediremos el éxito? "
+                                                   "Métricas concretas: impresiones, "
+                                                   "conversiones, alcance..."/>
+                            </group>
+                        </page>
+
+                        <!-- SECCIÓN 3: AUDIENCIA -->
+                        <page string="👥 Audiencia"
+                              name="tab_audiencia">
+                            <group>
+                                <field name="audiencia_primaria"
+                                       placeholder="Perfil demográfico, comportamientos, "
+                                                   "intereses, necesidades y pain points..."/>
+                                <field name="audiencia_secundaria"
+                                       placeholder="Público secundario o influenciadores "
+                                                   "de la decisión de compra..."/>
+                            </group>
+                        </page>
+
+                        <!-- SECCIÓN 4: MENSAJE Y DIRECCIÓN CREATIVA -->
+                        <page string="💡 Mensaje Creativo"
+                              name="tab_mensaje">
+                            <group>
+                                <group string="Mensaje">
+                                    <field name="mensaje_clave"
+                                           placeholder="La idea central que debe comunicar "
+                                                       "todo el trabajo creativo..."/>
+                                    <field name="propuesta_valor"
+                                           placeholder="¿Qué beneficio único ofrece "
+                                                       "el cliente a su audiencia?"/>
+                                </group>
+                                <group string="Tono y Estilo">
+                                    <field name="tono_comunicacion"/>
+                                    <field name="tono_notas"
+                                           placeholder="Colores de marca, tipografías, "
+                                                       "referencias visuales, ejemplos de "
+                                                       "lo que SÍ y lo que NO..."/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- SECCIÓN 5: CANALES -->
+                        <page string="📡 Canales"
+                              name="tab_canales">
+                            <group>
+                                <field name="canal_principal"/>
+                                <field name="canales_descripcion"
+                                       placeholder="Plataformas, formatos y dimensiones: "
+                                                   "Instagram Stories 1080x1920, "
+                                                   "Facebook Post 1200x628..."/>
+                            </group>
+                        </page>
+
+                        <!-- SECCIÓN 6: RESTRICCIONES -->
+                        <page string="⚠️ Restricciones"
+                              name="tab_restricciones">
+                            <group>
+                                <field name="restricciones_marca"
+                                       placeholder="Colores prohibidos, palabras vetadas, "
+                                                   "competidores que no se deben mencionar, "
+                                                   "guías de marca a respetar..."/>
+                                <field name="referencias_visuales"
+                                       placeholder="URLs o descripciones de trabajos "
+                                                   "de referencia o inspiración..."/>
+                                <field name="consideraciones_legales"
+                                       placeholder="Disclaimers obligatorios, restricciones "
+                                                   "del sector, derechos de imagen..."/>
+                            </group>
+                        </page>
+
+                        <!-- SECCIÓN 7: HISTORIAL (solo lectura, trazabilidad) -->
+                        <page string="📜 Historial"
+                              name="tab_historial"
+                              invisible="estado_brief == 'borrador'">
+                            <group>
+                                <field name="motivo_rechazo"
+                                       readonly="1"
+                                       invisible="not motivo_rechazo"/>
+                                <field name="aprobado_por_id"
+                                       readonly="1"
+                                       invisible="not aprobado_por_id"
+                                       widget="many2one_avatar_user"/>
+                                <field name="fecha_aprobacion"
+                                       readonly="1"
+                                       invisible="not fecha_aprobacion"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+
+                <!-- CHATTER: Trazabilidad completa de aprobaciones,
+                     rechazos y comunicación con el cliente -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA TREE — BRIEFS
+    ================================================ -->
+    <record id="view_creative_brief_tree" model="ir.ui.view">
+        <field name="name">creative.brief.tree</field>
+        <field name="model">creative.brief</field>
+        <field name="arch" type="xml">
+            <tree sample="1"
+                  decoration-warning="estado_brief == 'en_revision'"
+                  decoration-success="estado_brief == 'aprobado'"
+                  decoration-danger="estado_brief == 'rechazado' or brief_vencido == True">
+                <field name="name"/>
+                <field name="proyecto_id"/>
+                <field name="cliente_id"/>
+                <field name="version"/>
+                <field name="tono_comunicacion"/>
+                <field name="canal_principal"/>
+                <field name="fecha_entrega_brief"/>
+                <field name="estado_brief"
+                       widget="badge"
+                       decoration-info="estado_brief == 'borrador'"
+                       decoration-warning="estado_brief == 'en_revision'"
+                       decoration-success="estado_brief == 'aprobado'"
+                       decoration-danger="estado_brief == 'rechazado'"/>
+                <field name="aprobado_por_id"
+                       widget="many2one_avatar_user"/>
+                <field name="brief_vencido" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA KANBAN — BRIEFS
+         Columnas por estado del lifecycle del brief.
+    ================================================ -->
+    <record id="view_creative_brief_kanban" model="ir.ui.view">
+        <field name="name">creative.brief.kanban</field>
+        <field name="model">creative.brief</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="estado_brief"
+                    quick_create="false"
+                    sample="1">
+
+                <field name="estado_brief"/>
+                <field name="brief_vencido"/>
+                <field name="dias_para_vencimiento"/>
+                <field name="proyecto_id"/>
+                <field name="cliente_id"/>
+                <field name="tono_comunicacion"/>
+                <field name="version"/>
+                <field name="aprobado_por_id"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click shadow-sm
+                                           border-rounded mb-2
+                                           #{record.brief_vencido.raw_value ?
+                                             'border border-danger' : ''}">
+
+                            <!-- Ribbon vencido -->
+                            <div class="ribbon ribbon-top-right"
+                                 t-if="record.brief_vencido.raw_value">
+                                <span class="text-bg-danger">VENCIDO</span>
+                            </div>
+
+                            <div class="oe_kanban_details p-2">
+
+                                <!-- Nombre del brief -->
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+
+                                <!-- Proyecto y cliente -->
+                                <div class="text-muted small mt-1">
+                                    <i class="fa fa-folder-o me-1"/>
+                                    <field name="proyecto_id"/>
+                                </div>
+                                <div class="text-muted small"
+                                     t-if="record.cliente_id.value">
+                                    <i class="fa fa-building-o me-1"/>
+                                    <field name="cliente_id"/>
+                                </div>
+
+                                <!-- Versión -->
+                                <div class="mt-2">
+                                    <span class="badge text-bg-secondary"
+                                          style="font-size: 0.65rem;">
+                                        v<t t-esc="record.version.raw_value"/>
+                                    </span>
+                                    <span class="badge text-bg-light ms-1"
+                                          style="font-size: 0.65rem;"
+                                          t-if="record.tono_comunicacion.value">
+                                        <t t-esc="record.tono_comunicacion.value"/>
+                                    </span>
+                                </div>
+
+                                <!-- Días para vencimiento -->
+                                <div class="mt-2 small"
+                                     t-if="record.dias_para_vencimiento.raw_value != 0">
+                                    <t t-if="record.dias_para_vencimiento.raw_value > 0">
+                                        <span class="text-muted">
+                                            <i class="fa fa-clock-o me-1"/>
+                                            <t t-esc="record.dias_para_vencimiento.raw_value"/>
+                                            días para aprobar
+                                        </span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-danger">
+                                            <i class="fa fa-exclamation-circle me-1"/>
+                                            Vencido hace
+                                            <t t-esc="record.dias_para_vencimiento.raw_value * -1"/>
+                                            días
+                                        </span>
+                                    </t>
+                                </div>
+
+                                <!-- Footer: avatar del aprobador -->
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left"/>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="aprobado_por_id"
+                                               widget="many2one_avatar_user"
+                                               invisible="not aprobado_por_id"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA SEARCH — BRIEFS
+    ================================================ -->
+    <record id="view_creative_brief_search" model="ir.ui.view">
+        <field name="name">creative.brief.search</field>
+        <field name="model">creative.brief</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="proyecto_id"/>
+                <field name="cliente_id"/>
+                <!-- Filtros rápidos -->
+                <filter string="📝 Borrador"
+                        name="borrador"
+                        domain="[('estado_brief', '=', 'borrador')]"/>
+                <filter string="🔍 En Revisión"
+                        name="en_revision"
+                        domain="[('estado_brief', '=', 'en_revision')]"/>
+                <filter string="✅ Aprobados"
+                        name="aprobados"
+                        domain="[('estado_brief', '=', 'aprobado')]"/>
+                <filter string="❌ Rechazados"
+                        name="rechazados"
+                        domain="[('estado_brief', '=', 'rechazado')]"/>
+                <separator/>
+                <filter string="⏰ Vencidos"
+                        name="vencidos"
+                        domain="[('brief_vencido', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por...">
+                    <filter string="Estado"
+                            name="group_estado"
+                            context="{'group_by': 'estado_brief'}"/>
+                    <filter string="Proyecto"
+                            name="group_proyecto"
+                            context="{'group_by': 'proyecto_id'}"/>
+                    <filter string="Cliente"
+                            name="group_cliente"
+                            context="{'group_by': 'cliente_id'}"/>
+                    <filter string="Tono"
+                            name="group_tono"
+                            context="{'group_by': 'tono_comunicacion'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================
+         MENÚ — BRIEFS dentro del vertical creativo
+    ================================================ -->
+    <menuitem id="menu_creative_briefs"
+              name="Briefs"
+              parent="menu_creative_root"
+              action="action_creative_brief"
+              sequence="20"/>
+
+</odoo>
