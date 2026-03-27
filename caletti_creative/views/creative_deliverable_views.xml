@@ -192,9 +192,7 @@
                             <group>
                                 <field name="descripcion"
                                        nolabel="1"
-                                       placeholder="Dimensiones, formato, resolución, "
-                                                   "duración, variaciones requeridas, "
-                                                   "especificaciones técnicas..."/>
+                                       placeholder="Dimensiones, formato, resolución, duración, variaciones requeridas, especificaciones técnicas..."/>
                             </group>
                         </page>
 
