@@ -316,7 +316,7 @@ class CreativeDeliverable(models.Model):
 
     # --- ACCIONES DE WORKFLOW ---
 
-        def action_iniciar(self):
+    def action_iniciar(self):
         """
         Inicia la producción del entregable.
         Requiere brief aprobado en el proyecto — regla no negociable.
