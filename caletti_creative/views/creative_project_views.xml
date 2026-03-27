@@ -195,6 +195,11 @@
 
             <!-- Inyectar tipo_proyecto y estado_presupuesto
                  debajo del título, antes del grupo principal -->
+
+            <xpath expr="//sheet" position="inside">
+                <field name="brief_aprobado" invisible="1"/>
+            </xpath>
+
             <xpath expr="//div[hasclass('oe_title')]" position="after">
                 <div class="row mb-3">
                     <div class="col-md-4">
