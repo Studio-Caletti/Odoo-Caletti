@@ -279,24 +279,17 @@
                 <page string="👥 Equipo Creativo"
                       name="tab_equipo"
                       invisible="not es_proyecto_creativo">
-                    <field name="equipo_ids"
-                           context="{'default_proyecto_id': active_id}">
-                        <tree editable="bottom">
-                            <field name="tipo_colaborador"/>
-                            <field name="user_id"
-                                   widget="many2one_avatar_user"
-                                   column_invisible="tipo_colaborador != 'interno'"/>
-                            <field name="partner_id"
-                                   column_invisible="tipo_colaborador != 'externo'"/>
-                            <field name="nombre_display"/>
-                            <field name="rol"/>
-                            <field name="es_responsable"
-                                   widget="boolean_toggle"/>
-                            <field name="fecha_entrada"/>
-                            <field name="activo_en_proyecto"
-                                   widget="boolean_toggle"
-                                   readonly="1"/>
-                        </tree>
+                    <field name="equipo_ids" context="{'default_proyecto_id': active_id}">
+                    <tree editable="bottom">
+                    <field name="tipo_colaborador"/>
+                    <field name="user_id" widget="many2one_avatar_user"/>
+                    <field name="partner_id"/>
+                    <field name="nombre_display"/>
+                    <field name="rol"/>
+                    <field name="es_responsable" widget="boolean_toggle"/>
+                    <field name="fecha_entrada"/>
+                    <field name="activo_en_proyecto" widget="boolean_toggle" readonly="1"/>
+                    </tree>
                     </field>
                 </page>
 
