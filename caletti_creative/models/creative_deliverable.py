@@ -316,8 +316,188 @@ class CreativeDeliverable(models.Model):
 
     # --- ACCIONES DE WORKFLOW ---
 
-    def action_iniciar(self):
+        def action_iniciar(self):
         """
         Inicia la producción del entregable.
         Requiere brief aprobado en el proyecto — regla no negociable.
         """
+        self.ensure_one()
+        if self.estado != ESTADO_PENDIENTE:
+            raise UserError(_("Solo se puede iniciar un entregable Pendiente."))
+
+        self._validar_brief_aprobado()
+
+        self.write({
+            'estado': ESTADO_EN_PROCESO,
+            'fecha_inicio': fields.Date.today(),
+        })
+        self.message_post(
+            body=_(
+                "🔄 <strong>Producción iniciada.</strong><br/>"
+                "Responsable: <strong>%(responsable)s</strong>"
+            ) % {
+                'responsable': self.responsable_id.name
+                    if self.responsable_id else _("Sin asignar")
+            },
+            subject=_("Entregable en Producción")
+        )
+        _logger.info(
+            "🔄 Entregable '%s' iniciado por %s",
+            self.name, self.env.user.name
+        )
+
+    def action_enviar_a_revision(self):
+        """
+        Envía el entregable a revisión del cliente o dirección creativa.
+        """
+        self.ensure_one()
+        if self.estado != ESTADO_EN_PROCESO:
+            raise UserError(_(
+                "Solo se puede enviar a revisión un entregable En Proceso."
+            ))
+
+        self.write({'estado': ESTADO_EN_REVISION})
+        self.message_post(
+            body=_(
+                "🔍 <strong>Entregable enviado a revisión.</strong><br/>"
+                "Ronda de revisión: <strong>%(ronda)d de %(max)d</strong>"
+                "%(alerta)s"
+            ) % {
+                'ronda': self.rondas_utilizadas + 1,
+                'max': self.max_revisiones,
+                'alerta': _(
+                    "<br/>⚠️ <em>Próxima a agotar las rondas incluidas.</em>"
+                ) if (self.rondas_utilizadas + 1) >= ALERTA_REVISIONES else ''
+            },
+            subject=_("Entregable en Revisión")
+        )
+        _logger.info(
+            "🔍 Entregable '%s' enviado a revisión (ronda %d/%d)",
+            self.name,
+            self.rondas_utilizadas + 1,
+            self.max_revisiones
+        )
+
+    def action_aprobar(self):
+        """
+        Aprueba el entregable. Registra fecha de aprobación.
+        """
+        self.ensure_one()
+        if self.estado != ESTADO_EN_REVISION:
+            raise UserError(_(
+                "Solo se puede aprobar un entregable En Revisión."
+            ))
+
+        ahora = fields.Datetime.now()
+        self.write({
+            'estado': ESTADO_APROBADO,
+            'fecha_aprobacion': ahora,
+        })
+        self.message_post(
+            body=_(
+                "✅ <strong>¡Entregable Aprobado!</strong><br/>"
+                "Aprobado por: <strong>%(usuario)s</strong><br/>"
+                "Rondas utilizadas: <strong>%(rondas)d de %(max)d</strong>"
+            ) % {
+                'usuario': self.env.user.name,
+                'rondas': self.rondas_utilizadas,
+                'max': self.max_revisiones,
+            },
+            subject=_("Entregable Aprobado")
+        )
+        _logger.info(
+            "✅ Entregable '%s' aprobado. Rondas: %d/%d",
+            self.name, self.rondas_utilizadas, self.max_revisiones
+        )
+
+    def action_rechazar(self, motivo=''):
+        """
+        Rechaza el entregable e incrementa el contador de rondas.
+        Emite alerta si se exceden las rondas del presupuesto.
+        """
+        self.ensure_one()
+        if self.estado != ESTADO_EN_REVISION:
+            raise UserError(_(
+                "Solo se puede rechazar un entregable En Revisión."
+            ))
+
+        nuevas_rondas = self.rondas_utilizadas + 1
+        self.write({
+            'estado': ESTADO_EN_PROCESO,
+            'rondas_utilizadas': nuevas_rondas,
+        })
+
+        # Construir mensaje con nivel de alerta adecuado
+        if nuevas_rondas > self.max_revisiones:
+            cuerpo = _(
+                "❌ <strong>Entregable rechazado — RONDA EXTRA.</strong><br/>"
+                "Motivo: %(motivo)s<br/>"
+                "⚠️ <strong>Ronda %(ronda)d excede las %(max)d incluidas "
+                "en presupuesto.</strong><br/>"
+                "Aplica tarifa adicional de revisión."
+            ) % {
+                'motivo': motivo or _("Sin motivo especificado."),
+                'ronda': nuevas_rondas,
+                'max': self.max_revisiones,
+            }
+            _logger.warning(
+                "⚠️ Entregable '%s': ronda extra %d (máx %d)",
+                self.name, nuevas_rondas, self.max_revisiones
+            )
+        else:
+            cuerpo = _(
+                "❌ <strong>Entregable rechazado.</strong><br/>"
+                "Motivo: %(motivo)s<br/>"
+                "Rondas utilizadas: <strong>%(ronda)d de %(max)d</strong>"
+            ) % {
+                'motivo': motivo or _("Sin motivo especificado."),
+                'ronda': nuevas_rondas,
+                'max': self.max_revisiones,
+            }
+
+        self.message_post(
+            body=cuerpo,
+            subject=_("Entregable Rechazado — Requiere Ajustes")
+        )
+
+    def action_marcar_entregado(self):
+        """
+        Marca el entregable como entregado al cliente.
+        Solo es posible desde estado Aprobado.
+        """
+        self.ensure_one()
+        if self.estado != ESTADO_APROBADO:
+            raise UserError(_(
+                "Solo se puede marcar como entregado un entregable Aprobado."
+            ))
+
+        ahora = fields.Datetime.now()
+        self.write({
+            'estado': ESTADO_ENTREGADO,
+            'fecha_entrega_real': ahora,
+        })
+        self.message_post(
+            body=_(
+                "🚀 <strong>¡Entregable entregado al cliente!</strong><br/>"
+                "Fecha de entrega: <strong>%(fecha)s</strong><br/>"
+                "Rondas utilizadas: <strong>%(rondas)d de %(max)d</strong>"
+                "%(extra)s"
+            ) % {
+                'fecha': ahora.strftime('%d/%m/%Y %H:%M'),
+                'rondas': self.rondas_utilizadas,
+                'max': self.max_revisiones,
+                'extra': _(
+                    "<br/>💸 Costo adicional por revisiones: %(costo)s"
+                ) % {'costo': self.costo_adicional_revisiones}
+                if self.costo_adicional_revisiones > 0 else ''
+            },
+            subject=_("Entregable Entregado al Cliente")
+        )
+        _logger.info(
+            "🚀 Entregable '%s' entregado. Rondas: %d/%d. "
+            "Costo adicional revisiones: %s",
+            self.name,
+            self.rondas_utilizadas,
+            self.max_revisiones,
+            self.costo_adicional_revisiones
+        )
