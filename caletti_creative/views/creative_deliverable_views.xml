@@ -245,46 +245,48 @@
          Decoraciones semánticas por estado y alertas.
     ================================================ -->
     <record id="view_creative_deliverable_tree" model="ir.ui.view">
-        <field name="name">creative.deliverable.tree</field>
-        <field name="model">creative.deliverable</field>
-        <field name="arch" type="xml">
-            <tree sample="1"
-                    decoration-danger="revisiones_excedidas == True"
-                    decoration-warning="revisiones_en_alerta == True"
-                    decoration-success="estado == 'entregado'"
-                    decoration-secondary="estado == 'pendiente'">
-                <field name="sequence" widget="handle"/>
-                <field name="name"/>
-                <field name="proyecto_id"/>
-                <field name="cliente_id"/>
-                <field name="tipo_entregable"/>
-                <field name="responsable_id"
-                       widget="many2one_avatar_user"/>
-                <field name="fecha_limite"
-                       widget="remaining_days"/>
-                <field name="fecha_entrega_cliente"/>
-                <field name="estado"
-                       widget="badge"
-                       decoration-secondary="estado == 'pendiente'"
-                       decoration-info="estado == 'en_proceso'"
-                       decoration-warning="estado == 'en_revision'"
-                       decoration-success="estado == 'aprobado'"
-                       decoration-danger="estado == 'rechazado'"/>
-                <field name="rondas_utilizadas"/>
-                <field name="max_revisiones"/>
-                <field name="costo_estimado"
-                       widget="monetary"
-                       optional="show"/>
-                <field name="costo_adicional_revisiones"
-                       widget="monetary"
-                       optional="show"
-                       decoration-danger="costo_adicional_revisiones > 0"/>
-                <field name="revisiones_excedidas" column_invisible="True"/>
-                <field name="revisiones_en_alerta" column_invisible="True"/>
-                <field name="currency_id" column_invisible="True"/>
-            </tree>
-        </field>
-    </record>
+    <field name="name">creative.deliverable.tree</field>
+    <field name="model">creative.deliverable</field>
+    <field name="arch" type="xml">
+        <tree sample="1"
+              decoration-danger="revisiones_excedidas == True"
+              decoration-warning="revisiones_en_alerta == True"
+              decoration-success="estado == 'entregado'"
+              decoration-secondary="estado == 'pendiente'">
+            <field name="sequence" widget="handle"/>
+            <field name="name"/>
+            <field name="proyecto_id"/>
+            <field name="cliente_id"/>
+            <field name="tipo_entregable"/>
+            <field name="responsable_id"
+                   widget="many2one_avatar_user"/>
+            <field name="fecha_limite"
+                   widget="remaining_days"/>
+            <field name="fecha_entrega_cliente"/>
+            <field name="estado"
+                   widget="badge"
+                   options="{'states': {
+                       'pendiente': 'secondary',
+                       'en_proceso': 'info',
+                       'en_revision': 'warning',
+                       'aprobado': 'success',
+                       'rechazado': 'danger',
+                       'entregado': 'success'
+                   }}"/>
+            <field name="rondas_utilizadas"/>
+            <field name="max_revisiones"/>
+            <field name="costo_estimado"
+                   widget="monetary"
+                   optional="show"/>
+            <field name="costo_adicional_revisiones"
+                   widget="monetary"
+                   optional="show"/>
+            <field name="revisiones_excedidas" column_invisible="True"/>
+            <field name="revisiones_en_alerta" column_invisible="True"/>
+            <field name="currency_id" column_invisible="True"/>
+        </tree>
+    </field>
+</record>
 
     <!-- ================================================
          VISTA KANBAN — ENTREGABLES
