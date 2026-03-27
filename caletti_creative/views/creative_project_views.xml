@@ -504,11 +504,13 @@
          ESTRUCTURA DE MENÚS — VERTICAL CREATIVO
          Raíz propia del vertical, independiente del Core.
     ================================================ -->
-    <menuitem id="menu_creative_root"
-              name="Caletti Creative"
-              groups="tablero_kanban_caletti.group_tablero_user,tablero_kanban_caletti.group_tablero_admin"
-              web_icon="caletti_creative,static/description/icon.png"
-              sequence="5"/>
+
+
+    <menuitem id="menu_creative_root" 
+          name="Caletti Creative" 
+          groups="tablero_kanban_caletti.group_tablero_user,tablero_kanban_caletti.group_tablero_admin" 
+          web_icon="caletti_creative,static/description/icon.png" 
+          sequence="5"/>
 
     <menuitem id="menu_creative_projects"
               name="Proyectos"
