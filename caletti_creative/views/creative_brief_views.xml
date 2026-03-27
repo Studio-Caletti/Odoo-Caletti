@@ -169,14 +169,11 @@
                               name="tab_objetivos">
                             <group>
                                 <field name="objetivo_principal"
-                                       placeholder="Objetivo SMART: ¿Qué queremos lograr, "
-                                                   "para quién y cuándo?"/>
+                                       placeholder="Objetivo SMART: ¿Qué queremos lograr, para quién y cuándo?"/>
                                 <field name="objetivos_secundarios"
                                        placeholder="Objetivos de apoyo al objetivo principal..."/>
                                 <field name="criterios_exito"
-                                       placeholder="¿Cómo mediremos el éxito? "
-                                                   "Métricas concretas: impresiones, "
-                                                   "conversiones, alcance..."/>
+                                       placeholder="¿Cómo mediremos el éxito? Métricas concretas: impresiones, conversiones, alcance..."/>
                             </group>
                         </page>
 
@@ -185,11 +182,9 @@
                               name="tab_audiencia">
                             <group>
                                 <field name="audiencia_primaria"
-                                       placeholder="Perfil demográfico, comportamientos, "
-                                                   "intereses, necesidades y pain points..."/>
+                                       placeholder="Perfil demográfico, comportamientos, intereses, necesidades y pain points..."/>
                                 <field name="audiencia_secundaria"
-                                       placeholder="Público secundario o influenciadores "
-                                                   "de la decisión de compra..."/>
+                                       placeholder="Público secundario o influenciadores de la decisión de compra..."/>
                             </group>
                         </page>
 
@@ -199,18 +194,14 @@
                             <group>
                                 <group string="Mensaje">
                                     <field name="mensaje_clave"
-                                           placeholder="La idea central que debe comunicar "
-                                                       "todo el trabajo creativo..."/>
+                                           placeholder="La idea central que debe comunicar todo el trabajo creativo..."/>
                                     <field name="propuesta_valor"
-                                           placeholder="¿Qué beneficio único ofrece "
-                                                       "el cliente a su audiencia?"/>
+                                           placeholder="¿Qué beneficio único ofrece el cliente a su audiencia?"/>
                                 </group>
                                 <group string="Tono y Estilo">
                                     <field name="tono_comunicacion"/>
                                     <field name="tono_notas"
-                                           placeholder="Colores de marca, tipografías, "
-                                                       "referencias visuales, ejemplos de "
-                                                       "lo que SÍ y lo que NO..."/>
+                                           placeholder="Colores de marca, tipografías, referencias visuales, ejemplos de lo que SÍ y lo que NO..."/>
                                 </group>
                             </group>
                         </page>
@@ -221,9 +212,7 @@
                             <group>
                                 <field name="canal_principal"/>
                                 <field name="canales_descripcion"
-                                       placeholder="Plataformas, formatos y dimensiones: "
-                                                   "Instagram Stories 1080x1920, "
-                                                   "Facebook Post 1200x628..."/>
+                                       placeholder="Plataformas, formatos y dimensiones: Instagram Stories 1080x1920, Facebook Post 1200x628..."/>
                             </group>
                         </page>
 
@@ -232,15 +221,11 @@
                               name="tab_restricciones">
                             <group>
                                 <field name="restricciones_marca"
-                                       placeholder="Colores prohibidos, palabras vetadas, "
-                                                   "competidores que no se deben mencionar, "
-                                                   "guías de marca a respetar..."/>
+                                       placeholder="Colores prohibidos, palabras vetadas, competidores que no se deben mencionar, guías de marca a respetar..."/>
                                 <field name="referencias_visuales"
-                                       placeholder="URLs o descripciones de trabajos "
-                                                   "de referencia o inspiración..."/>
+                                       placeholder="URLs o descripciones de trabajos de referencia o inspiración..."/>
                                 <field name="consideraciones_legales"
-                                       placeholder="Disclaimers obligatorios, restricciones "
-                                                   "del sector, derechos de imagen..."/>
+                                       placeholder="Disclaimers obligatorios, restricciones del sector, derechos de imagen..."/>
                             </group>
                         </page>
 
