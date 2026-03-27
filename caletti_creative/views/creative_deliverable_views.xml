@@ -251,8 +251,7 @@
         <tree sample="1"
               decoration-danger="revisiones_excedidas == True"
               decoration-warning="revisiones_en_alerta == True"
-              decoration-success="estado == 'entregado'"
-              decoration-secondary="estado == 'pendiente'">
+              decoration-success="estado == 'entregado'">
             <field name="sequence" widget="handle"/>
             <field name="name"/>
             <field name="proyecto_id"/>
@@ -264,15 +263,7 @@
                    widget="remaining_days"/>
             <field name="fecha_entrega_cliente"/>
             <field name="estado"
-                   widget="badge"
-                   options="{'states': {
-                       'pendiente': 'secondary',
-                       'en_proceso': 'info',
-                       'en_revision': 'warning',
-                       'aprobado': 'success',
-                       'rechazado': 'danger',
-                       'entregado': 'success'
-                   }}"/>
+                   widget="badge"/>
             <field name="rondas_utilizadas"/>
             <field name="max_revisiones"/>
             <field name="costo_estimado"
