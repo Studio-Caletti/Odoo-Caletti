@@ -49,9 +49,7 @@
         'views/creative_deliverable_views.xml',
     ],
 
-    'demo': [
-        'demo/demo_data.xml',
-    ],
+    
 
     'images': [
         'static/description/icon.png',
