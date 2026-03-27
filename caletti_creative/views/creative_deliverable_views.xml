@@ -249,10 +249,10 @@
         <field name="model">creative.deliverable</field>
         <field name="arch" type="xml">
             <tree sample="1"
-                  decoration-danger="revisiones_excedidas == True"
-                  decoration-warning="revisiones_en_alerta == True"
-                  decoration-success="estado == 'entregado'"
-                  decoration-muted="estado == 'pendiente'">
+                    decoration-danger="revisiones_excedidas == True"
+                    decoration-warning="revisiones_en_alerta == True"
+                    decoration-success="estado == 'entregado'"
+                    decoration-secondary="estado == 'pendiente'">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="proyecto_id"/>
