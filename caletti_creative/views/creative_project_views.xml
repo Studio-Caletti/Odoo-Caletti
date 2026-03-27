@@ -69,6 +69,7 @@
                 <field name="entregable_count"/>
                 <field name="entregable_aprobado_count"/>
                 <field name="presupuesto_consumido_pct"/>
+                <field name="es_proyecto_creativo"/>
 
                 <templates>
                     <t t-name="kanban-box">
@@ -87,8 +88,8 @@
 
                             <!-- Ribbon SIN BRIEF — alerta de proceso -->
                             <div class="ribbon ribbon-top-left"
-                                 t-if="!record.brief_aprobado.raw_value">
-                                <span class="text-bg-warning">SIN BRIEF</span>
+                                 t-if="record.es_proyecto_creativo.raw_value and !record.brief_aprobado.raw_value">
+                                <span class="text-bg-warning">Sin Brief</span>
                             </div>
 
                             <div class="oe_kanban_details p-2">
