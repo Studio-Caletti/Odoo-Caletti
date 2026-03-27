@@ -23,10 +23,8 @@
         <field name="res_model">tablero.tarea</field>
         <field name="view_mode">kanban,tree,form,graph,pivot</field>
         <field name="domain">[('es_proyecto_creativo', '=', True)]</field>
-        <field name="context">{
-            'default_es_proyecto_creativo': True,
-            'search_default_in_progress': 1
-        }</field>
+    <!--<field name="context">{'default_es_proyecto_creativo': True,'search_default_in_progress': 1}</field> -->
+        <field name="context">{'default_es_proyecto_creativo': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 ¡Crea tu primer proyecto creativo!
