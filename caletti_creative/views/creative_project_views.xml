@@ -87,7 +87,7 @@
                             </div>
 
                             <!-- Ribbon SIN BRIEF — alerta de proceso -->
-                            <div class="ribbon ribbon-top-left"
+                            <div class="ribbon ribbon-top-right"
                                  t-if="record.es_proyecto_creativo.raw_value and !record.brief_aprobado.raw_value">
                                 <span class="text-bg-warning">Sin Brief</span>
                             </div>
