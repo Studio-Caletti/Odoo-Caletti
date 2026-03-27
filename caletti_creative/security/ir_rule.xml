@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Seguridad: Record Rules del Vertical Creativo -->
+<!-- Principio: Colaborador ve solo lo suyo,
+                Director ve todo el vertical,
+                Admin control total -->
+
+<odoo>
+    <data noupdate="1">
+
+        <!-- ================================================
+             RECORD RULES: CREATIVE.BRIEF
+        ================================================ -->
+
+        <!-- Colaborador: solo lee briefs de proyectos
+             donde está asignado como miembro del equipo -->
+        <record id="rule_creative_brief_user" model="ir.rule">
+            <field name="name">Brief: Colaborador ve proyectos de su equipo</field>
+            <field name="model_id" ref="model_creative_brief"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_user'))]"/>
+            <field name="domain_force">[
+                ('proyecto_id.equipo_ids.user_id', '=', user.id)
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Director: ve y gestiona todos los briefs del vertical -->
+        <record id="rule_creative_brief_manager" model="ir.rule">
+            <field name="name">Brief: Director acceso total</field>
+            <field name="model_id" ref="model_creative_brief"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Admin: control total sin restricciones -->
+        <record id="rule_creative_brief_admin" model="ir.rule">
+            <field name="name">Brief: Admin control total</field>
+            <field name="model_id" ref="model_creative_brief"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- ================================================
+             RECORD RULES: CREATIVE.DELIVERABLE
+        ================================================ -->
+
+        <!-- Colaborador: solo ve y edita entregables
+             donde es el responsable asignado -->
+        <record id="rule_creative_deliverable_user" model="ir.rule">
+            <field name="name">Entregable: Colaborador ve sus asignaciones</field>
+            <field name="model_id" ref="model_creative_deliverable"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_user'))]"/>
+            <field name="domain_force">[
+                '|',
+                ('responsable_id', '=', user.id),
+                ('proyecto_id.equipo_ids.user_id', '=', user.id)
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Director: ve y gestiona todos los entregables -->
+        <record id="rule_creative_deliverable_manager" model="ir.rule">
+            <field name="name">Entregable: Director acceso total</field>
+            <field name="model_id" ref="model_creative_deliverable"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Admin: control total sin restricciones -->
+        <record id="rule_creative_deliverable_admin" model="ir.rule">
+            <field name="name">Entregable: Admin control total</field>
+            <field name="model_id" ref="model_creative_deliverable"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- ================================================
+             RECORD RULES: CREATIVE.TEAM.MEMBER
+        ================================================ -->
+
+        <!-- Colaborador: solo ve miembros de equipos
+             de proyectos donde participa -->
+        <record id="rule_creative_team_member_user" model="ir.rule">
+            <field name="name">Equipo: Colaborador ve su equipo</field>
+            <field name="model_id" ref="model_creative_team_member"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_user'))]"/>
+            <field name="domain_force">[
+                ('proyecto_id.equipo_ids.user_id', '=', user.id)
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Director: ve y gestiona todos los equipos -->
+        <record id="rule_creative_team_member_manager" model="ir.rule">
+            <field name="name">Equipo: Director acceso total</field>
+            <field name="model_id" ref="model_creative_team_member"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Admin: control total sin restricciones -->
+        <record id="rule_creative_team_member_admin" model="ir.rule">
+            <field name="name">Equipo: Admin control total</field>
+            <field name="model_id" ref="model_creative_team_member"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_creative.group_creative_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+    </data>
+</odoo>

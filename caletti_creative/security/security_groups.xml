@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Seguridad: Grupos del Vertical Creativo -->
+<!-- Opción B: Grupos propios con herencia desde el Core -->
+<!-- Filosofía: Aislamiento de vertical — juntos pero no revueltos -->
+
+<odoo>
+    <data noupdate="1">
+
+        <!-- ================================================
+             CATEGORÍA DEL VERTICAL CREATIVO
+             Sección exclusiva en el formulario de usuario
+             para agrupar niveles de acceso de caletti_creative.
+             Separada de la categoría del Core.
+        ================================================ -->
+        <record id="module_category_creative" model="ir.module.category">
+            <field name="name">Caletti Creative — Agencias Creativas</field>
+            <field name="description">
+                Niveles de acceso para el vertical de Agencias Creativas.
+                Independiente del Core Tablero Caletti.
+            </field>
+            <field name="sequence">11</field>
+        </record>
+
+        <!-- ================================================
+             ROL BASE: COLABORADOR CREATIVO
+             Acceso a sus propios entregables y proyectos
+             donde está asignado como miembro del equipo.
+             Hereda group_tablero_user para acceso al Core.
+             NO hereda automáticamente — requiere asignación
+             explícita al vertical creativo.
+        ================================================ -->
+        <record id="group_creative_user" model="res.groups">
+            <field name="name">Colaborador: Mis Entregables</field>
+            <field name="category_id"
+                   ref="module_category_creative"/>
+            <field name="implied_ids"
+                   eval="[(4, ref('tablero_kanban_caletti.group_tablero_user'))]"/>
+        </record>
+
+        <!-- ================================================
+             ROL DIRECTOR CREATIVO
+             Acceso a todos los proyectos creativos,
+             briefs y entregables del vertical.
+             Puede aprobar briefs y entregables.
+             Hereda group_creative_user — todo Director
+             es automáticamente Colaborador.
+        ================================================ -->
+        <record id="group_creative_manager" model="res.groups">
+            <field name="name">Director: Gestión Creativa</field>
+            <field name="category_id"
+                   ref="module_category_creative"/>
+            <field name="implied_ids"
+                   eval="[(4, ref('group_creative_user'))]"/>
+        </record>
+
+        <!-- ================================================
+             ROL ADMINISTRADOR CREATIVO
+             Control total del vertical: configuración,
+             presupuestos, reportes y gestión de equipos.
+             Hereda group_creative_manager — todo Admin
+             es automáticamente Director y Colaborador.
+             Auto-asignado a admin y root del sistema.
+        ================================================ -->
+        <record id="group_creative_admin" model="res.groups">
+            <field name="name">Administrador: Control Total Creativo</field>
+            <field name="category_id"
+                   ref="module_category_creative"/>
+            <field name="implied_ids"
+                   eval="[(4, ref('group_creative_manager'))]"/>
+            <field name="users"
+                   eval="[(4, ref('base.user_root')),
+                          (4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>
