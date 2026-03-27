@@ -205,14 +205,14 @@
                                options="{'horizontal': true}"/>
                     </div>
                     <div class="col-md-4" invisible="not es_proyecto_creativo">
-                        <div t-if="estado_presupuesto == 'excedido'"
+                        <div invisible="estado_presupuesto == 'excedido'"
                              class="alert alert-danger p-2">
                             🔴 <strong>Presupuesto Excedido</strong>
                             (<field name="presupuesto_consumido_pct"
                                     widget="float"
                                     digits="[6,1]"/>%)
                         </div>
-                        <div t-if="estado_presupuesto == 'alerta'"
+                        <div invisible="estado_presupuesto == 'alerta'"
                              class="alert alert-warning p-2">
                             ⚠️ <strong>Alerta de Presupuesto</strong>
                             (<field name="presupuesto_consumido_pct"
