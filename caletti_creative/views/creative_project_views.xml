@@ -95,7 +95,7 @@
                             <div class="oe_kanban_details p-2">
 
                                 <!-- Tipo de proyecto badge -->
-                                <div class="mb-1">
+                                <div t-if="record.es_proyecto_creativo.raw_value" class="mb-1">
                                     <span class="badge rounded-pill text-bg-info"
                                           style="font-size: 0.65rem;">
                                         <t t-esc="record.tipo_proyecto.value or 'Sin tipo'"/>
