@@ -156,14 +156,11 @@
                               name="tab_contexto">
                             <group>
                                 <field name="antecedentes"
-                                       placeholder="Historia de la marca, posicionamiento actual, "
-                                                   "contexto del mercado..."/>
+                                       placeholder="Historia de la marca, posicionamiento actual, contexto del mercado..."/>
                                 <field name="problema_oportunidad"
-                                       placeholder="¿Qué problema resuelve este proyecto "
-                                                   "o qué oportunidad aprovecha?"/>
+                                       placeholder="¿Qué problema resuelve este proyecto o qué oportunidad aprovecha?"/>
                                 <field name="competencia"
-                                       placeholder="¿Cómo se diferencia el cliente? "
-                                                   "¿Qué hace la competencia?"/>
+                                       placeholder="¿Cómo se diferencia el cliente?, ¿Qué hace la competencia?"/>
                             </group>
                         </page>
 
