@@ -296,7 +296,7 @@ class CreativeTeamMember(models.Model):
                     " (colaborador externo)"
                 ) if member.tipo_colaborador == TIPO_EXTERNO else '',
             },
-            subject=_("Equipo Actualizado")
+            subject=_("Equipo Actualizado"),
             message_type='comment',
             subtype_xmlid='mail.mt_note',
         )
@@ -335,7 +335,7 @@ class CreativeTeamMember(models.Model):
                     "👤 <strong>%(nombre)s</strong> ha sido removido "
                     "del equipo del proyecto."
                 ) % {'nombre': member.nombre_display},
-                subject=_("Equipo Actualizado")
+                subject=_("Equipo Actualizado"),
                 message_type='comment',
                 subtype_xmlid='mail.mt_note',
             )
