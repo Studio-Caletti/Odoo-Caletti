@@ -211,12 +211,12 @@ class CreativeBrief(models.Model):
         (TONO_OTRO,          'Otro (ver notas)'),
     ], string='Tono de Comunicación',
        required=True,
-       tracking=True
+       #tracking=True
     )
 
     tono_notas = fields.Text(
         string='Notas sobre Tono y Estilo',
-        tracking=True,
+        #tracking=True,
         help="Detalles adicionales sobre el estilo visual y verbal. "
              "Colores de marca, tipografías, referencias visuales, "
              "ejemplos de lo que SÍ y lo que NO se debe hacer."
