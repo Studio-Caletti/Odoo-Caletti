@@ -214,7 +214,7 @@ class CreativeBrief(models.Model):
        tracking=True
     )
 
-    tono_notas = fields.Text(
+    tono_notes = fields.Text(
         string='Notas sobre Tono y Estilo',
         tracking=True,
         help="Detalles adicionales sobre el estilo visual y verbal. "
@@ -277,7 +277,6 @@ class CreativeBrief(models.Model):
     dias_para_vencimiento = fields.Integer(
         string='Días para Vencimiento',
         compute='_compute_dias_vencimiento',
-        # Sin store=True no necesita persistencia
         help="Días restantes para que venza la fecha límite de aprobación"
     )
 
@@ -297,11 +296,9 @@ class CreativeBrief(models.Model):
         """
         today = fields.Date.today()
         for brief in self:
-            if (brief.fecha_entrega_brief
-                and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
-            brief.dias_para_vencimiento = (
-                brief.fecha_entrega_brief - today
-            ).days
+            if (brief.fecha_entrega_brief and 
+                brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
+                brief.dias_para_vencimiento = (brief.fecha_entrega_brief - today).days
             else:
                 brief.dias_para_vencimiento = 0
 
@@ -313,8 +310,8 @@ class CreativeBrief(models.Model):
         """
         today = fields.Date.today()
         for brief in self:
-            if (brief.fecha_entrega_brief
-                    and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
+            if (brief.fecha_entrega_brief and 
+                brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
                 brief.brief_vencido = brief.fecha_entrega_brief < today
             else:
                 brief.brief_vencido = False
