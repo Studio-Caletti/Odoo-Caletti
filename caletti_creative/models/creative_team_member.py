@@ -298,7 +298,7 @@ class CreativeTeamMember(models.Model):
             },
             subject=_("Equipo Actualizado")
             message_type='comment',
-            subtype_xmlid='mail.mt_note'
+            subtype_xmlid='mail.mt_note',
         )
 
         # Si es interno, suscribirlo automáticamente al Chatter del proyecto
@@ -336,8 +336,8 @@ class CreativeTeamMember(models.Model):
                     "del equipo del proyecto."
                 ) % {'nombre': member.nombre_display},
                 subject=_("Equipo Actualizado")
-                message_type='comment'
-                subtype_xmlid='mail.mt_note'
+                message_type='comment',
+                subtype_xmlid='mail.mt_note',
             )
             _logger.info(
                 "👤 %s removido del equipo de '%s'",
