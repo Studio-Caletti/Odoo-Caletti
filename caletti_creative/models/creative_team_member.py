@@ -335,18 +335,23 @@ class CreativeTeamMember(models.Model):
         un colaborador del equipo.
         """
         for member in self:
+            # Aplicamos Markup al string traducido antes de inyectar el nombre
+            body_html = Markup(_(
+                "👤 <strong>%(nombre)s</strong> ha sido removido "
+                "del equipo del proyecto."
+            )) % {'nombre': member.nombre_display}
+
             member.proyecto_id.message_post(
-                body=_(
-                    "👤 <strong>%(nombre)s</strong> ha sido removido "
-                    "del equipo del proyecto."
-                ) % {'nombre': member.nombre_display},
+                body=body_html,
                 subject=_("Equipo Actualizado"),
                 message_type='comment',
                 subtype_xmlid='mail.mt_note',
             )
+            
             _logger.info(
                 "👤 %s removido del equipo de '%s'",
                 member.nombre_display,
                 member.proyecto_id.name
             )
+            
         return super(CreativeTeamMember, self).unlink()
