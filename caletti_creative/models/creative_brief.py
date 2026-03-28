@@ -289,7 +289,7 @@ class CreativeBrief(models.Model):
 
     # --- LÓGICA COMPUTED ---
 
-   @api.depends('fecha_entrega_brief', 'estado_brief')
+    @api.depends('fecha_entrega_brief', 'estado_brief')
     def _compute_dias_vencimiento(self):
     """
     Calcula días restantes para aprobación del brief.
