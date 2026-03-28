@@ -7,7 +7,7 @@
 #   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # --------------------------------------------------------------------------
-
+from markupsafe import Markup
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 import logging
@@ -280,43 +280,48 @@ class CreativeTeamMember(models.Model):
         """
         member = super(CreativeTeamMember, self).create(vals)
 
-        # Notificar en el Chatter del proyecto
+        # 1. Preparar las etiquetas y el contenido dinámico
         rol_label = dict(
             self._fields['rol'].selection
         ).get(member.rol, member.rol)
 
+        tipo_text = _(
+            " (colaborador externo)"
+        ) if member.tipo_colaborador == TIPO_EXTERNO else ''
+
+        # 2. Construir el cuerpo con Markup para evitar el escape de HTML
+        # El operador % se aplica fuera del Markup para inyectar los valores
+        body_html = Markup(_(
+            "👥 <strong>Nuevo miembro en el equipo:</strong> "
+            "%(nombre)s como <em>%(rol)s</em>%(tipo)s"
+        )) % {
+            'nombre': member.nombre_display,
+            'rol': rol_label,
+            'tipo': tipo_text,
+        }
+
+        # 3. Notificar en el Chatter del proyecto
         member.proyecto_id.message_post(
-            body=_(
-                "👥 <strong>Nuevo miembro en el equipo:</strong> "
-                "%(nombre)s como <em>%(rol)s</em>%(tipo)s"
-            ) % {
-                'nombre': member.nombre_display,
-                'rol': rol_label,
-                'tipo': _(
-                    " (colaborador externo)"
-                ) if member.tipo_colaborador == TIPO_EXTERNO else '',
-            },
+            body=body_html,
             subject=_("Equipo Actualizado"),
             message_type='comment',
             subtype_xmlid='mail.mt_note',
         )
 
-        # Si es interno, suscribirlo automáticamente al Chatter del proyecto
+        # 4. Lógica de suscripción y logging (sin cambios)
         if member.tipo_colaborador == TIPO_INTERNO and member.user_id:
             member.proyecto_id.message_subscribe(
                 partner_ids=[member.user_id.partner_id.id]
             )
             _logger.info(
-                "👥 %s agregado al equipo de '%s' como %s. "
-                "Suscrito al Chatter.",
+                "👥 %s agregado al equipo de '%s' como %s. Suscrito al Chatter.",
                 member.nombre_display,
                 member.proyecto_id.name,
                 rol_label
             )
         else:
             _logger.info(
-                "🤝 Colaborador externo '%s' agregado al equipo de '%s' "
-                "como %s.",
+                "🤝 Colaborador externo '%s' agregado al equipo de '%s' como %s.",
                 member.nombre_display,
                 member.proyecto_id.name,
                 rol_label
