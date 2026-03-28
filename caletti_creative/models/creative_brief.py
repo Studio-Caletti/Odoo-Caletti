@@ -295,15 +295,15 @@ class CreativeBrief(models.Model):
         Calcula días restantes para aprobación del brief.
         Campo NO stored — se recalcula en cada lectura.
         """
-    today = fields.Date.today()
-    for brief in self:
-        if (brief.fecha_entrega_brief
+        today = fields.Date.today()
+        for brief in self:
+            if (brief.fecha_entrega_brief
                 and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
             brief.dias_para_vencimiento = (
                 brief.fecha_entrega_brief - today
             ).days
-        else:
-            brief.dias_para_vencimiento = 0
+            else:
+                brief.dias_para_vencimiento = 0
 
     @api.depends('fecha_entrega_brief', 'estado_brief')
     def _compute_brief_vencido(self):
@@ -311,13 +311,13 @@ class CreativeBrief(models.Model):
         Determina si el brief está vencido.
         Campo stored — permite búsquedas y filtros por vencimiento.
         """
-    today = fields.Date.today()
-    for brief in self:
-        if (brief.fecha_entrega_brief
-                and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
-            brief.brief_vencido = brief.fecha_entrega_brief < today
-        else:
-            brief.brief_vencido = False
+        today = fields.Date.today()
+        for brief in self:
+            if (brief.fecha_entrega_brief
+                    and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
+                brief.brief_vencido = brief.fecha_entrega_brief < today
+            else:
+                brief.brief_vencido = False
 
     # --- VALIDACIONES ---
 
