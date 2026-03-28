@@ -26,6 +26,7 @@ ROL_FOTOGRAFO          = 'fotografo'
 ROL_VIDEOASTA          = 'videoasta'
 ROL_ILUSTRADOR         = 'ilustrador'
 ROL_MOTION             = 'motion'
+ROL_MODELO             = 'modelo'
 ROL_DESARROLLADOR      = 'desarrollador'
 ROL_ACCOUNT            = 'account'
 ROL_PRODUCTOR          = 'productor'
@@ -64,22 +65,22 @@ class CreativeTeamMember(models.Model):
     ], string='Tipo',
        required=True,
        default=TIPO_INTERNO,
-       tracking=True
+    #   tracking=True
     )
 
     # --- IDENTIDAD: INTERNO ---
     user_id = fields.Many2one(
         'res.users',
         string='Usuario',
-        tracking=True,
+    # tracking=True,
         help="Usuario interno de Odoo. Solo aplica para colaboradores internos."
     )
 
     # --- IDENTIDAD: EXTERNO ---
     partner_id = fields.Many2one(
         'res.partner',
-        string='Contacto Externo',
-        tracking=True,
+        string='Colaborador Externo',
+    #    tracking=True,
         help="Contacto en Odoo del colaborador externo: "
              "fotógrafo freelance, proveedor de video, ilustrador, etc."
     )
@@ -98,16 +99,17 @@ class CreativeTeamMember(models.Model):
         (ROL_DISENADOR,         '🎨 Diseñador Gráfico'),
         (ROL_COPYWRITER,        '✍️ Copywriter'),
         (ROL_FOTOGRAFO,         '📷 Fotógrafo'),
-        (ROL_VIDEOASTA,         '🎬 Videoasta / Editor'),
+        (ROL_VIDEOASTA,         '🎬 Videografp / Editor'),
         (ROL_ILUSTRADOR,        '🖌️ Ilustrador'),
         (ROL_MOTION,            '✨ Motion Designer'),
+        (ROL_MODELO,            '👩 Modelo talento'),
         (ROL_DESARROLLADOR,     '💻 Desarrollador'),
         (ROL_ACCOUNT,           '📋 Account Manager'),
         (ROL_PRODUCTOR,         '🎙️ Productor'),
         (ROL_OTRO,              '📦 Otro'),
     ], string='Rol',
        required=True,
-       tracking=True
+    #   tracking=True
     )
 
     rol_descripcion = fields.Char(
@@ -295,6 +297,8 @@ class CreativeTeamMember(models.Model):
                 ) if member.tipo_colaborador == TIPO_EXTERNO else '',
             },
             subject=_("Equipo Actualizado")
+            message_type='comment',
+            subtype_xmlid='mail.mt_note'
         )
 
         # Si es interno, suscribirlo automáticamente al Chatter del proyecto
@@ -332,6 +336,8 @@ class CreativeTeamMember(models.Model):
                     "del equipo del proyecto."
                 ) % {'nombre': member.nombre_display},
                 subject=_("Equipo Actualizado")
+                message_type='comment'
+                subtype_xmlid='mail.mt_note'
             )
             _logger.info(
                 "👤 %s removido del equipo de '%s'",

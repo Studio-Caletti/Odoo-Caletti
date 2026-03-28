@@ -277,33 +277,47 @@ class CreativeBrief(models.Model):
     dias_para_vencimiento = fields.Integer(
         string='Días para Vencimiento',
         compute='_compute_dias_vencimiento',
+        # Sin store=True no necesita persistencia
         help="Días restantes para que venza la fecha límite de aprobación"
     )
 
     brief_vencido = fields.Boolean(
         string='Brief Vencido',
-        compute='_compute_dias_vencimiento',
+        compute='_compute_brief_vencido',
         store=True
     )
 
     # --- LÓGICA COMPUTED ---
 
-    @api.depends('fecha_entrega_brief', 'estado_brief')
+   @api.depends('fecha_entrega_brief', 'estado_brief')
     def _compute_dias_vencimiento(self):
-        """
-        Calcula los días restantes para la aprobación del brief.
-        Solo aplica si el brief está en estado borrador o en revisión.
-        """
-        today = fields.Date.today()
-        for brief in self:
-            if (brief.fecha_entrega_brief
-                    and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
-                delta = (brief.fecha_entrega_brief - today).days
-                brief.dias_para_vencimiento = delta
-                brief.brief_vencido = delta < 0
-            else:
-                brief.dias_para_vencimiento = 0
-                brief.brief_vencido = False
+    """
+    Calcula días restantes para aprobación del brief.
+    Campo NO stored — se recalcula en cada lectura.
+    """
+    today = fields.Date.today()
+    for brief in self:
+        if (brief.fecha_entrega_brief
+                and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
+            brief.dias_para_vencimiento = (
+                brief.fecha_entrega_brief - today
+            ).days
+        else:
+            brief.dias_para_vencimiento = 0
+
+    @api.depends('fecha_entrega_brief', 'estado_brief')
+    def _compute_brief_vencido(self):
+    """
+    Determina si el brief está vencido.
+    Campo stored — permite búsquedas y filtros por vencimiento.
+    """
+    today = fields.Date.today()
+    for brief in self:
+        if (brief.fecha_entrega_brief
+                and brief.estado_brief in [ESTADO_BORRADOR, ESTADO_EN_REVISION]):
+            brief.brief_vencido = brief.fecha_entrega_brief < today
+        else:
+            brief.brief_vencido = False
 
     # --- VALIDACIONES ---
 
