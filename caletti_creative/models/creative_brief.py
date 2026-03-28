@@ -217,7 +217,7 @@ class CreativeBrief(models.Model):
     tono_notas = fields.Text(
         string='Notas sobre Tono y Estilo',
         #tracking=True,
-        help="Detalles adicionales sobre el estilo visual y verbal. "
+        help="Los detalles adicionales sobre el estilo visual y verbal. "
              "Colores de marca, tipografías, referencias visuales, "
              "ejemplos de lo que SÍ y lo que NO se debe hacer."
     )
