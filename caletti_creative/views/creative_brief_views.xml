@@ -88,7 +88,7 @@
                     <!-- ALERTA: Brief rechazado -->
                     <div class="alert alert-warning" role="status"
                          invisible="estado_brief != 'rechazado'">
-                        <i class="fa fa-times-circle me-2"/>
+                        <i class="fa fa-times-circle me-2" title="Rechazado"/>
                         <strong>Brief Rechazado.</strong>
                         Motivo: <field name="motivo_rechazo"
                                        readonly="1"
