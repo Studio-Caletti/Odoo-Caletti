@@ -141,12 +141,12 @@
 
                                 <!-- Alerta de presupuesto -->
                                 <div t-if="record.estado_presupuesto.raw_value == 'excedido'"
-                                     class="alert alert-danger p-1 mt-1 mb-1"
+                                     class="alert alert-danger p-1 mt-1 mb-1" role="status"
                                      style="font-size: 0.7rem;">
                                     🔴 Presupuesto excedido
                                 </div>
                                 <div t-if="record.estado_presupuesto.raw_value == 'alerta'"
-                                     class="alert alert-warning p-1 mt-1 mb-1"
+                                     class="alert alert-warning p-1 mt-1 mb-1" role="status"
                                      style="font-size: 0.7rem;">
                                     ⚠️ <t t-esc="'%.0f' % record.presupuesto_consumido_pct.raw_value"/>% consumido
                                 </div>
@@ -210,14 +210,14 @@
                     </div>
                     <div class="col-md-4" invisible="not es_proyecto_creativo">
                         <div invisible="estado_presupuesto == 'excedido'"
-                             class="alert alert-danger p-2">
+                             class="alert alert-danger p-2" role="status">
                             🔴 <strong>Presupuesto Excedido</strong>
                             (<field name="presupuesto_consumido_pct"
                                     widget="float"
                                     digits="[6,1]"/>%)
                         </div>
                         <div invisible="estado_presupuesto == 'alerta'"
-                             class="alert alert-warning p-2">
+                             class="alert alert-warning p-2" role="status">
                             ⚠️ <strong>Alerta de Presupuesto</strong>
                             (<field name="presupuesto_consumido_pct"
                                     widget="float"
@@ -238,14 +238,14 @@
                     <div class="row mb-3">
                         <div class="col-12">
                             <!-- Alerta si no hay brief aprobado -->
-                            <div class="alert alert-warning"
+                            <div class="alert alert-warning" role="status"
                                  invisible="brief_aprobado">
                                 <i class="fa fa-exclamation-triangle me-2"/>
                                 <strong>Sin Brief Aprobado.</strong>
                                 No se puede iniciar producción hasta que
                                 el cliente apruebe el brief creativo.
                             </div>
-                            <div class="alert alert-success"
+                            <div class="alert alert-success" role="status"
                                  invisible="not brief_aprobado">
                                 <i class="fa fa-check-circle me-2"/>
                                 <strong>Brief Aprobado.</strong>
