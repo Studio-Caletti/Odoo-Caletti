@@ -108,7 +108,7 @@
                                 <!-- Cliente -->
                                 <div class="text-muted small mt-1"
                                      t-if="record.partner_id.value">
-                                    <i class="fa fa-building-o me-1"/>
+                                    <i class="fa fa-building-o me-1" title="Cliente"/>
                                     <field name="partner_id"/>
                                 </div>
 
@@ -126,12 +126,12 @@
                                      style="font-size: 0.75rem;">
                                     <span t-attf-class="badge #{record.brief_aprobado.raw_value ?
                                                 'text-bg-success' : 'text-bg-secondary'}">
-                                        <i class="fa fa-file-text-o me-1"/>
+                                        <i class="fa fa-file-text-o me-1" title="Task"/>
                                         Brief
                                         <t t-if="record.brief_aprobado.raw_value">✓</t>
                                     </span>
                                     <span class="badge text-bg-secondary">
-                                        <i class="fa fa-tasks me-1"/>
+                                        <i class="fa fa-tasks me-1" title="Task"/>
                                         <t t-esc="record.entregable_aprobado_count.raw_value"/>
                                         /
                                         <t t-esc="record.entregable_count.raw_value"/>
