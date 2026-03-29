@@ -135,12 +135,8 @@
         ================================================ -->
         <record id="mail_alias_creative" model="mail.alias">
             <field name="alias_name">creativos</field>
-            <field name="alias_model_id"
-                   ref="tablero_kanban_caletti.model_tablero_tarea"/>
-            <field name="alias_defaults">
-                {'es_proyecto_creativo': True,
-                 'state': 'nuevo'}
-            </field>
+            <field name="alias_model_id" ref="tablero_kanban_caletti.model_tablero_tarea"/>
+            <field name="alias_defaults">{'es_proyecto_creativo': True,'state': 'nuevo'}</field>
             <field name="alias_contact">everyone</field>
         </record>
 
