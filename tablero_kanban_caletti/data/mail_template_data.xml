@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Data  del Core Kanban Caletti -->
+
 <odoo>
     <data noupdate="1">
         <record id="email_template_tarea_vencida" model="mail.template">

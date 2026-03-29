@@ -7,7 +7,7 @@
 #   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # --------------------------------------------------------------------------
-
+from markupsafe import Markup
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 import logging
@@ -374,14 +374,43 @@ class CreativeBrief(models.Model):
             ))
 
         self.write({'estado_brief': ESTADO_EN_REVISION})
+
+        # Notificación interna en Chatter
         self.message_post(
-            body=_(
+            body=Markup(_(
                 "📋 <strong>Brief enviado a revisión.</strong><br/>"
                 "El brief <em>%(nombre)s</em> está listo para revisión "
                 "y aprobación del cliente."
-            ) % {'nombre': self.name},
-            subject=_("Brief en Revisión")
+            )) % {'nombre': self.name},
+            subject=_("Brief en Revisión"),
+            message_type='comment',
+            subtype_xmlid='mail.mt_note'
         )
+
+        # Email al cliente
+        if self.cliente_id and self.cliente_id.email:
+            try:
+                template = self.env.ref(
+                    'caletti_creative.email_template_brief_revision',
+                    raise_if_not_found=False
+                )
+                if template:
+                    template.send_mail(self.id, force_send=True)
+                    _logger.info(
+                        "✉️ Brief '%s' enviado a revisión — email a %s",
+                        self.name, self.cliente_id.email
+                    )
+            except Exception as e:
+                _logger.error(
+                    "❌ Error enviando email de brief a revisión '%s': %s",
+                    self.name, str(e)
+                )
+        else:
+            _logger.warning(
+                "⚠️ Brief '%s' enviado a revisión sin email de cliente",
+                self.name
+            )
+
         _logger.info(
             "📋 Brief '%s' del proyecto '%s' enviado a revisión",
             self.name, self.proyecto_id.name
@@ -389,8 +418,8 @@ class CreativeBrief(models.Model):
 
     def action_aprobar(self):
         """
-        Aprueba el brief. Registra fecha, usuario que aprueba
-        y notifica al equipo que pueden iniciar producción.
+        Aprueba el brief, registra fecha y usuario,
+        notifica al equipo interno que pueden iniciar producción.
         """
         self.ensure_one()
         if self.estado_brief != ESTADO_EN_REVISION:
@@ -404,22 +433,46 @@ class CreativeBrief(models.Model):
             'fecha_aprobacion': ahora,
             'aprobado_por_id': self.env.user.id,
         })
+
+        # Notificación interna en Chatter
         self.message_post(
-            body=_(
+            body=Markup(_(
                 "✅ <strong>¡Brief Aprobado!</strong><br/>"
                 "Aprobado por: <strong>%(usuario)s</strong><br/>"
                 "Fecha: <strong>%(fecha)s</strong><br/><br/>"
                 "El equipo puede iniciar la producción creativa."
-            ) % {
+            )) % {
                 'usuario': self.env.user.name,
                 'fecha': ahora.strftime('%d/%m/%Y %H:%M'),
             },
-            subject=_("Brief Aprobado — ¡Producción Autorizada!")
+            subject=_("Brief Aprobado — ¡Producción Autorizada!"),
+            message_type='comment',
+            subtype_xmlid='mail.mt_note'
         )
+
+        # Email al equipo interno
+        try:
+            template = self.env.ref(
+                'caletti_creative.email_template_brief_aprobado',
+                raise_if_not_found=False
+            )
+            if template:
+                template.send_mail(self.id, force_send=True)
+                _logger.info(
+                    "✉️ Email de brief aprobado enviado — proyecto '%s'",
+                    self.proyecto_id.name
+                )
+        except Exception as e:
+            _logger.error(
+                "❌ Error enviando email de brief aprobado '%s': %s",
+                self.name, str(e)
+            )
+
         _logger.info(
             "✅ Brief '%s' aprobado por %s",
             self.name, self.env.user.name
         )
+        
 
     def action_rechazar(self, motivo=''):
         """

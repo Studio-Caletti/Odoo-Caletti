@@ -7,7 +7,7 @@
 #   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # --------------------------------------------------------------------------
-
+from markupsafe import Markup
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 import logging
@@ -459,6 +459,25 @@ class CreativeDeliverable(models.Model):
             body=cuerpo,
             subject=_("Entregable Rechazado — Requiere Ajustes")
         )
+
+        # Email de alerta solo cuando se exceden las rondas
+        if nuevas_rondas > self.max_revisiones:
+            try:
+                template = self.env.ref(
+                    'caletti_creative.email_template_revisiones_excedidas',
+                    raise_if_not_found=False
+                )
+                if template:
+                    template.send_mail(self.id, force_send=True)
+                    _logger.info(
+                        "✉️ Alerta de revisiones excedidas enviada — '%s'",
+                        self.name
+                    )
+            except Exception as e:
+                _logger.error(
+                    "❌ Error enviando alerta de revisiones '%s': %s",
+                    self.name, str(e)
+                )
 
     def action_marcar_entregado(self):
         """

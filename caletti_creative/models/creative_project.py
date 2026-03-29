@@ -260,3 +260,72 @@ class CreativeProject(models.Model):
                     )
 
         return result
+
+        # --- OVERRIDE create PARA NOTIFICACIÓN AL CLIENTE ---
+
+    @api.model
+    def create(self, vals):
+        """
+        Notifica al cliente cuando se registra un nuevo proyecto creativo.
+        Solo dispara si el proyecto tiene cliente asignado.
+        """
+        project = super(CreativeProject, self).create(vals)
+
+        if project.es_proyecto_creativo and project.partner_id:
+            try:
+                template = self.env.ref(
+                    'caletti_creative.email_template_proyecto_registrado',
+                    raise_if_not_found=False
+                )
+                if template:
+                    template.send_mail(project.id, force_send=True)
+                    _logger.info(
+                        "✉️ Email de registro enviado para proyecto '%s' a %s",
+                        project.name,
+                        project.partner_id.email
+                    )
+            except Exception as e:
+                _logger.error(
+                    "❌ Error enviando email de registro para '%s': %s",
+                    project.name, str(e)
+                )
+
+        return project
+
+    @api.model
+    def message_new(self, msg_dict, custom_values=None):
+        """
+        Crea un proyecto creativo desde email entrante al alias
+        creativos@caletti.com.mx — mismo patrón que helpdesk.
+        """
+        if custom_values is None:
+            custom_values = {}
+
+        email_from = msg_dict.get('email_from', '')
+        subject    = msg_dict.get('subject', 'Proyecto sin asunto')
+
+        # Buscar si el email corresponde a un partner existente
+        partner = self.env['res.partner'].search(
+            [('email', '=ilike', email_from)], limit=1
+        )
+
+        defaults = {
+            'name': subject,
+            'es_proyecto_creativo': True,
+            'state': 'nuevo',
+        }
+
+        if partner:
+            defaults['partner_id'] = partner.id
+
+        defaults.update(custom_values)
+
+        _logger.info(
+            "📧 Proyecto creativo creado desde email: '%s' — De: %s",
+            subject, email_from
+        )
+
+        return super(CreativeProject, self).message_new(
+            msg_dict, custom_values=defaults
+        )
+        
