@@ -47,6 +47,8 @@
         'views/creative_project_views.xml',
         'views/creative_brief_views.xml',
         'views/creative_deliverable_views.xml',
+        'views/portal_creative_templates.xml',
+        'data/creative_data.xml',
     ],
 
     

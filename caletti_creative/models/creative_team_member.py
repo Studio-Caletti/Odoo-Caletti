@@ -122,7 +122,6 @@ class CreativeTeamMember(models.Model):
     es_responsable = fields.Boolean(
         string='Director Creativo del Proyecto',
         default=False,
-        tracking=True,
         help="Marca al responsable creativo principal del proyecto. "
              "Solo puede haber uno por proyecto."
     )

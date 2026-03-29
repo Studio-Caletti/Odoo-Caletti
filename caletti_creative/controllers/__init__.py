@@ -1,4 +1,4 @@
-# caletti_creative/__init__.py
+# caletti_creative/controllers/__init__.py
 # -*- coding: utf-8 -*-
 # --------------------------------------------------------------------------
 #   Part of Caletti Studio.
@@ -8,9 +8,4 @@
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # --------------------------------------------------------------------------
 
-# Vertical: Agencias Creativas
-# Depende de: tablero_kanban_caletti (Core)
-# Extiende: tablero.tarea con especificidad creativa
-
-from . import models
-from . import controllers
+from . import creative_portal

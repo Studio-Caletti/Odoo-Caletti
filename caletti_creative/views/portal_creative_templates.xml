@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Portal del Cliente — Vertical Creativo -->
+
+<odoo>
+
+    <!-- ================================================
+         PORTAL HOME: Entrada al portal creativo
+         Agrega el contador y CTA en la página principal
+         del portal — mismo patrón que Core y Helpdesk.
+    ================================================ -->
+    <template id="portal_my_home_creative_link"
+              name="Portal Home: Proyectos Creativos"
+              inherit_id="portal.portal_my_home"
+              priority="25">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis Proyectos Creativos</t>
+                <t t-set="url" t-value="'/my/proyectos-creativos'"/>
+                <t t-set="placeholder">
+                    Proyectos, briefs y entregables creativos
+                </t>
+                <t t-set="count" t-value="proyecto_creativo_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ================================================
+         BREADCRUMBS: Navegación del portal creativo
+    ================================================ -->
+    <template id="portal_breadcrumbs_creative"
+              name="Portal Breadcrumbs: Proyectos Creativos"
+              inherit_id="portal.portal_breadcrumbs"
+              priority="25">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+
+            <!-- Nivel: Lista de proyectos -->
+            <li t-if="page_name == 'proyectos_creativos' or proyecto or brief"
+                t-attf-class="breadcrumb-item
+                    #{'active' if not proyecto and not brief else ''}">
+                <a t-if="proyecto or brief"
+                   href="/my/proyectos-creativos">
+                    Proyectos Creativos
+                </a>
+                <t t-else="">Proyectos Creativos</t>
+            </li>
+
+            <!-- Nivel: Detalle de proyecto -->
+            <li t-if="proyecto"
+                t-attf-class="breadcrumb-item
+                    #{'active' if not brief else ''}">
+                <a t-if="brief"
+                   t-attf-href="/my/proyecto-creativo/#{proyecto.id}">
+                    <t t-esc="proyecto.name"/>
+                </a>
+                <t t-else="">
+                    <span t-field="proyecto.name"/>
+                </t>
+            </li>
+
+            <!-- Nivel: Detalle de brief -->
+            <li t-if="brief" class="breadcrumb-item active">
+                <span t-field="brief.name"/>
+            </li>
+
+        </xpath>
+    </template>
+
+    <!-- ================================================
+         VISTA: Lista de Proyectos Creativos
+         /my/proyectos-creativos
+    ================================================ -->
+    <template id="portal_mis_proyectos_creativos"
+              name="Mis Proyectos Creativos">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Proyectos Creativos</t>
+            </t>
+
+            <!-- Sin proyectos -->
+            <t t-if="not proyectos">
+                <div class="alert alert-info mt-3" role="alert">
+                    <i class="fa fa-info-circle me-2"/>
+                    No tienes proyectos creativos registrados aún.
+                </div>
+            </t>
+
+            <!-- Grid de proyectos -->
+            <div t-if="proyectos" class="row mt-4">
+                <t t-foreach="proyectos" t-as="proyecto">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <a t-attf-href="/my/proyecto-creativo/#{proyecto.id}"
+                           class="text-decoration-none">
+                            <div class="card h-100 shadow-sm border-0
+                                        o_portal_card">
+                                <!-- Header con estado -->
+                                <div t-attf-class="card-header py-2
+                                    #{'bg-success text-white' if proyecto.state == 'hecho'
+                                      else 'bg-warning text-dark' if proyecto.state == 'proceso'
+                                      else 'bg-info text-dark'}">
+                                    <div class="d-flex justify-content-between
+                                                align-items-center">
+                                        <small class="fw-bold text-uppercase">
+                                            <t t-esc="dict(proyecto._fields['state'].selection).get(proyecto.state)"/>
+                                        </small>
+                                        <!-- Indicador de brief -->
+                                        <span t-if="proyecto.brief_aprobado"
+                                              class="badge bg-light text-success">
+                                            ✅ Brief OK
+                                        </span>
+                                        <span t-else=""
+                                              class="badge bg-light text-warning">
+                                            ⏳ Sin Brief
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <!-- Nombre del proyecto -->
+                                    <h6 class="card-title fw-bold text-dark mb-1">
+                                        <span t-field="proyecto.name"/>
+                                    </h6>
+
+                                    <!-- Tipo de proyecto -->
+                                    <small class="text-muted d-block mb-3">
+                                        <t t-if="proyecto.tipo_proyecto">
+                                            <t t-esc="dict(proyecto._fields['tipo_proyecto'].selection).get(proyecto.tipo_proyecto)"/>
+                                        </t>
+                                        <t t-else="">Sin clasificar</t>
+                                    </small>
+
+                                    <!-- Barra de progreso -->
+                                    <div class="mb-2">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small class="text-muted">Avance</small>
+                                            <small class="fw-bold">
+                                                <t t-esc="int(proyecto.progress)"/>%
+                                            </small>
+                                        </div>
+                                        <div class="progress"
+                                             style="height: 8px; border-radius: 10px;">
+                                            <div t-attf-class="progress-bar
+                                                #{'bg-success' if proyecto.state == 'hecho'
+                                                  else 'bg-warning' if proyecto.state == 'proceso'
+                                                  else 'bg-info'}"
+                                                 role="progressbar"
+                                                 t-attf-style="width: #{proyecto.progress}%"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contadores -->
+                                    <div class="d-flex justify-content-between
+                                                mt-3 pt-2 border-top">
+                                        <small class="text-muted">
+                                            <i class="fa fa-tasks me-1"/>
+                                            <t t-esc="proyecto.entregable_aprobado_count"/>
+                                            /
+                                            <t t-esc="proyecto.entregable_count"/>
+                                            entregables
+                                        </small>
+                                        <small t-if="proyecto.date_deadline"
+                                               t-attf-class="
+                                               #{'text-danger fw-bold' if proyecto.is_overdue
+                                                 else 'text-muted'}">
+                                            <i class="fa fa-calendar me-1"/>
+                                            <span t-field="proyecto.date_deadline"
+                                                  t-options='{"widget": "date"}'/>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Paginador -->
+            <div t-if="pager" class="o_portal_pager text-center mt-3">
+                <t t-call="portal.pager"/>
+            </div>
+
+        </t>
+    </template>
+
+    <!-- ================================================
+         VISTA: Detalle de Proyecto Creativo
+         /my/proyecto-creativo/<id>
+    ================================================ -->
+    <template id="portal_detalle_proyecto_creativo"
+              name="Detalle Proyecto Creativo">
+        <t t-call="portal.portal_layout">
+
+            <!-- Mensaje de confirmación tras aprobar/rechazar brief -->
+            <t t-set="mensaje" t-value="request.params.get('mensaje')"/>
+            <div t-if="mensaje == 'brief_aprobado'"
+                 class="alert alert-success" role="alert">
+                <i class="fa fa-check-circle me-2"/>
+                <strong>¡Brief aprobado!</strong>
+                El equipo ha sido notificado y puede iniciar la producción.
+            </div>
+            <div t-if="mensaje == 'brief_rechazado'"
+                 class="alert alert-warning" role="alert">
+                <i class="fa fa-times-circle me-2"/>
+                <strong>Brief rechazado.</strong>
+                El equipo revisará tus comentarios y preparará una nueva versión.
+            </div>
+
+            <div class="container bg-white pb-5 shadow-lg
+                        rounded-3 border-0 mt-3 overflow-hidden">
+
+                <!-- Header del proyecto -->
+                <div class="row bg-light border-bottom p-4 align-items-center">
+                    <div class="col-md-8">
+                        <small class="text-uppercase text-muted fw-bold">
+                            Proyecto Creativo
+                        </small>
+                        <h2 class="text-dark mb-0">
+                            <span t-field="proyecto.name"/>
+                        </h2>
+                        <small class="text-muted" t-if="proyecto.tipo_proyecto">
+                            <t t-esc="dict(proyecto._fields['tipo_proyecto'].selection).get(proyecto.tipo_proyecto)"/>
+                        </small>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span t-attf-class="badge rounded-pill p-2 px-4 fs-6
+                            #{'text-bg-success' if proyecto.state == 'hecho'
+                              else 'text-bg-warning' if proyecto.state == 'proceso'
+                              else 'text-bg-info'}">
+                            <t t-esc="dict(proyecto._fields['state'].selection).get(proyecto.state)"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row p-4">
+
+                    <!-- Columna principal -->
+                    <div class="col-12 col-lg-8">
+
+                        <!-- Progreso -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-tasks me-2 text-primary"/>
+                                Avance del Proyecto
+                            </h5>
+                            <div class="progress"
+                                 style="height: 25px; border-radius: 50px;">
+                                <div t-attf-class="progress-bar
+                                    progress-bar-striped progress-bar-animated
+                                    #{'bg-success' if proyecto.state == 'hecho'
+                                      else 'bg-warning text-dark' if proyecto.state == 'proceso'
+                                      else 'bg-info text-dark'}"
+                                     role="progressbar"
+                                     t-attf-style="width: #{proyecto.progress}%;">
+                                    <t t-esc="int(proyecto.progress)"/>% COMPLETADO
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Brief creativo -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-file-text-o me-2 text-primary"/>
+                                Brief Creativo
+                            </h5>
+
+                            <!-- Sin brief -->
+                            <div t-if="not brief_activo"
+                                 class="alert alert-warning" role="alert">
+                                <i class="fa fa-exclamation-triangle me-2"/>
+                                El equipo está preparando el brief creativo.
+                                Te notificaremos cuando esté listo para tu revisión.
+                            </div>
+
+                            <!-- Brief disponible -->
+                            <div t-if="brief_activo"
+                                 class="card border-0 bg-light rounded-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between
+                                                align-items-start">
+                                        <div>
+                                            <h6 class="fw-bold mb-1">
+                                                <span t-field="brief_activo.name"/>
+                                            </h6>
+                                            <small class="text-muted">
+                                                Versión
+                                                <t t-esc="brief_activo.version"/>
+                                            </small>
+                                        </div>
+                                        <!-- Badge de estado del brief -->
+                                        <span t-attf-class="badge rounded-pill
+                                            #{'text-bg-success' if brief_activo.estado_brief == 'aprobado'
+                                              else 'text-bg-warning' if brief_activo.estado_brief == 'en_revision'
+                                              else 'text-bg-secondary'}">
+                                            <t t-esc="dict(brief_activo._fields['estado_brief'].selection).get(brief_activo.estado_brief)"/>
+                                        </span>
+                                    </div>
+
+                                    <!-- CTA: Ver y aprobar brief -->
+                                    <div class="mt-3">
+                                        <a t-attf-href="/my/brief/#{brief_activo.id}"
+                                           class="btn btn-primary btn-sm me-2">
+                                            <i class="fa fa-eye me-1"/>
+                                            Ver Brief Completo
+                                        </a>
+                                        <!-- Botón rápido de aprobación -->
+                                        <t t-if="brief_activo.estado_brief == 'en_revision'">
+                                            <a t-attf-href="/my/brief/#{brief_activo.id}"
+                                               class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-check me-1"/>
+                                                Revisar y Aprobar
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Entregables -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-cubes me-2 text-primary"/>
+                                Entregables
+                                <span class="badge text-bg-secondary ms-2"
+                                      style="font-size: 0.7rem;">
+                                    <t t-esc="proyecto.entregable_aprobado_count"/>
+                                    /
+                                    <t t-esc="proyecto.entregable_count"/>
+                                    aprobados
+                                </span>
+                            </h5>
+
+                            <t t-if="not proyecto.entregable_ids">
+                                <p class="text-muted">
+                                    Los entregables se definirán una vez
+                                    que el brief sea aprobado.
+                                </p>
+                            </t>
+
+                            <div t-if="proyecto.entregable_ids"
+                                 class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>Entregable</th>
+                                            <th>Tipo</th>
+                                            <th class="text-center">Estado</th>
+                                            <th>Fecha Entrega</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="proyecto.entregable_ids"
+                                           t-as="entregable">
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        <span t-field="entregable.name"/>
+                                                    </strong>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                        <t t-esc="dict(entregable._fields['tipo_entregable'].selection).get(entregable.tipo_entregable, '-')"/>
+                                                    </small>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-attf-class="badge rounded-pill
+                                                        #{'text-bg-success' if entregable.estado == 'entregado'
+                                                          else 'text-bg-primary' if entregable.estado == 'aprobado'
+                                                          else 'text-bg-warning' if entregable.estado == 'en_revision'
+                                                          else 'text-bg-info' if entregable.estado == 'en_proceso'
+                                                          else 'text-bg-secondary'}">
+                                                        <t t-esc="dict(entregable._fields['estado'].selection).get(entregable.estado)"/>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span t-if="entregable.fecha_entrega_cliente"
+                                                          t-field="entregable.fecha_entrega_cliente"
+                                                          t-options='{"widget": "date"}'/>
+                                                    <span t-else=""
+                                                          class="text-muted">—</span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-12 col-lg-4 ps-lg-5">
+                        <div class="card border-0 bg-light rounded-3 p-3 mb-4">
+                            <h6 class="text-muted fw-bold border-bottom pb-2 mb-3">
+                                DATOS DEL PROYECTO
+                            </h6>
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">
+                                    RESPONSABLE:
+                                </label>
+                                <strong>
+                                    <span t-field="proyecto.user_id"/>
+                                </strong>
+                            </div>
+                            <div class="mb-3" t-if="proyecto.date_deadline">
+                                <label class="text-muted small d-block">
+                                    FECHA DE ENTREGA:
+                                </label>
+                                <strong t-attf-class="
+                                    #{'text-danger' if proyecto.is_overdue
+                                      else ''}">
+                                    <span t-field="proyecto.date_deadline"
+                                          t-options='{"widget": "date"}'/>
+                                </strong>
+                            </div>
+                            <div class="mt-4">
+                                <a href="mailto:creativos@caletti.com.mx"
+                                   class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="fa fa-envelope me-1"/>
+                                    Contactar al Equipo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Chatter del portal -->
+                <div class="row p-4 border-top">
+                    <div class="col-12">
+                        <h5 class="fw-bold mb-4 text-secondary">
+                            <i class="fa fa-comments me-2"/>
+                            Canal de Comunicación
+                        </h5>
+                        <div class="bg-light p-3 rounded-3 shadow-sm">
+                            <t t-call="portal.message_thread">
+                                <t t-set="object" t-value="proyecto"/>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================
+         VISTA: Detalle del Brief — Aprobación del cliente
+         /my/brief/<id>
+    ================================================ -->
+    <template id="portal_detalle_brief"
+              name="Detalle Brief Creativo">
+        <t t-call="portal.portal_layout">
+
+            <!-- Mensajes de estado -->
+            <t t-set="mensaje" t-value="request.params.get('mensaje')"/>
+            <div t-if="mensaje == 'motivo_requerido'"
+                 class="alert alert-warning" role="alert">
+                <i class="fa fa-exclamation-triangle me-2"/>
+                Por favor escribe el motivo del rechazo antes de continuar.
+            </div>
+            <div t-if="mensaje == 'error'"
+                 class="alert alert-danger" role="alert">
+                <i class="fa fa-times-circle me-2"/>
+                Ocurrió un error al procesar tu solicitud.
+                Por favor contáctanos directamente.
+            </div>
+
+            <div class="container bg-white pb-5 shadow-lg
+                        rounded-3 border-0 mt-3 overflow-hidden">
+
+                <!-- Header del brief -->
+                <div class="row bg-light border-bottom p-4 align-items-center">
+                    <div class="col-md-8">
+                        <small class="text-uppercase text-muted fw-bold">
+                            Brief Creativo —
+                            <span t-field="brief.proyecto_id"/>
+                        </small>
+                        <h2 class="text-dark mb-0">
+                            <span t-field="brief.name"/>
+                        </h2>
+                        <small class="text-muted">
+                            Versión <t t-esc="brief.version"/>
+                        </small>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span t-attf-class="badge rounded-pill p-2 px-4 fs-6
+                            #{'text-bg-success' if brief.estado_brief == 'aprobado'
+                              else 'text-bg-warning' if brief.estado_brief == 'en_revision'
+                              else 'text-bg-danger' if brief.estado_brief == 'rechazado'
+                              else 'text-bg-secondary'}">
+                            <t t-esc="dict(brief._fields['estado_brief'].selection).get(brief.estado_brief)"/>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Botones de acción — solo si está en revisión -->
+                <div t-if="brief.estado_brief == 'en_revision'"
+                     class="row p-4 border-bottom bg-light">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fa fa-info-circle me-2"/>
+                            <strong>Este brief requiere tu aprobación.</strong>
+                            Revisa el contenido y confirma o solicita cambios.
+                        </div>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <!-- Botón Aprobar -->
+                            <form t-attf-action="/my/brief/#{brief.id}/aprobar"
+                                  method="POST">
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+                                <button type="submit"
+                                        class="btn btn-success btn-lg">
+                                    <i class="fa fa-check me-2"/>
+                                    ✅ Aprobar Brief
+                                </button>
+                            </form>
+                            <!-- Botón Rechazar — abre formulario inline -->
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-lg"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#form-rechazo">
+                                <i class="fa fa-times me-2"/>
+                                ❌ Solicitar Cambios
+                            </button>
+                        </div>
+
+                        <!-- Formulario de rechazo colapsable -->
+                        <div class="collapse mt-3" id="form-rechazo">
+                            <div class="card border-danger">
+                                <div class="card-body">
+                                    <h6 class="text-danger fw-bold mb-3">
+                                        ¿Qué cambios necesitas?
+                                    </h6>
+                                    <form t-attf-action="/my/brief/#{brief.id}/rechazar"
+                                          method="POST">
+                                        <input type="hidden"
+                                               name="csrf_token"
+                                               t-att-value="request.csrf_token()"/>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">
+                                                Motivo / Cambios solicitados
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea name="motivo"
+                                                      class="form-control"
+                                                      rows="4"
+                                                      required="required"
+                                                      placeholder="Describe los cambios que necesitas..."/>
+                                        </div>
+                                        <button type="submit"
+                                                class="btn btn-danger">
+                                            <i class="fa fa-paper-plane me-1"/>
+                                            Enviar Solicitud de Cambios
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenido del brief por secciones -->
+                <div class="row p-4">
+                    <div class="col-12">
+
+                        <!-- SECCIÓN: Contexto -->
+                        <div class="mb-4" t-if="brief.problema_oportunidad">
+                            <h5 class="fw-bold text-primary border-bottom pb-2">
+                                🏢 Contexto del Proyecto
+                            </h5>
+                            <div t-if="brief.antecedentes" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    ANTECEDENTES:
+                                </label>
+                                <p t-field="brief.antecedentes"
+                                   class="mt-1"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    PROBLEMA U OPORTUNIDAD:
+                                </label>
+                                <p t-field="brief.problema_oportunidad"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.competencia" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    CONTEXTO COMPETITIVO:
+                                </label>
+                                <p t-field="brief.competencia"
+                                   class="mt-1"/>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: Objetivos -->
+                        <div class="mb-4" t-if="brief.objetivo_principal">
+                            <h5 class="fw-bold text-primary border-bottom pb-2">
+                                🎯 Objetivos
+                            </h5>
+                            <div class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    OBJETIVO PRINCIPAL:
+                                </label>
+                                <p t-field="brief.objetivo_principal"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.objetivos_secundarios"
+                                 class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    OBJETIVOS SECUNDARIOS:
+                                </label>
+                                <p t-field="brief.objetivos_secundarios"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.criterios_exito" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    CRITERIOS DE ÉXITO / KPIs:
+                                </label>
+                                <p t-field="brief.criterios_exito"
+                                   class="mt-1"/>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: Audiencia -->
+                        <div class="mb-4" t-if="brief.audiencia_primaria">
+                            <h5 class="fw-bold text-primary border-bottom pb-2">
+                                👥 Audiencia Objetivo
+                            </h5>
+                            <div class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    AUDIENCIA PRIMARIA:
+                                </label>
+                                <p t-field="brief.audiencia_primaria"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.audiencia_secundaria"
+                                 class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    AUDIENCIA SECUNDARIA:
+                                </label>
+                                <p t-field="brief.audiencia_secundaria"
+                                   class="mt-1"/>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: Mensaje Creativo -->
+                        <div class="mb-4" t-if="brief.mensaje_clave">
+                            <h5 class="fw-bold text-primary border-bottom pb-2">
+                                💡 Mensaje y Dirección Creativa
+                            </h5>
+                            <div class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    MENSAJE CLAVE:
+                                </label>
+                                <p t-field="brief.mensaje_clave"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.propuesta_valor" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    PROPUESTA DE VALOR:
+                                </label>
+                                <p t-field="brief.propuesta_valor"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.tono_comunicacion" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    TONO DE COMUNICACIÓN:
+                                </label>
+                                <p class="mt-1">
+                                    <span class="badge text-bg-secondary">
+                                        <t t-esc="dict(brief._fields['tono_comunicacion'].selection).get(brief.tono_comunicacion)"/>
+                                    </span>
+                                </p>
+                            </div>
+                            <div t-if="brief.tono_notas" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    NOTAS DE ESTILO:
+                                </label>
+                                <p t-field="brief.tono_notas" class="mt-1"/>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: Canales -->
+                        <div class="mb-4" t-if="brief.canal_principal">
+                            <h5 class="fw-bold text-primary border-bottom pb-2">
+                                📡 Canales de Distribución
+                            </h5>
+                            <div class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    CANAL PRINCIPAL:
+                                </label>
+                                <p class="mt-1">
+                                    <span class="badge text-bg-info text-dark">
+                                        <t t-esc="dict(brief._fields['canal_principal'].selection).get(brief.canal_principal)"/>
+                                    </span>
+                                </p>
+                            </div>
+                            <div t-if="brief.canales_descripcion" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    DETALLE DE FORMATOS:
+                                </label>
+                                <p t-field="brief.canales_descripcion"
+                                   class="mt-1"/>
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN: Restricciones -->
+                        <div class="mb-4"
+                             t-if="brief.restricciones_marca or brief.referencias_visuales">
+                            <h5 class="fw-bold text-primary border-bottom pb-2">
+                                ⚠️ Restricciones y Referencias
+                            </h5>
+                            <div t-if="brief.restricciones_marca" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    RESTRICCIONES DE MARCA:
+                                </label>
+                                <p t-field="brief.restricciones_marca"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.referencias_visuales" class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    REFERENCIAS E INSPIRACIÓN:
+                                </label>
+                                <p t-field="brief.referencias_visuales"
+                                   class="mt-1"/>
+                            </div>
+                            <div t-if="brief.consideraciones_legales"
+                                 class="mb-3">
+                                <label class="text-muted small fw-bold">
+                                    CONSIDERACIONES LEGALES:
+                                </label>
+                                <p t-field="brief.consideraciones_legales"
+                                   class="mt-1"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Volver al proyecto -->
+                <div class="row px-4 pb-4">
+                    <div class="col-12">
+                        <a t-attf-href="/my/proyecto-creativo/#{brief.proyecto_id.id}"
+                           class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"/>
+                            Volver al Proyecto
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>

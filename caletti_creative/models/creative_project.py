@@ -135,7 +135,7 @@ class CreativeProject(models.Model):
     )
 
     entregable_count = fields.Integer(
-        string='Entregables',
+        string='Total Entregables',
         compute='_compute_resumen_counts',
         store=True
     )
