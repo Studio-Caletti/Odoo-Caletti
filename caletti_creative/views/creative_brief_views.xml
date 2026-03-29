@@ -76,9 +76,9 @@
 
                 <sheet>
                     <!-- ALERTA: Brief vencido -->
-                    <div class="alert alert-danger"
+                    <div class="alert alert-danger" role="status"
                          invisible="not brief_vencido">
-                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <i class="fa fa-exclamation-triangle me-2" title="Alerta"/>
                         <strong>¡Brief Vencido!</strong>
                         La fecha límite de aprobación ha sido superada.
                         Coordina con el cliente para actualizar la fecha.
@@ -86,7 +86,7 @@
                     </div>
 
                     <!-- ALERTA: Brief rechazado -->
-                    <div class="alert alert-warning"
+                    <div class="alert alert-warning" role="status"
                          invisible="estado_brief != 'rechazado'">
                         <i class="fa fa-times-circle me-2"/>
                         <strong>Brief Rechazado.</strong>
@@ -336,12 +336,12 @@
 
                                 <!-- Proyecto y cliente -->
                                 <div class="text-muted small mt-1">
-                                    <i class="fa fa-folder-o me-1"/>
+                                    <i class="fa fa-folder-o me-1" title="Proyecto"/>
                                     <field name="proyecto_id"/>
                                 </div>
                                 <div class="text-muted small"
                                      t-if="record.cliente_id.value">
-                                    <i class="fa fa-building-o me-1"/>
+                                    <i class="fa fa-building-o me-1" title="Cliente"/>
                                     <field name="cliente_id"/>
                                 </div>
 
@@ -363,14 +363,14 @@
                                      t-if="record.dias_para_vencimiento.raw_value != 0">
                                     <t t-if="record.dias_para_vencimiento.raw_value > 0">
                                         <span class="text-muted">
-                                            <i class="fa fa-clock-o me-1"/>
+                                            <i class="fa fa-clock-o me-1" title="Vencimiento"/>
                                             <t t-esc="record.dias_para_vencimiento.raw_value"/>
                                             días para aprobar
                                         </span>
                                     </t>
                                     <t t-else="">
                                         <span class="text-danger">
-                                            <i class="fa fa-exclamation-circle me-1"/>
+                                            <i class="fa fa-exclamation-circle me-1" title="Vencido"/>
                                             Vencido hace
                                             <t t-esc="record.dias_para_vencimiento.raw_value * -1"/>
                                             días

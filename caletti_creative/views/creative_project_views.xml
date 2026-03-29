@@ -240,14 +240,14 @@
                             <!-- Alerta si no hay brief aprobado -->
                             <div class="alert alert-warning" role="status"
                                  invisible="brief_aprobado">
-                                <i class="fa fa-exclamation-triangle me-2"/>
+                                <i class="fa fa-exclamation-triangle me-2" title="Exclamation"/>
                                 <strong>Sin Brief Aprobado.</strong>
                                 No se puede iniciar producción hasta que
                                 el cliente apruebe el brief creativo.
                             </div>
                             <div class="alert alert-success" role="status"
                                  invisible="not brief_aprobado">
-                                <i class="fa fa-check-circle me-2"/>
+                                <i class="fa fa-check-circle me-2" title="Circle"/>
                                 <strong>Brief Aprobado.</strong>
                                 El equipo puede iniciar producción.
                             </div>

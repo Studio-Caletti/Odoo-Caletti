@@ -89,9 +89,9 @@
                 <sheet>
 
                     <!-- ALERTA: Revisiones excedidas — impacto económico -->
-                    <div class="alert alert-danger"
+                    <div class="alert alert-danger" role="status"
                          invisible="not revisiones_excedidas">
-                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <i class="fa fa-exclamation-triangle me-2" title="Excedido"/>
                         <strong>¡Rondas de revisión excedidas!</strong>
                         Se han utilizado
                         <field name="rondas_utilizadas"
@@ -109,9 +109,9 @@
                     </div>
 
                     <!-- ALERTA: Revisiones en alerta — aviso preventivo -->
-                    <div class="alert alert-warning"
+                    <div class="alert alert-warning" role="status"
                          invisible="not revisiones_en_alerta">
-                        <i class="fa fa-clock-o me-2"/>
+                        <i class="fa fa-clock-o me-2" title="Atencion"/>
                         <strong>Atención:</strong>
                         Ronda
                         <field name="rondas_utilizadas"
@@ -339,12 +339,12 @@
 
                                 <!-- Proyecto y cliente -->
                                 <div class="text-muted small mt-1">
-                                    <i class="fa fa-folder-o me-1"/>
+                                    <i class="fa fa-folder-o me-1" title="Cliente"/>
                                     <field name="proyecto_id"/>
                                 </div>
                                 <div class="text-muted small"
                                      t-if="record.cliente_id.value">
-                                    <i class="fa fa-building-o me-1"/>
+                                    <i class="fa fa-building-o me-1" title="Cliente"/>
                                     <field name="cliente_id"/>
                                 </div>
 
@@ -374,7 +374,7 @@
                                 <!-- Costo adicional si existe -->
                                 <div class="mt-1 small text-danger fw-bold"
                                      t-if="record.costo_adicional_revisiones.raw_value > 0">
-                                    <i class="fa fa-usd me-1"/>
+                                    <i class="fa fa-usd me-1" title="Costos"/>
                                     Costo extra:
                                     <field name="costo_adicional_revisiones"
                                            widget="monetary"/>
