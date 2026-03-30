@@ -13,6 +13,7 @@
     'category': 'Project/Creative',
     'summary': 'Gestión de proyectos creativos: Brief, Equipo, Entregables y Presupuesto',
     'description': """
+    
         Caletti Creative — Vertical para Agencias Creativas
         ====================================================
 

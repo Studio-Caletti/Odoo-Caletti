@@ -16,6 +16,24 @@
          Agrega el contador y CTA en la página principal
          del portal — mismo patrón que Core y Helpdesk.
     ================================================ -->
+     <template id="portal_my_home_creative_link"
+              name="Portal Home: Proyectos Creativos"
+              inherit_id="portal.portal_my_home"
+              priority="25">
+        <xpath expr="//div[@class='o_portal_my_home']" position="inside">
+            <div class="o_portal_section">
+                <p></p>
+                <h3>Mis Proyectos Creativos</h3>
+                <p>
+                    <a class="btn btn-primary"
+                       href="/my/proyectos-creativos">
+                        Ver mis proyectos creativos
+                    </a>
+                </p>
+            </div>
+        </xpath>
+    </template>
+    
     <template id="portal_my_home_creative_link"
               name="Portal Home: Proyectos Creativos"
               inherit_id="portal.portal_my_home"

@@ -1,9 +1,21 @@
+# -*- coding: utf-8 -*-
+#
+# tablero_kanban_caletti/__manifest__.py
+# -*- coding: utf-8 -*-
+# --------------------------------------------------------------------------
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# --------------------------------------------------------------------------
 {
     'name': 'Tablero Kanban Caletti',
     'category': 'Project/Management',
     'version': '17.0.3.0.0', 
     'summary': 'Gestión visual de tareas con Business Intelligence y Portal de Cliente',
     'description': """
+
         Tablero Kanban Avanzado - Caletti Studio
         =========================================
         
@@ -17,7 +29,7 @@
         * Eventos automáticos de seguimiento
         * Comunicación y trazabilidad temporal
         
-        Ideal para agencias creativas y equipos de proyecto.
+        Ideal para agencias y equipos de proyecto.
     """,
 
     'author': 'Carlos Caletti',
@@ -44,6 +56,7 @@
     ],
     
     'images': [
+        'static/description/icon.png',
         'static/description/screenshot_kanban.png',
         'static/description/screenshot_kanban_detalle.png',
         'static/description/screenshot_kanban_detalle_chatter_tabs.png',
