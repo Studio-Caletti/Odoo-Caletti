@@ -33,7 +33,22 @@
             </div>
         </xpath>
     </template>
-
+    
+    <template id="portal_my_home_creative_link"
+              name="Portal Home: Proyectos Creativos"
+              inherit_id="portal.portal_my_home"
+              priority="25">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis Proyectos Creativos</t>
+                <t t-set="url" t-value="'/my/proyectos-creativos'"/>
+                <t t-set="placeholder">
+                    Proyectos, briefs y entregables creativos
+                </t>
+                <t t-set="count" t-value="proyecto_creativo_count"/>
+            </t>
+        </xpath>
+    </template>
 
     <!-- ================================================
          BREADCRUMBS: Navegación del portal creativo
