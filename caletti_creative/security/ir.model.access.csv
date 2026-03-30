@@ -8,3 +8,6 @@ access_creative_deliverable_admin,creative.deliverable.admin,model_creative_deli
 access_creative_team_member_user,creative.team.member.user,model_creative_team_member,caletti_creative.group_creative_user,1,0,0,0
 access_creative_team_member_manager,creative.team.member.manager,model_creative_team_member,caletti_creative.group_creative_manager,1,1,1,0
 access_creative_team_member_admin,creative.team.member.admin,model_creative_team_member,caletti_creative.group_creative_admin,1,1,1,1
+access_creative_brief_portal,creative.brief.portal,model_creative_brief,base.group_portal,1,0,0,0
+access_creative_deliverable_portal,creative.deliverable.portal,model_creative_deliverable,base.group_portal,1,0,0,0
+access_creative_team_member_portal,creative.team.member.portal,model_creative_team_member,base.group_portal,1,0,0,0
