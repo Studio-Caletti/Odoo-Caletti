@@ -450,6 +450,27 @@ class CreativeBrief(models.Model):
             subtype_xmlid='mail.mt_note'
         )
 
+        # Notificar también en el Chatter del proyecto padre
+        self.proyecto_id.message_post(
+            body=Markup(_(
+                "✅ <strong>Brief Aprobado por el Cliente.</strong><br/>"
+                "El brief <em>%(brief)s</em> fue aprobado por "
+                "<strong>%(usuario)s</strong>.<br/>"
+                "El equipo puede iniciar la producción creativa."
+            )) % {
+                'brief': self.name,
+                'usuario': self.env.user.name,
+            },
+            subject=_("Brief Aprobado — Producción Autorizada"),
+            message_type='comment',
+            subtype_xmlid='mail.mt_note'
+        )
+        _logger.info(
+            "✅ Notificación de brief aprobado registrada "
+            "en proyecto '%s'",
+            self.proyecto_id.name
+        )
+
         # Email al equipo interno
         try:
             template = self.env.ref(
@@ -502,6 +523,21 @@ class CreativeBrief(models.Model):
         _logger.warning(
             "❌ Brief '%s' rechazado. Motivo: %s",
             self.name, motivo
+        )
+
+        # Notificar en el Chatter del proyecto padre
+        self.proyecto_id.message_post(
+            body=Markup(_(
+                "❌ <strong>Brief Rechazado por el Cliente.</strong><br/>"
+                "El brief <em>%(brief)s</em> fue rechazado.<br/>"
+                "Motivo: %(motivo)s"
+            )) % {
+                'brief': self.name,
+                'motivo': motivo or _("Sin motivo especificado."),
+            },
+            subject=_("Brief Rechazado — Requiere Nueva Versión"),
+            message_type='comment',
+            subtype_xmlid='mail.mt_note'
         )
 
     def action_nueva_version(self):
