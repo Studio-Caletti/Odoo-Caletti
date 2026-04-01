@@ -518,12 +518,11 @@ class CreativeBrief(models.Model):
                 "Se requiere crear una nueva versión del brief "
                 "incorporando los cambios solicitados."
             ) % {'motivo': motivo or _("Sin motivo especificado.")},
-            subject=_("Brief Rechazado — Requiere Revisión")
+            subject=_("Brief Rechazado — Requiere Revisión"),
+            message_type='comment',
+            subtype_xmlid='mail.mt_note'
         )
-        _logger.warning(
-            "❌ Brief '%s' rechazado. Motivo: %s",
-            self.name, motivo
-        )
+        
 
         # Notificar en el Chatter del proyecto padre
         self.proyecto_id.message_post(
@@ -531,14 +530,22 @@ class CreativeBrief(models.Model):
                 "❌ <strong>Brief Rechazado por el Cliente.</strong><br/>"
                 "El brief <em>%(brief)s</em> fue rechazado.<br/>"
                 "Motivo: %(motivo)s"
+                "Se debe crear una nueva versión del brief."
             )) % {
                 'brief': self.name,
                 'motivo': motivo or _("Sin motivo especificado."),
             },
             subject=_("Brief Rechazado — Requiere Nueva Versión"),
             message_type='comment',
-            subtype_xmlid='mail.mt_note'
+            subtype_xmlid='mail.mt_note'   
         )
+
+        _logger.warning(
+            "❌ Brief '%s' rechazado. Motivo: %s",
+            self.name, motivo
+        )
+
+
 
     def action_nueva_version(self):
         """

@@ -26,10 +26,9 @@ TIPO_OTRO         = 'otro'
 
 # === CONSTANTES: ESTADOS DE PRESUPUESTO ===
 PRESUPUESTO_OK        = 'ok'
-PRESUPUESTO_ALERTA    = 'alerta'    # > 80% consumido
-PRESUPUESTO_EXCEDIDO  = 'excedido'  # > 100% consumido
+PRESUPUESTO_ALERTA    = 'alerta'
+PRESUPUESTO_EXCEDIDO  = 'excedido'
 
-# Umbrales para alertas de presupuesto
 UMBRAL_ALERTA_PRESUPUESTO   = 80.0
 UMBRAL_EXCEDIDO_PRESUPUESTO = 100.0
 
@@ -37,22 +36,10 @@ UMBRAL_EXCEDIDO_PRESUPUESTO = 100.0
 class CreativeProject(models.Model):
     """
     Extensión del modelo tablero.tarea para proyectos de agencias creativas.
-    
-    Agrega sobre el Core:
-    - Tipo de proyecto creativo
-    - Brief creativo integrado (One2many → creative.brief)
-    - Equipo creativo con roles (One2many → creative.team.member)
-    - Entregables propios del vertical (One2many → creative.deliverable)
-    - Presupuesto aprobado + seguimiento de costo real computed
-    
-    El Core provee: name, state, progress, partner_id, user_id,
-    date_deadline, is_overdue, kanban_state, chatter, portal.
-    Este modelo NO duplica ni modifica esa lógica.
     """
     _inherit = 'tablero.tarea'
 
     # --- IDENTIFICACIÓN DEL VERTICAL ---
-    # Flag para distinguir proyectos creativos de tareas genéricas del Core
     es_proyecto_creativo = fields.Boolean(
         string='Es Proyecto Creativo',
         default=False,
@@ -96,7 +83,6 @@ class CreativeProject(models.Model):
         string='Presupuesto Consumido (%)',
         compute='_compute_presupuesto_consumido',
         store=True,
-        help="Porcentaje del presupuesto aprobado que representa el costo real"
     )
 
     estado_presupuesto = fields.Selection([
@@ -112,7 +98,6 @@ class CreativeProject(models.Model):
         'creative.brief',
         'proyecto_id',
         string='Brief Creativo',
-        help="Brief del proyecto. Se recomienda un brief por proyecto."
     )
 
     equipo_ids = fields.One2many(
@@ -150,7 +135,6 @@ class CreativeProject(models.Model):
         string='Brief Aprobado',
         compute='_compute_brief_aprobado',
         store=True,
-        help="True si existe al menos un brief en estado 'aprobado'"
     )
 
     # --- LÓGICA COMPUTED ---
@@ -162,34 +146,18 @@ class CreativeProject(models.Model):
             project.costo_real = sum(
                 project.entregable_ids.mapped('costo_estimado')
             )
-            _logger.debug(
-                "💰 Proyecto '%s': costo_real recalculado → %s",
-                project.name, project.costo_real
-            )
 
     @api.depends('costo_real', 'presupuesto_aprobado')
     def _compute_presupuesto_consumido(self):
-        """
-        Calcula el porcentaje de presupuesto consumido y
-        determina el estado de alerta correspondiente.
-        """
+        """Calcula el porcentaje de presupuesto consumido."""
         for project in self:
             if project.presupuesto_aprobado > 0:
                 pct = (project.costo_real / project.presupuesto_aprobado) * 100.0
                 project.presupuesto_consumido_pct = pct
-
                 if pct >= UMBRAL_EXCEDIDO_PRESUPUESTO:
                     project.estado_presupuesto = PRESUPUESTO_EXCEDIDO
-                    _logger.warning(
-                        "🔴 Proyecto '%s' EXCEDIÓ el presupuesto: %.1f%%",
-                        project.name, pct
-                    )
                 elif pct >= UMBRAL_ALERTA_PRESUPUESTO:
                     project.estado_presupuesto = PRESUPUESTO_ALERTA
-                    _logger.info(
-                        "⚠️ Proyecto '%s' en alerta de presupuesto: %.1f%%",
-                        project.name, pct
-                    )
                 else:
                     project.estado_presupuesto = PRESUPUESTO_OK
             else:
@@ -198,7 +166,7 @@ class CreativeProject(models.Model):
 
     @api.depends('brief_ids', 'entregable_ids', 'entregable_ids.estado')
     def _compute_resumen_counts(self):
-        """Contadores de resumen para mostrar en la vista kanban y form"""
+        """Contadores de resumen"""
         for project in self:
             project.brief_count = len(project.brief_ids)
             project.entregable_count = len(project.entregable_ids)
@@ -210,7 +178,7 @@ class CreativeProject(models.Model):
 
     @api.depends('brief_ids.estado_brief')
     def _compute_brief_aprobado(self):
-        """Verifica si existe al menos un brief aprobado por el cliente"""
+        """Verifica si existe al menos un brief aprobado"""
         for project in self:
             project.brief_aprobado = any(
                 b.estado_brief == 'aprobado'
@@ -218,6 +186,7 @@ class CreativeProject(models.Model):
             )
 
     # --- VALIDACIONES ---
+
     @api.constrains('presupuesto_aprobado')
     def _check_presupuesto_positivo(self):
         """El presupuesto no puede ser negativo"""
@@ -228,6 +197,7 @@ class CreativeProject(models.Model):
                 )
 
     # --- OVERRIDE write PARA ALERTAS AUTOMÁTICAS ---
+
     def write(self, vals):
         """
         Extiende el write del Core para emitir alertas en Chatter
@@ -235,8 +205,6 @@ class CreativeProject(models.Model):
         """
         result = super(CreativeProject, self).write(vals)
 
-        # Revisar estado de presupuesto después de cualquier cambio
-        # Solo para proyectos creativos con presupuesto definido
         if any(f in vals for f in ['presupuesto_aprobado', 'entregable_ids']):
             for project in self.filtered(
                 lambda p: p.es_proyecto_creativo and p.presupuesto_aprobado > 0
@@ -261,7 +229,7 @@ class CreativeProject(models.Model):
 
         return result
 
-        # --- OVERRIDE create PARA NOTIFICACIÓN AL CLIENTE ---
+    # --- OVERRIDE create PARA NOTIFICACIÓN AL CLIENTE ---
 
     @api.model
     def create(self, vals):
@@ -272,25 +240,57 @@ class CreativeProject(models.Model):
         project = super(CreativeProject, self).create(vals)
 
         if project.es_proyecto_creativo and project.partner_id:
+            _logger.info(
+                "📧 Intentando enviar email de registro para '%s' a '%s'",
+                project.name,
+                project.partner_id.email or 'SIN EMAIL'
+            )
             try:
                 template = self.env.ref(
                     'caletti_creative.email_template_proyecto_registrado',
                     raise_if_not_found=False
                 )
-                if template:
-                    template.send_mail(project.id, force_send=True)
-                    _logger.info(
-                        "✉️ Email de registro enviado para proyecto '%s' a %s",
-                        project.name,
-                        project.partner_id.email
+                if not template:
+                    _logger.error(
+                        "❌ Template no encontrado: "
+                        "email_template_proyecto_registrado"
                     )
-            except Exception as e:
-                _logger.error(
-                    "❌ Error enviando email de registro para '%s': %s",
-                    project.name, str(e)
+                    return project
+
+                _logger.info(
+                    "✅ Template encontrado: %s (ID: %s)",
+                    template.name, template.id
                 )
 
+                if not project.partner_id.email:
+                    _logger.warning(
+                        "⚠️ Partner '%s' sin email — no se envía",
+                        project.partner_id.name
+                    )
+                    return project
+
+                template.send_mail(project.id, force_send=True)
+                _logger.info(
+                    "✉️ Email enviado exitosamente para '%s'",
+                    project.name
+                )
+
+            except Exception as e:
+                _logger.error(
+                    "❌ Error DETALLADO enviando email para '%s': %s",
+                    project.name, str(e),
+                    exc_info=True
+                )
+        else:
+            _logger.warning(
+                "⚠️ No se envía email: es_creativo=%s, partner=%s",
+                project.es_proyecto_creativo,
+                project.partner_id.name if project.partner_id else 'NINGUNO'
+            )
+
         return project
+
+    # --- CREACIÓN DESDE EMAIL ENTRANTE ---
 
     @api.model
     def message_new(self, msg_dict, custom_values=None):
@@ -304,7 +304,6 @@ class CreativeProject(models.Model):
         email_from = msg_dict.get('email_from', '')
         subject    = msg_dict.get('subject', 'Proyecto sin asunto')
 
-        # Buscar si el email corresponde a un partner existente
         partner = self.env['res.partner'].search(
             [('email', '=ilike', email_from)], limit=1
         )
