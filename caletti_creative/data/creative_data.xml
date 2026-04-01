@@ -29,9 +29,7 @@
             <field name="subject">
                 🎨 Tu proyecto creativo ha sido registrado — {{ object.name }}
             </field>
-            <field name="email_from">
-                {{ object.user_id.email or 'creativos@caletti.com.mx' }}
-            </field>
+            <field name="email_from">notifications@caletti.com.mx</field>
             <field name="email_to">
                 {{ object.partner_id.email }}
             </field>
