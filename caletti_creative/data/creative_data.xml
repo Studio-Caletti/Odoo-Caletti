@@ -7,17 +7,32 @@
 #   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # -->
-<!-- Data del Vertical Creativo: Brief Creativo -->
+<!-- Data del Vertical Creativo -->
 
 <odoo>
+    <data noupdate="0">
+
+        <!-- ================================================
+             SECUENCIA: REFERENCIAS DE BRIEF
+        ================================================ -->
+        <record id="seq_creative_brief" model="ir.sequence">
+            <field name="name">Brief Creativo — Referencia</field>
+            <field name="code">creative.brief</field>
+            <field name="prefix">BR-</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+            <field name="implementation">standard</field>
+        </record>
+
+    </data>
+
     <data noupdate="1">
 
-<!-- ================================================
-             TEMPLATE 0: PROYECTO CREATIVO REGISTRADO
-             Destinatario: cliente (partner_id del proyecto)
+        <!-- ================================================
+             TEMPLATE 1: PROYECTO CREATIVO REGISTRADO
              Trigger: create() en creative.project
-             Objetivo: confirmar al cliente que su proyecto
-             fue registrado y que pronto recibirá el brief.
+             Destinatario: cliente
         ================================================ -->
         <record id="email_template_proyecto_registrado"
                 model="mail.template">
@@ -30,9 +45,7 @@
                 🎨 Tu proyecto creativo ha sido registrado — {{ object.name }}
             </field>
             <field name="email_from">notifications@caletti.com.mx</field>
-            <field name="email_to">
-                {{ object.partner_id.email }}
-            </field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
             <field name="reply_to">creativos@caletti.com.mx</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
@@ -52,57 +65,41 @@
                             <img src="https://caletti.com.mx/odoo17/caletti_odoo.png"
                                  style="height:auto; width:180px;"
                                  alt="Caletti Studio"/>
-                            <h2 style="color:#875A7B;
-                                       margin-top:20px;
-                                       font-size:22px;">
+                            <h2 style="color:#875A7B; margin-top:20px; font-size:22px;">
                                 🎨 ¡Tu proyecto está en marcha!
                             </h2>
                             <p style="font-size:16px; color:#333;">
-                                Hola
-                                <strong>
-                                    <t t-out="object.partner_id.name or 'Cliente'"/>
-                                </strong>,
+                                Hola <strong><t t-out="object.partner_id.name or 'Cliente'"/></strong>,
                             </p>
                             <p style="font-size:15px; color:#555; line-height:1.6;">
-                                Hemos registrado tu proyecto creativo
-                                en nuestro sistema. Nuestro equipo
-                                ya está trabajando en él.
+                                Hemos registrado tu proyecto creativo en nuestro sistema.
+                                Nuestro equipo ya está trabajando en él.
                             </p>
-                            <div style="margin:25px 0;
-                                        padding:20px;
+                            <div style="margin:25px 0; padding:20px;
                                         border-left:4px solid #875A7B;
                                         background-color:#f9f9f9;">
                                 <p style="margin:8px 0; font-size:14px;">
-                                    <span style="color:#777; font-size:12px;">
-                                        Proyecto:
-                                    </span><br/>
+                                    <span style="color:#777; font-size:12px;">Proyecto:</span><br/>
                                     <strong style="font-size:18px; color:#875A7B;">
                                         <t t-out="object.name"/>
                                     </strong>
                                 </p>
                                 <p style="margin:8px 0; font-size:14px;">
-                                    <span style="color:#777; font-size:12px;">
-                                        Responsable:
-                                    </span><br/>
-                                    <strong>
-                                        <t t-out="object.user_id.name or 'Equipo Caletti'"/>
-                                    </strong>
+                                    <span style="color:#777; font-size:12px;">Responsable:</span><br/>
+                                    <strong><t t-out="object.user_id.name or 'Equipo Caletti'"/></strong>
                                 </p>
                             </div>
                             <p style="font-size:14px; color:#555; line-height:1.6;">
-                                En breve recibirás el brief creativo
-                                para tu revisión y aprobación.
+                                En breve recibirás el brief creativo para tu revisión y aprobación.
                                 Cualquier duda escríbenos a
-                                <a href="mailto:creativos@caletti.com.mx"
-                                   style="color:#875A7B;">
+                                <a href="mailto:creativos@caletti.com.mx" style="color:#875A7B;">
                                     creativos@caletti.com.mx
                                 </a>
                             </p>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:20px;
-                                   background-color:#f9f9f9;
+                        <td style="padding:20px; background-color:#f9f9f9;
                                    text-align:center;
                                    border-bottom-left-radius:8px;
                                    border-bottom-right-radius:8px;">
@@ -126,19 +123,336 @@
         </record>
 
         <!-- ================================================
+             TEMPLATE 2: BRIEF ENVIADO A REVISIÓN
+             Trigger: action_enviar_a_revision() en creative.brief
+             Destinatario: cliente
+        ================================================ -->
+        <record id="email_template_brief_revision"
+                model="mail.template">
+            <field name="name">
+                Creative: Brief Enviado a Revisión
+            </field>
+            <field name="model_id"
+                   ref="caletti_creative.model_creative_brief"/>
+            <field name="subject">
+                📋 Brief listo para tu revisión — {{ object.name }}
+            </field>
+            <field name="email_from">notifications@caletti.com.mx</field>
+            <field name="email_to">{{ object.cliente_id.email }}</field>
+            <field name="reply_to">creativos@caletti.com.mx</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin:0; padding:0; font-family:'Helvetica',sans-serif;
+            background-color:#f4f4f4;">
+    <table width="100%" style="background-color:#f4f4f4; padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600"
+                       style="background-color:#ffffff;
+                              border-radius:8px;
+                              margin-top:20px;
+                              border-collapse:separate;
+                              box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="padding:40px;">
+                            <img src="https://caletti.com.mx/odoo17/caletti_odoo.png"
+                                 style="height:auto; width:180px;"
+                                 alt="Caletti Studio"/>
+                            <h2 style="color:#875A7B; margin-top:20px; font-size:22px;">
+                                📋 Tu Brief Creativo está listo
+                            </h2>
+                            <p style="font-size:16px; color:#333;">
+                                Hola <strong><t t-out="object.cliente_id.name or 'Cliente'"/></strong>,
+                            </p>
+                            <p style="font-size:15px; color:#555; line-height:1.6;">
+                                Hemos preparado el brief creativo para tu proyecto.
+                                Necesitamos tu revisión y aprobación para iniciar la producción.
+                            </p>
+                            <div style="margin:25px 0; padding:20px;
+                                        border-left:4px solid #875A7B;
+                                        background-color:#f9f9f9;">
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Brief:</span><br/>
+                                    <strong style="font-size:18px; color:#875A7B;">
+                                        <t t-out="object.name"/>
+                                    </strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Proyecto:</span><br/>
+                                    <strong><t t-out="object.proyecto_id.name"/></strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Versión:</span><br/>
+                                    <strong>v<t t-out="object.version"/></strong>
+                                </p>
+                                <t t-if="object.fecha_entrega_brief">
+                                    <p style="margin:8px 0; font-size:14px;">
+                                        <span style="color:#777; font-size:12px;">
+                                            Fecha límite de aprobación:
+                                        </span><br/>
+                                        <strong style="color:#d9534f;">
+                                            <t t-out="object.fecha_entrega_brief"/>
+                                        </strong>
+                                    </p>
+                                </t>
+                            </div>
+                            <p style="font-size:14px; color:#555; line-height:1.6;">
+                                Por favor revisa el brief desde tu portal y confirma
+                                tu aprobación o compártenos tus comentarios.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:20px; background-color:#f9f9f9;
+                                   text-align:center;
+                                   border-bottom-left-radius:8px;
+                                   border-bottom-right-radius:8px;">
+                            <p style="font-size:13px; color:#666; margin:5px 0;">
+                                <strong><t t-out="object.proyecto_id.user_id.name or 'Equipo Caletti Studio'"/></strong>
+                            </p>
+                            <h5 style="color:#875A7B;">
+                                <strong>MÉXICO — BUENOS AIRES — ROMA</strong>
+                            </h5>
+                            <p style="font-size:11px; color:#aaa; margin:10px 0 0 0;">
+                                Notificación automática del sistema de proyectos creativos
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+        </record>
+
+        <!-- ================================================
+             TEMPLATE 3: BRIEF APROBADO
+             Trigger: action_aprobar() en creative.brief
+             Destinatario: equipo interno (responsable del proyecto)
+        ================================================ -->
+        <record id="email_template_brief_aprobado"
+                model="mail.template">
+            <field name="name">
+                Creative: Brief Aprobado — Producción Autorizada
+            </field>
+            <field name="model_id"
+                   ref="caletti_creative.model_creative_brief"/>
+            <field name="subject">
+                ✅ Brief Aprobado — ¡Inicia Producción! {{ object.proyecto_id.name }}
+            </field>
+            <field name="email_from">notifications@caletti.com.mx</field>
+            <field name="email_to">{{ object.proyecto_id.user_id.email }}</field>
+            <field name="reply_to">creativos@caletti.com.mx</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin:0; padding:0; font-family:'Helvetica',sans-serif;
+            background-color:#f4f4f4;">
+    <table width="100%" style="background-color:#f4f4f4; padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600"
+                       style="background-color:#ffffff;
+                              border-radius:8px;
+                              margin-top:20px;
+                              border-collapse:separate;
+                              box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="padding:40px;">
+                            <img src="https://caletti.com.mx/odoo17/caletti_odoo.png"
+                                 style="height:auto; width:180px;"
+                                 alt="Caletti Studio"/>
+                            <h2 style="color:#5cb85c; margin-top:20px; font-size:22px;">
+                                ✅ ¡Brief Aprobado!
+                            </h2>
+                            <p style="font-size:16px; color:#333;">
+                                Hola <strong><t t-out="object.proyecto_id.user_id.name or 'Equipo'"/></strong>,
+                            </p>
+                            <p style="font-size:15px; color:#555; line-height:1.6;">
+                                El cliente ha aprobado el brief creativo.
+                                <strong>La producción está oficialmente autorizada.</strong>
+                            </p>
+                            <div style="margin:25px 0; padding:20px;
+                                        border-left:4px solid #5cb85c;
+                                        background-color:#f9f9f9;">
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Brief:</span><br/>
+                                    <strong style="font-size:18px; color:#5cb85c;">
+                                        <t t-out="object.name"/>
+                                    </strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Proyecto:</span><br/>
+                                    <strong><t t-out="object.proyecto_id.name"/></strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Cliente:</span><br/>
+                                    <strong><t t-out="object.cliente_id.name"/></strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Aprobado por:</span><br/>
+                                    <strong><t t-out="object.aprobado_por_id.name or 'Cliente'"/></strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Fecha de aprobación:</span><br/>
+                                    <strong><t t-out="object.fecha_aprobacion"/></strong>
+                                </p>
+                            </div>
+                            <p style="font-size:14px; color:#555; line-height:1.6;">
+                                Recuerda respetar las rondas de revisión acordadas
+                                con el cliente para cada entregable.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:20px; background-color:#f9f9f9;
+                                   text-align:center;
+                                   border-bottom-left-radius:8px;
+                                   border-bottom-right-radius:8px;">
+                            <p style="font-size:13px; color:#666; margin:5px 0;">
+                                <strong>Sistema de Gestión Creativa — Caletti Studio</strong>
+                            </p>
+                            <h5 style="color:#875A7B;">
+                                <strong>MÉXICO — BUENOS AIRES — ROMA</strong>
+                            </h5>
+                            <p style="font-size:11px; color:#aaa; margin:10px 0 0 0;">
+                                Notificación automática — No responder a este correo
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+        </record>
+
+        <!-- ================================================
+             TEMPLATE 4: REVISIONES EXCEDIDAS
+             Trigger: action_rechazar() cuando rondas > max
+             Destinatario: responsable del proyecto (account)
+        ================================================ -->
+        <record id="email_template_revisiones_excedidas"
+                model="mail.template">
+            <field name="name">
+                Creative: Alerta — Revisiones Excedidas
+            </field>
+            <field name="model_id"
+                   ref="caletti_creative.model_creative_deliverable"/>
+            <field name="subject">
+                ⚠️ Revisiones Excedidas: {{ object.name }} — {{ object.proyecto_id.name }}
+            </field>
+            <field name="email_from">notifications@caletti.com.mx</field>
+            <field name="email_to">{{ object.proyecto_id.user_id.email }}</field>
+            <field name="reply_to">creativos@caletti.com.mx</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="margin:0; padding:0; font-family:'Helvetica',sans-serif;
+            background-color:#f4f4f4;">
+    <table width="100%" style="background-color:#f4f4f4; padding:20px;">
+        <tr>
+            <td align="center">
+                <table width="600"
+                       style="background-color:#ffffff;
+                              border-radius:8px;
+                              margin-top:20px;
+                              border-collapse:separate;
+                              box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="padding:40px;">
+                            <img src="https://caletti.com.mx/odoo17/caletti_odoo.png"
+                                 style="height:auto; width:180px;"
+                                 alt="Caletti Studio"/>
+                            <h2 style="color:#d9534f; margin-top:20px; font-size:22px;">
+                                ⚠️ Revisiones Excedidas
+                            </h2>
+                            <p style="font-size:16px; color:#333;">
+                                Hola <strong><t t-out="object.proyecto_id.user_id.name or 'Account Manager'"/></strong>,
+                            </p>
+                            <p style="font-size:15px; color:#555; line-height:1.6;">
+                                Un entregable ha superado las rondas de revisión incluidas
+                                en el presupuesto.
+                                <strong>Es necesario notificar al cliente sobre el costo adicional.</strong>
+                            </p>
+                            <div style="margin:25px 0; padding:20px;
+                                        border-left:4px solid #d9534f;
+                                        background-color:#fdf7f7;">
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Entregable:</span><br/>
+                                    <strong style="font-size:18px; color:#d9534f;">
+                                        <t t-out="object.name"/>
+                                    </strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Proyecto:</span><br/>
+                                    <strong><t t-out="object.proyecto_id.name"/></strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Cliente:</span><br/>
+                                    <strong><t t-out="object.cliente_id.name"/></strong>
+                                </p>
+                                <p style="margin:8px 0; font-size:14px;">
+                                    <span style="color:#777; font-size:12px;">Rondas utilizadas:</span><br/>
+                                    <strong style="color:#d9534f; font-size:16px;">
+                                        <t t-out="object.rondas_utilizadas"/> de
+                                        <t t-out="object.max_revisiones"/> incluidas
+                                    </strong>
+                                </p>
+                                <t t-if="object.costo_adicional_revisiones > 0">
+                                    <p style="margin:8px 0; font-size:14px;">
+                                        <span style="color:#777; font-size:12px;">
+                                            Costo adicional generado:
+                                        </span><br/>
+                                        <strong style="color:#d9534f; font-size:18px;">
+                                            <t t-out="object.costo_adicional_revisiones"/>
+                                            <t t-out="object.currency_id.symbol"/>
+                                        </strong>
+                                    </p>
+                                </t>
+                            </div>
+                            <p style="font-size:14px; color:#555; line-height:1.6;">
+                                Accede al sistema para revisar el detalle del entregable
+                                y coordinar la facturación del costo adicional con el cliente.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:20px; background-color:#f9f9f9;
+                                   text-align:center;
+                                   border-bottom-left-radius:8px;
+                                   border-bottom-right-radius:8px;">
+                            <p style="font-size:13px; color:#666; margin:5px 0;">
+                                <strong>Sistema de Gestión Creativa — Caletti Studio</strong>
+                            </p>
+                            <h5 style="color:#875A7B;">
+                                <strong>MÉXICO — BUENOS AIRES — ROMA</strong>
+                            </h5>
+                            <p style="font-size:11px; color:#aaa; margin:10px 0 0 0;">
+                                Alerta automática del sistema — No responder a este correo
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+            </field>
+        </record>
+
+        <!-- ================================================
              ALIAS: creativos@caletti.com.mx
-             Crea proyectos creativos desde email entrante.
-             Mismo patrón que soporte@caletti.com.mx
-             del helpdesk.
         ================================================ -->
         <record id="mail_alias_creative" model="mail.alias">
             <field name="alias_name">creativos</field>
-            <field name="alias_model_id" ref="tablero_kanban_caletti.model_tablero_tarea"/>
-            <field name="alias_defaults">{'es_proyecto_creativo': True,'state': 'nuevo'}</field>
+            <field name="alias_model_id"
+                   ref="tablero_kanban_caletti.model_tablero_tarea"/>
+            <field name="alias_defaults">
+                {'es_proyecto_creativo': True, 'state': 'nuevo'}
+            </field>
             <field name="alias_contact">everyone</field>
         </record>
 
-
     </data>
-
 </odoo>
