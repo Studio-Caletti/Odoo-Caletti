@@ -42,7 +42,7 @@
             <field name="model_id"
                    ref="tablero_kanban_caletti.model_tablero_tarea"/>
             <field name="subject">
-                🎨 Tu proyecto creativo ha sido registrado — {{ object.name }}
+                🎨 Tu proyecto creativo ya ha sido registrado — {{ object.name }}
             </field>
             <field name="email_from">notifications@caletti.com.mx</field>
             <field name="email_to">{{ object.partner_id.email }}</field>
@@ -197,7 +197,7 @@
                                 </t>
                             </div>
                             <p style="font-size:14px; color:#555; line-height:1.6;">
-                                Por favor revisa el brief desde tu portal y confirma
+                                Por favor revisa el brief desde entrando a tu portal y confirma
                                 tu aprobación o compártenos tus comentarios.
                             </p>
                         </td>

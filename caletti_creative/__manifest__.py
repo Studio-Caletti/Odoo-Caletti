@@ -8,7 +8,7 @@
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # --------------------------------------------------------------------------
 {
-    'name': 'Caletti Creative — Vertical Agencias Creativas',
+    'name': 'Caletti Creative — Vertical Gestión Creativa',
     'version': '17.0.1.0.0',
     'category': 'Project/Creative',
     'summary': 'Gestión de proyectos creativos: Brief, Equipo, Entregables y Presupuesto',
@@ -33,7 +33,7 @@
     'license': 'LGPL-3',
     'price': 0.00,
     'currency': 'MXN',
-    'support': 'hola@cstudio.caletti.com.mx',
+    'support': 'hola@studio.caletti.com.mx',
 
     # Core es dependencia obligatoria. Helpdesk es opcional — no se declara aquí.
     'depends': [
