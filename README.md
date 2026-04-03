@@ -1,10 +1,14 @@
-# 🚀 Odoo-Caletti: Advanced Kanban Framework & Helpdesk System
+# 🚀 Odoo-Caletti: Advanced Kanban Framework,
+
+# Helpdesk (ticket system)
+
+# Creative Management System
 
 **Framework Modular Extensible para Odoo 17 | Caletti Studio**
 
 [![Odoo Version](https://img.shields.io/badge/Odoo-17.0-875A7B.svg)](https://www.odoo.com)
 [![License](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-3.0.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
+[![Version](https://img.shields.io/badge/Version-4.0.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
 
 [Español](#español) | [English](#english) | [Italiano](#italiano)
 
@@ -12,121 +16,112 @@
 
 ## <a name="español"></a> 🇪🇸 Español <img src="https://flagcdn.com/w20/es.png" width="20">
 
-### 📄 Descripción
-El **Tablero Kanban Caletti Core V3** no es solo un gestor de tareas; es un ecosistema de **Business Intelligence** y **Experiencia de Cliente** diseñado para Odoo 17. Este módulo constituye el pilar fundamental de nuestra arquitectura modular, integrando una lógica de estados robusta que no solo actualiza campos sino que **dispara eventos automáticos de seguimiento, comunicación y trazabilidad temporal**.
+### 1. 📄 Descripción del Ecosistema V4
 
-El **Core V3** marca la transición hacia una **Arquitectura Modular Escalable**, donde un núcleo robusto (Core) puede ser extendido mediante módulos especializados sin comprometer la integridad del sistema principal.
+**Odoo-Caletti V4** es una plataforma de gestión de alto rendimiento diseñada sobre **Odoo 17 Community**. Su esencia no es la de un software cerrado, sino la de un ecosistema vivo compuesto por un **Núcleo Core** de tarjetas dinámicas que orquesta el quehacer cotidiano empresarial.
 
-### 📌 Pilares de la Versión 3.0
-- **Backend de Alto Rendimiento**: Interfaz Kanban evolucionada con **Header Dinámico** para filtrado rápido y **Visual Awareness** (cintas y bordes de color) que dictan el ritmo operativo.
-- **Portal de Cliente 360°**: Transformamos el portal estándar en un centro de mando para el cliente, con barras de progreso animadas, acceso táctil optimizado y transparencia total vía Chatter.
-- **Reporting & BI**: Salidas documentales en PDF (QWeb) con identidad visual dinámica y vistas de análisis (Pivote/Gráfico) para la toma de decisiones basada en datos reales (`duration_days`).
-- **Comunicación Proactiva**: Integración total con el Chatter de Odoo, gestión de pestañas para una trazabilidad total de la comunicación, y sistema de notificaciones automáticas vía email para hitos críticos y tareas vencidas.
-- **Ecosistema Extensible**: Implementación de una arquitectura de "Módulo Base + Extensiones" que permite inyectar funcionalidades de soporte técnico (Ticketing) sin sobrecargar el Core, manteniendo la base de datos limpia y eficiente.
-- **Helpdesk Vertical**: Primera extensión oficial que integra un sistema de Ticketing avanzado con priorización y flujos de soporte técnico independientes.
+A diferencia de las soluciones aisladas (hojas de cálculo o apps simples), este ecosistema ofrece el poder de un **ERP (Enterprise Resource Planning)**. Esto significa que mientras nuestras verticales resuelven nichos específicos como el **Auxiliar de Soporte (Helpdesk)** o el **Sistema de Gestión Creativa (SGC)**, el usuario mantiene la puerta abierta para integrar módulos nativos de Odoo como **CRM, Calendario, Pagos Electrónicos, Recursos Humanos o Facturación**, todo bajo una misma base de datos y una sola interfaz.
 
-### 🛠️ Especificaciones Técnicas (Arquitectura)
+### 2. 📌 Pilares de la Arquitectura Caletti
+
+- **Core Kanban V3 (La Columna Vertebral)**: Infraestructura de Business Intelligence que gestiona prioridades y tiempos. Es la base donde vive la operación administrativa general.
+
+- **Helpdesk Vertical**: Sistema de ticketing que transforma las solicitudes de soporte en flujos de trabajo con tiempos de respuesta (SLA) garantizados.
+
+- **Sistema de Gestión Creativa (SGC)**: Diseñado para **Despachos de Artes Gráficas**, agencias de medios y estudios digitales. Administra desde el Brief (directiva de diseño) hasta los entregables finales, asegurando rentabilidad y acuerdos claros.
+
+- **El "Chatter" y la Comunicación Contextual**: Aprovechamos la potencia del motor de comunicación de Odoo para que cada tarea, ticket o brief tenga su propio muro de colaboración. Olvídese de correos dispersos; toda la historia, archivos adjuntos y decisiones quedan selladas en el historial (Chatter) del documento.
+
+### 🛠️ Especificaciones Técnicas y Potencial ERP
+
+- **Modularidad y Extensibilidad**: Las verticales heredan del Core, permitiendo una escalabilidad horizontal. Si el cliente necesita una tienda web (E-commerce) o control de inventarios, el ecosistema Caletti convive nativamente con estas herramientas.
+
+- **Backend de Clase Empresarial**: Implementación en Python con lógica de validación senior, manejo de seguridad por grupos (Aislamiento de departamentos) y flujos automatizados de email.
+
+- **Interacción en Portal**: Portales QWeb que permiten al cliente interactuar directamente con el equipo, aprobando presupuestos o revisando artes en tiempo real. 
+
 - **Extensión del Core**: Herencia avanzada de `portal.portal_my_home` y controladores web especializados.
+
 - **Lógica de Negocio**: Implementación robusta de métodos ORM, decoradores `@api.depends` y lógica de validación de fechas.
+
 - **Seguridad (RBAC)🛡️**: Reglas de registro (Record Rules) que garantizan el aislamiento de datos por cliente y jerarquía interna (User, Manager, Admin, Client).
 
-
 ### ⚙️ Lógica de Estado Robusta
+
 El núcleo del módulo implementa una automatización proactiva:
+
 - **Cron de Vigilancia**: Revisión diaria de vencimientos y actualización de semáforos.
+
 - **Tracking Temporal**: Captura automática de hitos (Inicio/Fin) al cambiar estados.
+
 - **Comunicación**: Notificaciones por email integradas para hitos críticos y tareas vencidas.
 
-### 🎯 Casos de Uso
+- **Directivas y Acuerdos**: El SGC utiliza el **Brief Creativo** como documento rector. No hay producción sin aprobación, eliminando la ambigüedad en los proyectos de artes gráficas.
+
+- **Versionamiento Inteligente**: Cada revisión genera una nueva iteración (v1, v2, v3...) vinculada al registro maestro, permitiendo auditar la evolución de una idea sin perder datos.
+
+- **Alertas de Gestión**: Notificaciones automáticas de "Revisiones Excedidas" o "Presupuesto en Alerta", protegiendo el margen de utilidad del despacho.
+
+### 🎯 Casos de Uso y próximos horizontes
+
 - **Agencias creativas**: Seguimiento de proyectos con clientes en tiempo real.
+
 - **Equipos de soporte técnico**: HelpDesk con tickets aislados por cliente.
+
 - **Consultorías**: Reportes BI para medir productividad y tiempos de entrega.
 
-### 🎫 Sistema Helpdesk Completo (Nuevo)
+- **Despachos de Artes Gráficas y Agencias**: Gestión de campañas, impresos y medios digitales con validación del cliente.
 
-#### **Características Principales:**
+- **Soporte Técnico**: Resolución de incidencias con métricas de desempeño.
 
-1.  **🔢 Secuencia Automática de Tickets**
-    
-    -   Generación de referencias únicas:  `TK-00001`,  `TK-00002`, etc.
-    -   Incremental y automático
-2.  **📧 Creación de Tickets por Email**
-    
-    -   Los clientes envían emails a  `soporte@caletti.com.mx`
-    -   Odoo crea tickets automáticamente
-    -   Funciona para clientes registrados y no registrados
-3.  **✉️ Emails de Confirmación Automáticos**
-    
-    -   Template profesional con branding
-    -   Incluye número de ticket, tipo, prioridad y estado
-    -   Personalizado con nombre del cliente
-4.  **⏱️ Tracking de SLA**
-    
-    -   Mide tiempo de primera respuesta
-    -   Campo  `sla_hours`  calculado automáticamente
-5.  **👥 Equipos de Soporte (Escalabilidad)**
-    
-    -   Modelo  `HelpdeskTeam`  preparado para múltiples equipos
-    -   Cada equipo puede tener su propio alias de email
-    -   Métricas por equipo
+- **Futuro: Vertical Bienes Raíces**: Próximamente, un sistema para Venta, Renta y Administración de propiedades, migrando a los profesionales del sector de las hojas de cálculo hacia la potencia de un ERP especializado.
+
+### 
 
 ---
 
 ## <a name="english"></a> 🇺🇸 English <img src="https://flagcdn.com/w20/us.png" width="20">
 
-### 📄 Description 
-The **Caletti Core V3** Kanban Board is not just a task manager; it is a **Business Intelligence** and Customer Experience ecosystem designed for Odoo 17. This module forms the fundamental pillar of our modular architecture, integrating a robust state logic that not only updates fields but also **triggers automatic events for tracking, communication, and time traceability**.
+### 1. 📄 Ecosystem V4 Description
 
-The **Core V3** framework allows a high-performance Core that manages time-tracking and project logic, which can be seamlessly extended with specialized functional layers like our new **Helpdesk module**.
+**Odoo-Caletti V4** is a high-performance management ecosystem built on **Odoo 17 Community**. More than just specialized modules, it provides the full power of an **ERP**. While our verticals solve specific niches like **Helpdesk** or **Creative Management (CMS)**, users can seamlessly integrate Odoo native apps such as **CRM, Accounting, Web Design, and HR**.
 
-### 📌 Version 3.0 Key Pillars
-- **High-Performance Backend**: Evolved Kanban UI with **Dynamic Headers** for instant filtering and **Visual Awareness** (ribbons and color-coded borders) to drive operational pace.
-- **360° Customer Portal**: We turn the standard portal into a client command center, featuring animated progress bars, touch-optimized UX, and full transparency through integrated Chatter.
-- **Reporting & BI**: QWeb PDF reports with dynamic visual branding and native analytical views (Pivot/Graph) for data-driven decision-making based on lead times (`duration_days`).
-- **Proactive Communication**: Full integration with Odoo's Chatter, tab management for complete communication traceability, and automatic email notification system for critical milestones and overdue tasks.
-- **Advanced Helpdesk**: Integrated ticketing extension with priority widgets and dedicated workflows for technical support.
+### 2. 📌Strategic Pillars
 
-### 🛠️ Technical Specifications (Arquitecture)
-- **Core Extension**: Advanced inheritance from portal.portal_my_home and specialized web controllers.
-- **Business Logic**: Robust implementation of ORM methods, @api.depends decorators, and date validation logic.
-- **Security (RBAC)🛡️**: Record Rules that ensure data isolation by client and internal hierarchy (User, Manager, Admin, Client).
+- **Core Engine**: The foundation for general business tasks and BI.
 
-### ⚙️ Robust State Logic
+- **Creative Vertical**: Tailored for **Graphic Arts Studios** and Digital Agencies. Handles Briefs, deliverables, and revision rounds.
 
-The core of the module implements proactive automation:
+- **The Chatter Advantage**: All communications, files, and logs are centralized within each record, eliminating scattered emails and ensuring total transparency.
 
-- **Monitoring Cron**: Daily review of due dates and updates to status indicators.
-- **Time Tracking**: Automatic capture of milestones (Start/Finish) when statuses change.
-- **Communication**: Integrated email notifications for critical milestones and overdue tasks.
+### 3. 🛠️Scalability
 
-### 🎯 Use Cases
-
-- **Creative agencies**: Real-time project tracking with clients.
-- **Support teams**: HelpDesk with client-isolated tickets.
-- **Consulting firms**: BI reports to measure productivity and delivery times.
+Designed to move businesses away from fragmented spreadsheets into a unified environment. Start with creative project management today and scale to full enterprise resource planning tomorrow.
 
 ---
 
 ## <a name="italiano"></a> 🇮🇹 Italiano <img src="https://flagcdn.com/w20/it.png" width="20">
 
-### 📄 Descrizione
-**Caletti Core V3 Kanban Board** non è solo un task manager; è un ecosistema di **Business Intelligence e Customer Experience** progettato per Odoo 17. Questo modulo costituisce il pilastro fondamentale della nostra architettura modulare, integrando una logica di stato robusta che non solo aggiorna i campi, ma **attiva anche eventi automatici per il monitoraggio, la comunicazione e la tracciabilità temporale**.
+### 📄 Descrizione dell'Ecosistema V4
 
-Il **Core V3** è ora un framework separa la logica principale di gestione dei tempi e dei progetti (Core) dalle estensioni funzionali specifiche, come il nuovo **modulo Helpdesk** per l'assistenza tecnica.
+**Odoo-Caletti V4** è una piattaforma di gestione avanzata basata su **Odoo 17 Community**. Offre la potenza di un **ERP** completo, permettendo di integrare moduli di **CRM, Contabilità e Risorse Umane** con le nostre verticali specializzate in **Helpdesk** e **Gestione Creativa**.
 
-### 📌 Pilastri della Versione 3.0
-- **Backend ad Alte Prestazioni**: Interfaccia Kanban evoluta con **Header Dinamico** e **Visual Awareness** (ribbon e bordi colorati) per una gestione operativa immediata.
-- **Portale Clienti 360°**: Un centro di controllo per il cliente con barre di progressione animate e trasparenza totale tramite l'integrazione del Chatter.
-- **Reporting & BI**: Report PDF (QWeb) con identità visiva dinamica e viste analitiche (Pivot/Grafico) per decisioni basate su dati reali di esecuzione.
-- **Comunicazione proattiva**: integrazione completa con Chatter di Odoo, gestione delle schede per una completa tracciabilità delle comunicazioni e sistema di notifica automatica via e-mail per traguardi critici e attività in ritardo.
-- **Helpdesk Integrato**: Estensione dedicata al supporto tecnico con gestione delle priorità e flussi di lavoro separati.
+### 📌 Pilastri Strategici
+
+- **Nucleo Core**: Gestione amministrativa e BI.
+
+- **SGC (Sistema di Gestione Creativa)**: Ideale per **Studi di Arti Grafiche**, gestisce Brief, revisioni e deliverable.
+
+- **Potenza del Chatter**: Comunicazione centralizzata e contestuale per ogni attività, garantendo che nessuna decisione venga persa.
 
 ### 🛠️ Specifiche tecniche (architettura)
+
 - **Estensione Core**: Ereditarietà avanzata da portal.portal_my_home e controller web specializzati.
 - **Logica di business**: Implementazione robusta di metodi ORM, decoratori @api.depends e logica di convalida delle date.
 - **Sicurezza (RBAC)🛡️**: Regole di registrazione che garantiscono l'isolamento dei dati per client e gerarchia interna (Utente, Manager, Amministratore, Client).
 
 ### ⚙️ Logica di Stato Robusta
+
 Il cuore del modulo implementa l'automazione proattiva:
 
 - **Monitoraggio Cron**: revisione giornaliera delle scadenze e aggiornamenti semaforici.
@@ -134,74 +129,81 @@ Il cuore del modulo implementa l'automazione proattiva:
 - **Comunicazione**: notifiche e-mail integrate per milestone critiche e attività in ritardo.
 
 ### 🎯 Casi d’Uso
+
 - **Agenzie creative**: Monitoraggio progetti in tempo reale con i clienti.
 - **Team di supporto**: HelpDesk con ticket isolati per cliente.
 - **Società di consulenza**: Report BI per misurare produttività e tempi di consegna.
 
 ---
 
+### 📈 Evolución del Ecosistema: Expansión Modular Realizada
 
-### 📊 Resumen de Componentes / Components Summary / Riepilogo dei componenti
+La V4 marca el nacimiento de una arquitectura que no compite con Odoo, sino que lo potencia para sectores específicos:
 
-| Componente | Widget / Clase | Impacto Visual |
-| :--- | :--- | :--- |
-| **Progreso** | `progressbar` | Visualización inmediata del avance del proyecto. |
-| **Vencimiento** | `remaining_days` | Crea sentido de urgencia ("En 2 días", "Vencida"). |
-| **Avatar** | `many2one_avatar_user` | Identificación rápida del responsable de la tarea. |
-| **Semáforo** | `state_selection` | Estatus de salud (Punto verde/rojo/amarillo). |
+1. **Core**: El cimiento operativo.
 
----
+2. **Helpdesk**: Excelencia en atención al cliente.
 
-### 🚀 Evolución del Ecosistema: Expansión Modular Realizada
-Este módulo ha sido concebido como una **Base Maestra (Core V3)**. Lo que antes era una visión estratégica, hoy es una realidad funcional. El sistema ha evolucionado de un módulo único a un ecosistema de dos vertientes:
+3. **Creative**: El estándar para Artes Gráficas y Agencias.
 
-1. **Helpdesk Extension** (tablero_kanban_helpdesk) 🆕: Un sistema de tickets totalmentefuncional y práctico con una curva de aprendizaje mínima.
-- **Tiketing Especializado**: Inyecta campos de "Tipo de Ticket" y "Prioridad" (estrellas) mediante herencia de modelos.
-- **Automatización de Flujo**:Acciones de ventana con context inteligente que marcan automáticamente los registros como tickets.
-- **Vistas Dedicadas**:Menús y filtros exclusivos para que el equipo de soporte (como Ana) trabaje de forma independiente al área de proyectos.
+4. **Próximamente**: Real Estate (Bienes Raíces).
 
-2. **Vertical Project Tracking**: Gestión profunda de etapas, responsables, reportes de colaboradores y personal.
-
-### 🚀 Strategic Note: Modular Expansion
-This module has been designed as a Master Base (Core V3). Its architecture is prepared for strategic branching into two growth paths:
-1. **Helpdesk Extension**: Adds a fully functional Ticketing layer. It includes priority widgets, specialized search filters, and dedicated menus, ensuring support teams have a streamlined workspace separate from project management with a minimal learning curve.
-2. **Vertical Project Tracking**: In-depth management of stages, responsible parties, and reports from collaborators and staff.
-
-### 🚀 Nota strategica: Espansione modulare
-Questo modulo è stato progettato come **Master Base (Core V3)**. La sua architettura è predisposta per la ramificazione strategica in due percorsi di crescita:
-1. **Helpdesk Extension 🆕**: Aggiunge un sistema di ticketing completo con widget di priorità, filtri di ricerca specializzati e menu dedicati per il supporto tecnico, pratico con una curva di apprendimento minima.
-2. **Monitoraggio verticale del progetto**: gestione approfondita di fasi, responsabili e report da parte di collaboratori e personale.
+# 
 
 ---
 
 ### 🛠️ Instalación / Installation / Installazione
 
 ### 🇪🇸 Español
+
 1. **Descargar** el repositorio en tu carpeta de `custom_addons`.
 2. **Dependencias**: Asegúrate de tener instalados los módulos base `mail` y `portal`.
 3. **Actualizar**: Reinicia tu servidor Odoo y activa el modo desarrollador.
 4. **Instalar**: Ve al menú de Aplicaciones, haz clic en "Actualizar lista de aplicaciones" y busca `Tablero Kanban Caletti`(Core) y luego `tablero_kanban_helpdesk`.
 
 ### 🇺🇸 English
+
 1. **Clone/Download** the repository into your `custom_addons` directory.
 2. **Dependencies**: Ensure Odoo's native `mail` and `portal` modules are installed.
 3. **Update**: Restart your Odoo server and enable Developer Mode.
 4. **Install**: Go to the Apps menu, click "Update Apps List", and search for `Tablero Kanban Caletti`(Core) first, followed by `tablero_kanban_helpdesk`.
 
 ### 🇮🇹 Italiano
+
 1. **Scaricare** il repository nella cartella `custom_addons`.
 2. **Dipendenze**: Assicurarsi che i moduli base `mail` e `portal` siano installati.
 3. **Aggiornare**: Riavviare il server Odoo e attivare la Modalità Sviluppatore.
 4. **Installare**: Vai al menu Applicazioni, clicca su "Aggiorna elenco applicazioni" e cerca `Tablero Kanban Caletti` (Core) e poi ` tablero_kanban_helpdesk`.
 
+## ⚙️ Instalación y Configuración del Ecosistema
+
+La implementación de Odoo-Caletti V4 requiere una configuración precisa para habilitar su máxima potencia (Automatización y ERP). 
+
+1. **Dependencias**: Asegúrese de tener instalado Odoo 17 Community.
+2. **Orden de Instalación**: 
+   - Primero: `tablero_kanban_caletti` (Core).
+   - Segundo: Verticales de su elección (`helpdesk` / `creative`).
+3. **Configuración Crítica**: Para el correcto funcionamiento de los Alias (`creativos@`, `soporte@`) y las notificaciones automáticas, es indispensable configurar el servidor de salida (SMTP) y los registros DNS correspondientes.
+
+📘 **Guía Detallada de Instalación**: Para un paso a paso sobre configuración de servidores de correo, gestión de logotipos en plantillas y parámetros del sistema, consulte nuestro archivo: [INSTALL.md](./docs/INSTALL.md)
+
+## 🛠️ Para Desarrolladores (Technical Stack)
+
+Si eres desarrollador y deseas contribuir o entender la lógica profunda de este framework (Herencia multinivel, decoradores avanzados, seguridad Record Rules y gestión de contexto), hemos preparado una documentación técnica exhaustiva.
+
+- **Arquitectura de Datos**: Relación entre el Core y las Verticales.
+- **Flujos de API**: Cómo extendemos el Chatter y las notificaciones.
+- **Seguridad**: Implementación de grupos y reglas de aislamiento (Opción B).
+
+💻 **Notas Técnicas**: Consulta los detalles de ingeniería en: [TECHNICAL_NOTES.md](./docs/TECHNICAL_NOTES.md)
+
 ---
 
-## Check our data/ir_cron.xml to see how automated alerts are scheduled.
-
 ### 🗂️Repository Structure
+
 ```text
 Odoo-Caletti/
-├── tablero_kanban_caletti/          # MÓDULO BASE
+├── tablero_kanban_caletti/          # 🧠 MÓDULO BASE
 │   ├── controllers/
 │   │   └── main.py                   # Portal routes
 │   ├── data/
@@ -224,7 +226,7 @@ Odoo-Caletti/
 │   ├── __init__.py
 │   └── __manifest__.py
 │
-├── tablero_kanban_helpdesk/         # MÓDULO HELPDESK
+├── tablero_kanban_helpdesk/         # 🎧 VERTICAL HELPDESK
 │   ├── controllers/
 │   │   └── helpdesk_portal.py       # Portal routes (tickets)
 │   ├── data/
@@ -237,17 +239,18 @@ Odoo-Caletti/
 │   ├── __init__.py
 │   └── __manifest__.py
 │
-├── caletti_creative/                #MÓDULO CREATIVE
+├── caletti_creative/                        #🎨 VERTICAL CREATIVA
 │   ├── models/
 │   │   ├── init__.py
 │   │   ├── creative_project.py              # _inherit tablero.tarea
-│   │   ├── creative_brief.py                # modelo propio
-│   │   ├── creative_deliverable.py          # modelo propio (subtareas)
-│   │   └── creative_team_member.py          # modelo propio
+│   │   ├── creative_brief.py                # Gestión de estrategia y versiones
+│   │   ├── creative_deliverable.py          # Control de producción y revisiones
+│   │   └── creative_team_member.py          # Colaboradores y roles
 │   ├── views/                               # Vistas Backend
 │   │   ├── creative_project_views.xml       # Vista proyecto Creativo
 │   │   ├── creative_brief_views.xml         # Vista Brief Creativo
-│   │   └── creative_deliverable_views.xml   # Vista entregables
+│   │   ├── creative_deliverable_views.xml   # Vista entregables
+│   │   └── portal_creative_templates.xml    # Frontend del cliente
 │   ├── security/
 │   │   ├── security_groups.xml              # Grupos de seguridad
 │   │   ├── ir.model.access.csv              # Permisos de acceso
@@ -262,6 +265,7 @@ Odoo-Caletti/
 
 **Carlos Caletti** - ** *Lead Architect & Developer* 2026
 ---
+
 <p align="left">
   <a href="https://studio.caletti.com.mx">
     <img src="https://img.shields.io/badge/Visitanos-CALETII%20STUDIO-blue?style=for-the-badge&logo=odoo&logoColor=%23714B67&logoSize=auto&labelColor=lightgray&color=8A2BE2" />
