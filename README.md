@@ -84,19 +84,38 @@ El núcleo del módulo implementa una automatización proactiva:
 
 ### 1. 📄 Ecosystem V4 Description
 
-**Odoo-Caletti V4** is a high-performance management ecosystem built on **Odoo 17 Community**. More than just specialized modules, it provides the full power of an **ERP**. While our verticals solve specific niches like **Helpdesk** or **Creative Management (CMS)**, users can seamlessly integrate Odoo native apps such as **CRM, Accounting, Web Design, and HR**.
+**Odoo-Caletti V4**, designed under Odoo 17 Community, is a high-performance management ecosystem featuring an advanced Core Nucleus task-card board. It orchestrates daily business operations with a data structure optimized for operational agility. Unlike standalone apps, this ecosystem provides the full power of an ERP (Enterprise Resource Planning), enabling seamless integration with native modules like CRM, Calendar, Payments, HR, and Invoicing under a single interface.
 
-### 2. 📌Strategic Pillars
+### 📌Strategic Pillars
 
-- **Core Engine**: The foundation for general business tasks and BI.
+- **Core Kanban V3 (The Nucleus)**: Provides BI infrastructure, time traceability, and priority management. It is the engine for overall organizational visibility.
 
-- **Creative Vertical**: Tailored for **Graphic Arts Studios** and Digital Agencies. Handles Briefs, deliverables, and revision rounds.
+- **Vertical Helpdesk**: Specialized in post-sale support, ensuring every ticket is a met commitment through automated workflows and response SLAs.
 
-- **The Chatter Advantage**: All communications, files, and logs are centralized within each record, eliminating scattered emails and ensuring total transparency.
+- **Creative Management (CMS)**: Designed for Graphic Arts Studios and digital agencies. It manages campaign complexity—from traditional print to social media—ensuring clear agreements and profitability.
 
-### 3. 🛠️Scalability
+### 🛠️ Technical Specifications (Architecture)
+- **Multilevel Inheritance**: Verticals extend the tablero.tarea model, ensuring Core improvements reflect instantly across the ecosystem.
+
+- **Chatter Power**: All communications, files, and decisions are sealed within the document’s contextual history, eliminating scattered emails.
+
+- **Isolated Securit**y: Implementation of record rules (ir.rule) for total isolation between creative and support departments.
+
+### ⚙️ State Logic and Traceability
+- **Design Directives (Briefing)**: A governing document with version control. Production does not start without approval, protecting the studio legally and operationally.
+
+- **Smart Versioning**: Each change request triggers a new iteration (v1, v2, v3...) linked to the original record for full auditability.
+
+- **Management Alert**s: Automatic "Exceeded Revisions" notifications to protect profit margins.
 
 Designed to move businesses away from fragmented spreadsheets into a unified environment. Start with creative project management today and scale to full enterprise resource planning tomorrow.
+
+## 🎯 Use Cases and Horizons
+- Graphic Arts & Agencies: Management of complex campaigns with client approval via the portal.
+
+- Technical Support: Incident management with real-time resolution metrics.
+
+- Future: Real Estate: Upcoming vertical for Sales, Rentals, and Property Management, migrating the sector from spreadsheets to specialized ERP power.
 
 ---
 
@@ -104,35 +123,41 @@ Designed to move businesses away from fragmented spreadsheets into a unified env
 
 ### 📄 Descrizione dell'Ecosistema V4
 
-**Odoo-Caletti V4** è una piattaforma di gestione avanzata basata su **Odoo 17 Community**. Offre la potenza di un **ERP** completo, permettendo di integrare moduli di **CRM, Contabilità e Risorse Umane** con le nostre verticali specializzate in **Helpdesk** e **Gestione Creativa**.
+**Odoo-Caletti V4**, progettato su Odoo 17 Community, è un ecosistema di gestione ad alte prestazioni composto da un Nucleo Core avanzato basato su un sistema di schede attività. Questo nucleo permette di orchestrare le operazioni aziendali quotidiane con una struttura dati ottimizzata per l'agilità operativa. A differenza delle soluzioni isolate, questo ecosistema offre la potenza di un **ERP (Enterprise Resource Planning**), consentendo l'integrazione di moduli nativi come **CRM, Calendario, Pagamenti, Risorse Umane e Fatturazione** in un'unica interfaccia.
 
 ### 📌 Pilastri Strategici
 
-- **Nucleo Core**: Gestione amministrativa e BI.
+- **Core Kanban V3 (Il Nucleo)**: Fornisce l'infrastruttura di BI, la tracciabilità temporale e la gestione delle priorità. È il motore della visibilità dell'intera organizzazione.
 
-- **SGC (Sistema di Gestione Creativa)**: Ideale per **Studi di Arti Grafiche**, gestisce Brief, revisioni e deliverable.
+- **Helpdesk Verticale**: Specializzato nell'assistenza post-vendita, garantisce che ogni ticket sia un impegno rispettato attraverso flussi automatizzati e SLA di risposta.
 
-- **Potenza del Chatter**: Comunicazione centralizzata e contestuale per ogni attività, garantendo che nessuna decisione venga persa.
+- **Gestione Creativa (SGC)**: Progettato per Studi di Arti Grafiche e agenzie digitali. Gestisce la complessità delle campagne, dalla stampa tradizionale ai social media, garantendo accordi chiari e redditività.
 
 ### 🛠️ Specifiche tecniche (architettura)
 
-- **Estensione Core**: Ereditarietà avanzata da portal.portal_my_home e controller web specializzati.
-- **Logica di business**: Implementazione robusta di metodi ORM, decoratori @api.depends e logica di convalida delle date.
+- **Ereditarietà Multilivello**: Le verticali estendono il modello tablero.tarea, garantendo che i miglioramenti del Core si riflettano istantaneamente in tutto il sistema.
+
+- **Potenza del Chatter**: Tutte le comunicazioni, i file e le decisioni sono sigillati nella cronologia contestuale del documento, eliminando le email disperse.
+
+- **Sicurezza Isolata**: Implementazione di regole di record (ir.rule) per un isolamento totale tra i reparti creativi e di supporto.
+
 - **Sicurezza (RBAC)🛡️**: Regole di registrazione che garantiscono l'isolamento dei dati per client e gerarchia interna (Utente, Manager, Amministratore, Client).
 
 ### ⚙️ Logica di Stato Robusta
 
-Il cuore del modulo implementa l'automazione proattiva:
+- **Direttive di Design (Briefing)**: Documento d'indirizzo con controllo di versione. La produzione non inizia senza approvazione, proteggendo lo studio legalmente e operativamente.
 
-- **Monitoraggio Cron**: revisione giornaliera delle scadenze e aggiornamenti semaforici.
-- **Monitoraggio del tempo**: acquisizione automatica delle milestone (inizio/fine) al variare dello stato.
-- **Comunicazione**: notifiche e-mail integrate per milestone critiche e attività in ritardo.
+- **Versionamento Intelligente**: Ogni richiesta di modifica genera una nuova iterazione (v1, v2, v3...) collegata al record originale per un'audit completa.
+
+- **Avvisi di Gestione**: Notifiche automatiche di "Revisioni Eccedute" per proteggere i margini di profitto.
 
 ### 🎯 Casi d’Uso
 
-- **Agenzie creative**: Monitoraggio progetti in tempo reale con i clienti.
-- **Team di supporto**: HelpDesk con ticket isolati per cliente.
-- **Società di consulenza**: Report BI per misurare produttività e tempi di consegna.
+- **Arti Grafiche e Agenzie**: Gestione di campagne complesse con approvazione del cliente tramite portale.
+
+- **Supporto Tecnico**: Gestione degli incidenti con metriche di risoluzione in tempo reale.
+
+- **Futuro**: Real Estate: Prossima verticale per Vendita, Affitto e Amministrazione immobiliare, migrando il settore dai fogli di calcolo alla potenza di un ERP specializzato.
 
 ---
 
