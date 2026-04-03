@@ -266,7 +266,7 @@ Odoo-Caletti/
 │
 ├── caletti_creative/                        #🎨 VERTICAL CREATIVA
 │   ├── models/
-│   │   ├── init__.py
+│   │   ├── __init__.py
 │   │   ├── creative_project.py              # _inherit tablero.tarea
 │   │   ├── creative_brief.py                # Gestión de estrategia y versiones
 │   │   ├── creative_deliverable.py          # Control de producción y revisiones
@@ -281,9 +281,13 @@ Odoo-Caletti/
 │   │   ├── ir.model.access.csv              # Permisos de acceso
 │   │   └── ir_rule.xml                      # Record Rules (User, Manager)
 │   ├── data/
-│   │   ├── creative_data.xml                # Sequence, Template confirmación
-│   ├── init__.py
-│   └── manifest__.py
+│   │   └── creative_data.xml                # Sequence, Template confirmación
+│   ├── __init__.py
+│   └── __manifest__.py
+│
+├── docs/
+│   ├── INSTALL.md
+│   └── TECHNICAL_NOTES.md
 │
 └── README.md                         # Este archivo
 ```
