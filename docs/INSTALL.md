@@ -20,9 +20,9 @@ Debido a la arquitectura de herencia, el orden de carga en la base de datos es m
 
 1  **tablero_kanban_caletti**: Instalar primero. Es el Core Engine que crea el modelo tablero.tarea.
 
-2 **tablero_kanban_helpdesk**: Instalar para habilitar el flujo de soporte técnico.
+2 **tablero_kanban_helpdesk**: (Opcional) Instalar para habilitar el flujo de soporte técnico.
 
-3 **caletti_creative**: Instalar para habilitar el Sistema de Gestión Creativa (SGC).
+3 **caletti_creative**: (Opcional) Instalar para habilitar el Sistema de Gestión Creativa (SGC).
 
   
 ## 3. ✉️ Configuración de Canales de Correo (Crítico)
