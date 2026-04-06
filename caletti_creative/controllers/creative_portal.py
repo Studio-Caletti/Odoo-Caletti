@@ -360,3 +360,47 @@ class CalettiCreativePortal(CustomerPortal):
             f'/my/proyecto-creativo/{brief.proyecto_id.id}'
             f'?mensaje=brief_rechazado'
         )
+
+    # ------------------------------------------------------------------
+    # RUTA: Detalle de entregable
+    # ------------------------------------------------------------------
+
+    @http.route(
+        ['/my/entregable/<int:entregable_id>'],
+        type='http',
+        auth='user',
+        website=True
+    )
+    def portal_detalle_entregable(self, entregable_id, **kw):
+        """
+        Vista de detalle de un entregable específico.
+        El cliente ve especificaciones, estado y canal de comunicación.
+        Costos internos NO se exponen — solo información de producción.
+        Record Rules validan acceso automáticamente via partner_id del proyecto.
+        """
+        entregable = request.env['creative.deliverable'].search([
+            ('id', '=', entregable_id),
+        ], limit=1)
+
+        if not entregable:
+            _logger.warning(
+                "Portal Creative: %s intentó acceder a entregable %d sin permiso",
+                request.env.user.name, entregable_id
+            )
+            return request.redirect('/my/proyectos-creativos')
+
+        _logger.debug(
+            "Portal Creative: %s viendo entregable '%s'",
+            request.env.user.name, entregable.name
+        )
+
+        values = {
+            'entregable': entregable,
+            'proyecto': entregable.proyecto_id,
+            'page_name': 'proyectos_creativos',
+        }
+
+        return request.render(
+            'caletti_creative.portal_detalle_entregable',
+            values
+        )

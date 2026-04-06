@@ -60,9 +60,9 @@
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
 
             <!-- Nivel: Lista de proyectos -->
-            <li t-if="page_name == 'proyectos_creativos' or proyecto or brief"
+            <li t-if="page_name == 'proyectos_creativos' or proyecto or brief or entregable"
                 t-attf-class="breadcrumb-item
-                    #{'active' if not proyecto and not brief else ''}">
+                    #{'active' if not proyecto and not brief and not entregable else ''}">
                 <a t-if="proyecto or brief"
                    href="/my/proyectos-creativos">
                     Proyectos Creativos
@@ -86,6 +86,11 @@
             <!-- Nivel: Detalle de brief -->
             <li t-if="brief" class="breadcrumb-item active">
                 <span t-field="brief.name"/>
+            </li>
+
+            <!-- Nivel: Detalle de entregable -->
+            <li t-if="entregable" class="breadcrumb-item active">
+                <span t-field="entregable.name"/>
             </li>
 
         </xpath>
@@ -372,12 +377,15 @@
                                             <th>Tipo</th>
                                             <th class="text-center">Estado</th>
                                             <th>Fecha Entrega</th>
+                                            <th class="text-center">Revisiones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <t t-foreach="proyecto.entregable_ids"
                                            t-as="entregable">
-                                            <tr>
+                                            <tr class="align-middle"
+                                                t-attf-style="cursor: pointer;"
+                                                t-attf-onclick="window.location.href='/my/entregable/#{entregable.id}'">
                                                 <td>
                                                     <strong>
                                                         <span t-field="entregable.name"/>
@@ -404,6 +412,17 @@
                                                           t-options='{"widget": "date"}'/>
                                                     <span t-else=""
                                                           class="text-muted">—</span>
+                                                </td>
+                                                <!-- Indicador visual de rondas -->
+                                                <td class="text-center">
+                                                    <small t-attf-class="
+                                                        #{'text-danger fw-bold' if entregable.revisiones_excedidas
+                                                          else 'text-warning' if entregable.revisiones_en_alerta
+                                                          else 'text-muted'}">
+                                                        <t t-esc="entregable.rondas_utilizadas"/>
+                                                        /
+                                                        <t t-esc="entregable.max_revisiones"/>
+                                                    </small>
                                                 </td>
                                             </tr>
                                         </t>
@@ -772,6 +791,203 @@
                             <i class="fa fa-arrow-left me-1"/>
                             Volver al Proyecto
                         </a>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================
+         VISTA: Detalle de Entregable
+         /my/entregable/<id>
+    ================================================ -->
+    <template id="portal_detalle_entregable"
+              name="Detalle Entregable Creativo">
+        <t t-call="portal.portal_layout">
+
+            <div class="container bg-white pb-5 shadow-lg
+                        rounded-3 border-0 mt-3 overflow-hidden">
+
+                <!-- Header del entregable -->
+                <div class="row bg-light border-bottom p-4 align-items-center">
+                    <div class="col-md-8">
+                        <small class="text-uppercase text-muted fw-bold">
+                            <span t-field="entregable.proyecto_id"/> —
+                            <t t-esc="dict(entregable._fields['tipo_entregable'].selection).get(entregable.tipo_entregable, 'Entregable')"/>
+                        </small>
+                        <h2 class="text-dark mb-0">
+                            <span t-field="entregable.name"/>
+                        </h2>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span t-attf-class="badge rounded-pill p-2 px-4 fs-6
+                            #{'text-bg-success' if entregable.estado == 'entregado'
+                              else 'text-bg-primary' if entregable.estado == 'aprobado'
+                              else 'text-bg-warning' if entregable.estado == 'en_revision'
+                              else 'text-bg-info' if entregable.estado == 'en_proceso'
+                              else 'text-bg-secondary'}">
+                            <t t-esc="dict(entregable._fields['estado'].selection).get(entregable.estado)"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row p-4">
+
+                    <!-- Columna principal -->
+                    <div class="col-12 col-lg-8">
+
+                        <!-- Especificaciones -->
+                        <div class="mb-4" t-if="entregable.descripcion">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-file-text-o me-2 text-primary"
+                                   title="Especificaciones"/>
+                                Especificaciones Técnicas
+                            </h5>
+                            <div class="p-3 border rounded-3 bg-light"
+                                 style="font-size: 1rem; line-height: 1.6;">
+                                <span t-field="entregable.descripcion"/>
+                            </div>
+                        </div>
+
+                        <!-- Control de revisiones -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-refresh me-2 text-primary"
+                                   title="Revisiones"/>
+                                Rondas de Revisión
+                            </h5>
+
+                            <!-- Alerta revisiones excedidas -->
+                            <div t-if="entregable.revisiones_excedidas"
+                                 class="alert alert-danger" role="alert">
+                                <i class="fa fa-exclamation-triangle me-2"
+                                   title="Excedido"/>
+                                <strong>Rondas de revisión excedidas!.</strong>
+                                Se han utilizado más revisiones de las incluidas
+                                en el alcance original del proyecto.
+                                El equipo te contactará para coordinar.
+                            </div>
+
+                            <!-- Alerta revisiones en alerta -->
+                            <div t-if="entregable.revisiones_en_alerta and not entregable.revisiones_excedidas"
+                                 class="alert alert-warning" role="alert">
+                                <i class="fa fa-clock-o me-2"
+                                   title="Atención"/>
+                                <strong>Atención:</strong>
+                                Estás cerca de agotar las rondas de revisión
+                                incluidas en el proyecto.
+                            </div>
+
+                            <!-- Barra de progreso de revisiones -->
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small class="text-muted">
+                                        Rondas utilizadas
+                                    </small>
+                                    <small t-attf-class="fw-bold
+                                        #{'text-danger' if entregable.revisiones_excedidas
+                                          else 'text-warning' if entregable.revisiones_en_alerta
+                                          else 'text-success'}">
+                                        <t t-esc="entregable.rondas_utilizadas"/>
+                                        de
+                                        <t t-esc="entregable.max_revisiones"/>
+                                        incluidas
+                                    </small>
+                                </div>
+                                <div class="progress"
+                                     style="height: 12px; border-radius: 10px;">
+                                    <t t-set="pct_rev"
+                                       t-value="min(100, int((entregable.rondas_utilizadas / (entregable.max_revisiones or 1)) * 100))"/>
+                                    <div t-attf-class="progress-bar
+                                        #{'bg-danger' if entregable.revisiones_excedidas
+                                          else 'bg-warning' if entregable.revisiones_en_alerta
+                                          else 'bg-success'}"
+                                         role="progressbar"
+                                         t-attf-style="width: #{pct_rev}%"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-12 col-lg-4 ps-lg-5">
+                        <div class="card border-0 bg-light rounded-3 p-3 mb-4">
+                            <h6 class="text-muted fw-bold border-bottom pb-2 mb-3">
+                                DATOS DEL ENTREGABLE
+                            </h6>
+
+                            <!-- Responsable -->
+                            <div class="mb-3" t-if="entregable.responsable_id">
+                                <label class="text-muted small d-block">
+                                    RESPONSABLE:
+                                </label>
+                                <strong>
+                                    <span t-field="entregable.responsable_id"/>
+                                </strong>
+                            </div>
+
+                            <!-- Fecha límite interna -->
+                            <div class="mb-3" t-if="entregable.fecha_limite">
+                                <label class="text-muted small d-block">
+                                    FECHA LÍMITE:
+                                </label>
+                                <strong>
+                                    <span t-field="entregable.fecha_limite"
+                                          t-options='{"widget": "date"}'/>
+                                </strong>
+                            </div>
+
+                            <!-- Fecha entrega al cliente -->
+                            <div class="mb-3" t-if="entregable.fecha_entrega_cliente">
+                                <label class="text-muted small d-block">
+                                    FECHA DE ENTREGA:
+                                </label>
+                                <strong>
+                                    <span t-field="entregable.fecha_entrega_cliente"
+                                          t-options='{"widget": "date"}'/>
+                                </strong>
+                            </div>
+
+                            <!-- Fecha de aprobación si existe -->
+                            <div class="mb-3" t-if="entregable.fecha_aprobacion">
+                                <label class="text-muted small d-block">
+                                    APROBADO:
+                                </label>
+                                <strong class="text-success">
+                                    <span t-field="entregable.fecha_aprobacion"
+                                          t-options='{"widget": "date"}'/>
+                                </strong>
+                            </div>
+
+                            <!-- Botón volver al proyecto -->
+                            <div class="mt-4">
+                                <a t-attf-href="/my/proyecto-creativo/#{entregable.proyecto_id.id}"
+                                   class="btn btn-outline-secondary btn-sm w-100">
+                                    <i class="fa fa-arrow-left me-1"
+                                       title="Volver"/>
+                                    Volver al Proyecto
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Chatter del portal -->
+                <div class="row p-4 border-top">
+                    <div class="col-12">
+                        <h5 class="fw-bold mb-4 text-secondary">
+                            <i class="fa fa-comments me-2"
+                               title="Comunicación"/>
+                            Canal de Comunicación
+                        </h5>
+                        <div class="bg-light p-3 rounded-3 shadow-sm">
+                            <t t-call="portal.message_thread">
+                                <t t-set="object" t-value="entregable"/>
+                            </t>
+                        </div>
                     </div>
                 </div>
 
