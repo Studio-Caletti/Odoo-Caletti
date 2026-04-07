@@ -964,7 +964,7 @@
                             <!-- Botón volver al proyecto -->
                             <div class="mt-4">
                                 <a t-attf-href="/my/proyecto-creativo/#{entregable.proyecto_id.id}"
-                                   class="btn btn-outline-secondary btn-sm w-100">
+                                   class="btn btn-outline-primary btn-sm w-100">
                                     <i class="fa fa-arrow-left me-1"
                                        title="Volver"/>
                                     Volver al Proyecto
