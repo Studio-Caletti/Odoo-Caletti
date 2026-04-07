@@ -190,14 +190,12 @@
                         <page string="📋 Especificaciones"
                               name="tab_specs">
                               <div class="bg-100 p-3 rounded border">
-                            <group>
-                                <group string="Detalles del entregable">
+                            
                                 <field name="descripcion"
                                        nolabel="1"
                                        placeholder="Dimensiones, formato, resolución, duración, variaciones requeridas, especificaciones técnicas..."
                                        style="min-height: 110px;"/>
-                                </group>
-                            </group>
+                                
                         </div>
                         </page>
 
