@@ -190,9 +190,11 @@
                         <page string="📋 Especificaciones"
                               name="tab_specs">
                             <group>
+                                <group string="Detalles del entregable">
                                 <field name="descripcion"
                                        nolabel="1"
                                        placeholder="Dimensiones, formato, resolución, duración, variaciones requeridas, especificaciones técnicas..."/>
+                                </group>
                             </group>
                         </page>
 
