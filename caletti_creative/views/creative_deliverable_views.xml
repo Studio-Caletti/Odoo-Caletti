@@ -195,7 +195,7 @@
                                 <field name="descripcion"
                                        nolabel="1"
                                        placeholder="Dimensiones, formato, resolución, duración, variaciones requeridas, especificaciones técnicas..."
-                                       style="min-height: 100px;"/>
+                                       style="min-height: 110px;"/>
                                 </group>
                             </group>
                         </div>
