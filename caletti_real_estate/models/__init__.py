@@ -16,3 +16,4 @@
 # 5. re_mantenimiento — solicitudes vinculadas a propiedad y contrato
 
 from . import re_propiedad
+from . import re_prospecto
