@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_re_propiedad_asesor,re.propiedad.asesor,model_re_propiedad,caletti_real_estate.group_re_asesor,1,1,1,0
+access_re_propiedad_coordinador,re.propiedad.coordinador,model_re_propiedad,caletti_real_estate.group_re_coordinador,1,1,1,0
+access_re_propiedad_admin,re.propiedad.admin,model_re_propiedad,caletti_real_estate.group_re_admin,1,1,1,1
+access_re_propiedad_foto_asesor,re.propiedad.foto.asesor,model_re_propiedad_foto,caletti_real_estate.group_re_asesor,1,1,1,1
+access_re_propiedad_foto_coordinador,re.propiedad.foto.coordinador,model_re_propiedad_foto,caletti_real_estate.group_re_coordinador,1,1,1,1
+access_re_propiedad_foto_admin,re.propiedad.foto.admin,model_re_propiedad_foto,caletti_real_estate.group_re_admin,1,1,1,1
+access_re_propiedad_portal,re.propiedad.portal,model_re_propiedad,base.group_portal,1,0,0,0

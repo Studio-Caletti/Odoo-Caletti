@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Seguridad: Grupos del Vertical Inmobiliario -->
+<!-- Opción B: Grupos propios — aislados del Core (juntos pero no revueltos) -->
+
+<odoo>
+    <data noupdate="1">
+
+        <!-- ================================================
+             CATEGORÍA DEL VERTICAL INMOBILIARIO
+             Sección exclusiva en el formulario de usuario.
+             Separada de la categoría del Core y de Creative.
+        ================================================ -->
+        <record id="module_category_real_estate" model="ir.module.category">
+            <field name="name">Caletti Real Estate — Gestión Inmobiliaria</field>
+            <field name="description">
+                Niveles de acceso para el vertical de Gestión Inmobiliaria.
+                Independiente del Core Tablero Caletti y del vertical Creative.
+            </field>
+            <field name="sequence">12</field>
+        </record>
+
+        <!-- ================================================
+             ROL BASE: ASESOR INMOBILIARIO
+             Acceso a sus propias propiedades, prospectos
+             y operaciones asignadas.
+             Hereda group_tablero_user para acceso al Core.
+             Puede registrar visitas (mail.activity) y
+             actualizar estados de sus propiedades.
+        ================================================ -->
+        <record id="group_re_asesor" model="res.groups">
+            <field name="name">Asesor: Mis Propiedades</field>
+            <field name="category_id"
+                   ref="module_category_real_estate"/>
+            <field name="implied_ids"
+                   eval="[(4, ref('tablero_kanban_caletti.group_tablero_user'))]"/>
+        </record>
+
+        <!-- ================================================
+             ROL COORDINADOR INMOBILIARIO
+             Acceso a todas las propiedades, prospectos
+             y operaciones del vertical.
+             Puede generar contratos y reportes.
+             Hereda group_re_asesor — todo Coordinador
+             es automáticamente Asesor.
+        ================================================ -->
+        <record id="group_re_coordinador" model="res.groups">
+            <field name="name">Coordinador: Gestión Inmobiliaria</field>
+            <field name="category_id"
+                   ref="module_category_real_estate"/>
+            <field name="implied_ids"
+                   eval="[(4, ref('group_re_asesor'))]"/>
+        </record>
+
+        <!-- ================================================
+             ROL ADMINISTRADOR INMOBILIARIO
+             Control total del vertical: configuración,
+             reportes financieros, comisiones y cartera.
+             Hereda group_re_coordinador — todo Admin
+             es automáticamente Coordinador y Asesor.
+             Auto-asignado a admin y root del sistema.
+        ================================================ -->
+        <record id="group_re_admin" model="res.groups">
+            <field name="name">Administrador: Control Total Inmobiliario</field>
+            <field name="category_id"
+                   ref="module_category_real_estate"/>
+            <field name="implied_ids"
+                   eval="[(4, ref('group_re_coordinador'))]"/>
+            <field name="users"
+                   eval="[(4, ref('base.user_root')),
+                          (4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>
