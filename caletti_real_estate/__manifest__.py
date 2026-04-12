@@ -1,4 +1,4 @@
-# caletti_creative/__manifest__.py
+# caletti_real_estate/__manifest__.py
 # -*- coding: utf-8 -*-
 # --------------------------------------------------------------------------
 #   Part of Caletti Studio.
@@ -8,21 +8,33 @@
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # --------------------------------------------------------------------------
 {
-    'name': 'Caletti Real Estare — Vertical Gestión Inmobilaria',
+    'name': 'Caletti Real Estate — Vertical Gestión Inmobiliaria',
     'version': '17.0.1.0.0',
-    'category': 'Project/Real Estate',
-    'summary': 'Gestión Inmobilaria Renta / Venta / Mantenimiento / Contratos',
+    'category': 'Real Estate',
+    'summary': 'Gestión de propiedades, prospectos, contratos y mantenimiento para asesores inmobiliarios',
     'description': """
-    
-        Caletti Creative — Vertical para Agencias Creativas
-        ====================================================
+
+        Caletti Real Estate — Vertical para Asesores Inmobiliarios
+        ===========================================================
 
         Módulo vertical que extiende el Core de Caletti Studio
-        con funcionalidades específicas para Administradoras y Agentes Inmobilarios:
+        con funcionalidades específicas para asesores y administradoras:
 
-        
+        * Cartera de propiedades: residencial, comercial y terrenos
+        * Gestión de prospectos con pipeline de captación
+        * Contrato unificado: renta O venta en un solo modelo
+        * Seguimiento de mantenimientos por propiedad
+        * Operaciones como tareas del Core (kanban, chatter, portal)
+        * Alertas automáticas: vencimientos, rentas, comisiones
 
         Requiere: tablero_kanban_caletti (Core)
+
+        NOTA ARQUITECTÓNICA — re.visita:
+        Las visitas a propiedades se gestionan como mail.activity en v1.0.
+        Para v2.0 (administradoras con cartera >50 propiedades activas)
+        considerar migración a modelo propio re.visita con campos:
+        propiedad_id, prospecto_id, fecha, duración, resultado,
+        feedback_estructurado, tasa_conversión_a_contrato.
     """,
     'author': 'Carlos Caletti',
     'website': 'https://studio.caletti.com.mx',
@@ -31,24 +43,23 @@
     'currency': 'MXN',
     'support': 'hola@studio.caletti.com.mx',
 
-    # Core es dependencia obligatoria. Helpdesk es opcional — no se declara aquí.
     'depends': [
-        'tablero_kanban_caletti',
-        'account',  # Para campos Monetary (currency_id, presupuesto)
+        'tablero_kanban_caletti',  # Core — obligatorio
+        'account',                  # Para campos Monetary (currency_id, precios)
     ],
 
     'data': [
         'security/security_groups.xml',
         'security/ir.model.access.csv',
         'security/ir_rule.xml',
-        'views/creative_project_views.xml',
-        'views/creative_brief_views.xml',
-        'views/creative_deliverable_views.xml',
-        'views/portal_creative_templates.xml',
-        'data/creative_data.xml',
+        'views/re_propiedad_views.xml',
+        # 'views/re_prospecto_views.xml',   # próximo sprint
+        # 'views/re_operacion_views.xml',   # próximo sprint
+        # 'views/re_contrato_views.xml',    # próximo sprint
+        # 'views/re_mantenimiento_views.xml', # próximo sprint
+        # 'views/portal_re_templates.xml',  # v1.1
+        # 'data/re_data.xml',               # próximo sprint
     ],
-
-    
 
     'images': [
         'static/description/icon.png',
