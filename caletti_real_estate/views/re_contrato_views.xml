@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Vista del Vertical Inmobiliario: Contratos y Pagos -->
+
+<odoo>
+
+    <!-- ================================================
+         CRON: ALERTAS DE VENCIMIENTO
+         Ejecuta diariamente — mismo patrón que Core
+    ================================================ -->
+    <record id="ir_cron_alertas_vencimiento_contratos"
+            model="ir.cron">
+        <field name="name">
+            Real Estate: Alertas de Vencimiento de Contratos
+        </field>
+        <field name="model_id"
+               ref="caletti_real_estate.model_re_contrato"/>
+        <field name="state">code</field>
+        <field name="code">
+            model._cron_alertas_vencimiento()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- ================================================
+         ACCIÓN — CONTRATOS
+    ================================================ -->
+    <record id="action_re_contrato" model="ir.actions.act_window">
+        <field name="name">Contratos</field>
+        <field name="res_model">re.contrato</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Registra el primer contrato!
+            </p>
+            <p>
+                Gestiona contratos de renta y compraventa con
+                seguimiento de pagos, vencimientos y comisiones.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================
+         ACCIÓN — PAGOS (vista global para el asesor)
+    ================================================ -->
+    <record id="action_re_pago" model="ir.actions.act_window">
+        <field name="name">Pagos de Renta</field>
+        <field name="res_model">re.pago</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_pendientes': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Los pagos se generan automáticamente al activar un contrato de renta.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA FORM — CONTRATO
+    ================================================ -->
+    <record id="view_re_contrato_form" model="ir.ui.view">
+        <field name="name">re.contrato.form</field>
+        <field name="model">re.contrato</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- Activar contrato -->
+                    <button name="action_activar"
+                            string="✅ Activar Contrato"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="estado != 'borrador'"/>
+
+                    <!-- Crear renovación -->
+                    <button name="action_crear_renovacion"
+                            string="🔄 Crear Renovación"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="tipo_operacion != 'renta' or estado not in ['activo','por_vencer','vencido']"/>
+
+                    <!-- Terminar contrato -->
+                    <button name="action_terminar"
+                            string="🏁 Terminar Contrato"
+                            type="object"
+                            invisible="estado not in ['activo','por_vencer','vencido']"/>
+
+                    <!-- Cancelar borrador -->
+                    <button name="action_cancelar"
+                            string="❌ Cancelar"
+                            type="object"
+                            invisible="estado != 'borrador'"/>
+
+                    <field name="estado"
+                           widget="statusbar"
+                           statusbar_visible="borrador,activo,por_vencer,terminado"/>
+                </header>
+
+                <sheet>
+
+                    <!-- ALERTA: Vencimiento próximo -->
+                    <div class="alert alert-warning" role="status"
+                         invisible="not alerta_vencimiento">
+                        <i class="fa fa-clock-o me-2" title="Vencimiento"/>
+                        <strong>¡Contrato próximo a vencer!</strong>
+                        Faltan
+                        <field name="dias_para_vencer"
+                               readonly="1"
+                               nolabel="1"
+                               style="display:inline; font-weight:bold;"/>
+                        días (
+                        <field name="fecha_fin"
+                               readonly="1"
+                               nolabel="1"
+                               style="display:inline;"/>
+                        ). Gestiona la renovación o terminación con las partes.
+                    </div>
+
+                    <!-- ALERTA: Inquilino en riesgo -->
+                    <div class="alert alert-danger" role="status"
+                         invisible="not inquilino_riesgo">
+                        <i class="fa fa-exclamation-triangle me-2" title="Riesgo"/>
+                        <strong>¡Inquilino en Riesgo!</strong>
+                        Se han acumulado
+                        <field name="pagos_atrasados_count"
+                               readonly="1"
+                               nolabel="1"
+                               style="display:inline; font-weight:bold;"/>
+                        pagos atrasados. Contacta al inquilino y al propietario.
+                    </div>
+
+                    <!-- ALERTA: Contrato renovado -->
+                    <div class="alert alert-info" role="status"
+                         invisible="estado != 'renovado'">
+                        <i class="fa fa-refresh me-2" title="Renovado"/>
+                        <strong>Contrato Renovado.</strong>
+                        El nuevo contrato es:
+                        <field name="contrato_renovacion_id"
+                               readonly="1"
+                               nolabel="1"
+                               style="display:inline;"/>
+                    </div>
+
+                    <!-- STAT BUTTONS -->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                icon="fa-money"
+                                type="object"
+                                name="pago_ids"
+                                invisible="tipo_operacion != 'renta'">
+                            <field name="pago_count"
+                                   string="Pagos"
+                                   widget="statinfo"/>
+                        </button>
+                        <div class="oe_stat_button"
+                             icon="fa-bar-chart"
+                             invisible="tipo_operacion != 'renta'">
+                            <field name="pago_puntualidad_pct"
+                                   string="Puntualidad"
+                                   widget="statinfo"/>
+                        </div>
+                        <div class="oe_stat_button"
+                             icon="fa-calendar"
+                             invisible="tipo_operacion != 'renta'">
+                            <field name="dias_para_vencer"
+                                   string="Días p/Vencer"
+                                   widget="statinfo"/>
+                        </div>
+                    </div>
+
+                    <!-- TÍTULO -->
+                    <div class="oe_title">
+                        <label for="name" string="Referencia del Contrato"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="CONT-RENTA-2026-001"/>
+                        </h1>
+                    </div>
+
+                    <!-- CABECERA: tipo y partes -->
+                    <group>
+                        <group string="Operación">
+                            <field name="tipo_operacion"/>
+                            <field name="propiedad_id"
+                                   options="{'no_create': True}"/>
+                            <field name="propietario_id" readonly="1"/>
+                            <field name="asesor_id"
+                                   widget="many2one_avatar_user"
+                                   readonly="1"/>
+                        </group>
+                        <group string="Partes">
+                            <field name="inquilino_id"
+                                   invisible="tipo_operacion != 'renta'"
+                                   widget="res_partner_many2one"/>
+                            <field name="comprador_id"
+                                   invisible="tipo_operacion != 'venta'"
+                                   widget="res_partner_many2one"/>
+                            <field name="prospecto_id"
+                                   options="{'no_create': True}"/>
+                            <field name="contrato_origen_id"
+                                   invisible="tipo_operacion != 'renta' or not contrato_origen_id"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <!-- ============================================
+                             TAB 1: VIGENCIA
+                        ============================================ -->
+                        <page string="📅 Vigencia" name="tab_vigencia">
+                            <group>
+                                <group string="Fechas del Contrato">
+                                    <field name="fecha_inicio"/>
+                                    <field name="plazo_meses"
+                                           invisible="tipo_operacion != 'renta'"/>
+                                    <field name="fecha_fin"
+                                           readonly="1"
+                                           invisible="tipo_operacion != 'renta'"/>
+                                    <field name="fecha_fin_manual"
+                                           invisible="tipo_operacion != 'renta'"/>
+                                    <field name="fecha_escrituracion"
+                                           invisible="tipo_operacion != 'venta'"/>
+                                </group>
+                                <group string="Entrega Física">
+                                    <field name="fecha_entrega_llaves"/>
+                                    <field name="fecha_devolucion_llaves"
+                                           invisible="tipo_operacion != 'renta'"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ============================================
+                             TAB 2: CONDICIONES RENTA
+                        ============================================ -->
+                        <page string="🔑 Condiciones de Renta"
+                              name="tab_renta"
+                              invisible="tipo_operacion != 'renta'">
+                            <group>
+                                <group string="Renta Mensual">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="monto_renta"
+                                           widget="monetary"/>
+                                    <field name="periodicidad_pago"/>
+                                    <field name="dia_pago"/>
+                                    <field name="incremento_anual_pct"/>
+                                </group>
+                                <group string="Depósito en Garantía">
+                                    <field name="monto_deposito"
+                                           widget="monetary"/>
+                                    <field name="deposito_recibido"
+                                           widget="boolean_toggle"/>
+                                    <field name="deposito_devuelto"
+                                           widget="boolean_toggle"
+                                           invisible="estado not in ['terminado','vencido']"/>
+                                    <field name="fecha_devolucion_deposito"
+                                           invisible="not deposito_devuelto"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ============================================
+                             TAB 3: CONDICIONES VENTA
+                        ============================================ -->
+                        <page string="💰 Condiciones de Venta"
+                              name="tab_venta"
+                              invisible="tipo_operacion != 'venta'">
+                            <group>
+                                <group string="Precio y Financiamiento">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="precio_venta_final"
+                                           widget="monetary"/>
+                                    <field name="monto_enganche"
+                                           widget="monetary"/>
+                                    <field name="saldo_escrituracion"
+                                           widget="monetary"
+                                           readonly="1"/>
+                                    <field name="tipo_financiamiento"/>
+                                    <field name="banco_hipotecario"
+                                           invisible="tipo_financiamiento not in ['hipotecario','fovissste','mixto']"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ============================================
+                             TAB 4: COMISIÓN DEL ASESOR
+                        ============================================ -->
+                        <page string="💼 Comisión" name="tab_comision">
+                            <div class="alert alert-info" role="status">
+                                <i class="fa fa-info-circle me-2" title="Info"/>
+                                La comisión es pagada por el
+                                <strong>propietario del inmueble</strong>
+                                al asesor. Captura el monto acordado manualmente.
+                                Referencia: el porcentaje configurado
+                                en la ficha de la propiedad.
+                            </div>
+                            <group>
+                                <group string="Monto y Cobro">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="comision_monto"
+                                           widget="monetary"/>
+                                    <field name="comision_pagada"
+                                           widget="boolean_toggle"/>
+                                    <field name="fecha_cobro_comision"
+                                           invisible="not comision_pagada"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ============================================
+                             TAB 5: SEGUIMIENTO DE PAGOS (solo renta)
+                        ============================================ -->
+                        <page string="💳 Pagos de Renta"
+                              name="tab_pagos"
+                              invisible="tipo_operacion != 'renta'">
+
+                            <!-- Métricas de calidad del inquilino -->
+                            <div class="row mb-3"
+                                 invisible="pago_count == 0">
+                                <div class="col-md-3">
+                                    <div class="o_stat_info text-center border rounded p-2">
+                                        <span class="o_stat_value">
+                                            <field name="pago_count" readonly="1"/>
+                                        </span>
+                                        <span class="o_stat_text d-block text-muted">
+                                            Total Pagos
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_info text-center border rounded p-2">
+                                        <span t-attf-class="o_stat_value
+                                            #{'text-danger' if record.pagos_atrasados_count > 0 else 'text-success'}">
+                                            <field name="pagos_atrasados_count" readonly="1"/>
+                                        </span>
+                                        <span class="o_stat_text d-block text-muted">
+                                            Atrasados
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_info text-center border rounded p-2">
+                                        <span class="o_stat_value">
+                                            <field name="pago_puntualidad_pct"
+                                                   readonly="1"
+                                                   widget="float"
+                                                   digits="[6,1]"/>%
+                                        </span>
+                                        <span class="o_stat_text d-block text-muted">
+                                            Puntualidad
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="o_stat_info text-center border rounded p-2">
+                                        <span t-attf-class="o_stat_value
+                                            #{'text-danger fw-bold' if record.inquilino_riesgo else 'text-success'}">
+                                            <t t-if="record.inquilino_riesgo">EN RIESGO</t>
+                                            <t t-else="">CONFIABLE</t>
+                                        </span>
+                                        <span class="o_stat_text d-block text-muted">
+                                            Calidad
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lista de pagos -->
+                            <field name="pago_ids"
+                                   context="{'default_contrato_id': active_id}">
+                                <tree decoration-danger="estado == 'atrasado'"
+                                      decoration-warning="estado == 'parcial'"
+                                      decoration-success="estado == 'pagado' and not pago_tardio"
+                                      decoration-secondary="estado == 'cancelado'">
+                                    <field name="numero_pago"/>
+                                    <field name="name"/>
+                                    <field name="fecha_vencimiento"/>
+                                    <field name="fecha_pago"/>
+                                    <field name="monto_esperado"
+                                           widget="monetary"/>
+                                    <field name="monto_pagado"
+                                           widget="monetary"/>
+                                    <field name="diferencia"
+                                           widget="monetary"
+                                           optional="show"/>
+                                    <field name="metodo_pago"
+                                           optional="show"/>
+                                    <field name="pago_tardio"
+                                           widget="boolean_toggle"
+                                           readonly="1"/>
+                                    <field name="dias_atraso"
+                                           optional="show"/>
+                                    <field name="estado"
+                                           widget="badge"
+                                           decoration-success="estado == 'pagado'"
+                                           decoration-warning="estado == 'parcial'"
+                                           decoration-danger="estado == 'atrasado'"
+                                           decoration-secondary="estado in ['cancelado','pendiente']"/>
+                                    <button name="action_registrar_pago"
+                                            string="Registrar"
+                                            type="object"
+                                            class="btn-sm btn-primary"
+                                            invisible="estado in ['pagado','cancelado']"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <!-- ============================================
+                             TAB 6: TERMINACIÓN
+                        ============================================ -->
+                        <page string="🏁 Terminación"
+                              name="tab_terminacion"
+                              invisible="estado not in ['terminado','vencido','renovado','cancelado']">
+                            <group>
+                                <field name="motivo_terminacion"/>
+                                <field name="notas_terminacion"
+                                       placeholder="Detalle adicional sobre la terminación del contrato..."/>
+                            </group>
+                        </page>
+
+                        <!-- ============================================
+                             TAB 7: CLÁUSULAS Y NOTAS
+                        ============================================ -->
+                        <page string="📝 Cláusulas y Notas"
+                              name="tab_notas">
+                            <group string="Cláusulas Especiales">
+                                <field name="clausulas_especiales"
+                                       placeholder="Condiciones particulares: mascotas, uso del inmueble, remodelaciones autorizadas, restricciones especiales..."
+                                       nolabel="1"/>
+                            </group>
+                            <group string="Notas Internas del Asesor">
+                                <field name="notas_internas"
+                                       placeholder="Observaciones privadas sobre el contrato o las partes..."
+                                       nolabel="1"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA KANBAN — CONTRATOS
+    ================================================ -->
+    <record id="view_re_contrato_kanban" model="ir.ui.view">
+        <field name="name">re.contrato.kanban</field>
+        <field name="model">re.contrato</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="estado"
+                    quick_create="false"
+                    sample="1">
+
+                <field name="name"/>
+                <field name="tipo_operacion"/>
+                <field name="estado"/>
+                <field name="propiedad_id"/>
+                <field name="contraparte_id"/>
+                <field name="monto_renta"/>
+                <field name="precio_venta_final"/>
+                <field name="fecha_fin"/>
+                <field name="dias_para_vencer"/>
+                <field name="alerta_vencimiento"/>
+                <field name="inquilino_riesgo"/>
+                <field name="pago_puntualidad_pct"/>
+                <field name="comision_monto"/>
+                <field name="comision_pagada"/>
+                <field name="currency_id"/>
+                <field name="asesor_id"/>
+                <field name="color"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)}
+                                           oe_kanban_global_click shadow-sm border-rounded mb-2
+                                           #{record.alerta_vencimiento.raw_value ?
+                                             'border border-warning' : ''}
+                                           #{record.inquilino_riesgo.raw_value ?
+                                             'border border-danger' : ''}">
+
+                            <!-- Ribbon: tipo de operación -->
+                            <div class="ribbon ribbon-top-right"
+                                 t-if="record.tipo_operacion.raw_value == 'renta'">
+                                <span class="text-bg-info">RENTA</span>
+                            </div>
+                            <div class="ribbon ribbon-top-right"
+                                 t-if="record.tipo_operacion.raw_value == 'venta'">
+                                <span class="text-bg-warning">VENTA</span>
+                            </div>
+
+                            <div class="oe_kanban_details p-2">
+
+                                <!-- Referencia -->
+                                <strong class="o_kanban_record_title"
+                                        style="font-size: 0.8rem;">
+                                    <field name="name"/>
+                                </strong>
+
+                                <!-- Propiedad -->
+                                <div class="mt-1 small">
+                                    <i class="fa fa-home me-1" title="Propiedad"/>
+                                    <field name="propiedad_id"/>
+                                </div>
+
+                                <!-- Contraparte -->
+                                <div class="small text-muted"
+                                     t-if="record.contraparte_id.value">
+                                    <i class="fa fa-user-o me-1" title="Contraparte"/>
+                                    <field name="contraparte_id"/>
+                                </div>
+
+                                <!-- Monto principal -->
+                                <div class="mt-2 fw-bold">
+                                    <t t-if="record.tipo_operacion.raw_value == 'renta'">
+                                        <i class="fa fa-key me-1" title="Renta"/>
+                                        <field name="monto_renta" widget="monetary"/>
+                                        <span class="text-muted fw-normal">/mes</span>
+                                    </t>
+                                    <t t-if="record.tipo_operacion.raw_value == 'venta'">
+                                        <i class="fa fa-usd me-1" title="Venta"/>
+                                        <field name="precio_venta_final" widget="monetary"/>
+                                    </t>
+                                </div>
+
+                                <!-- Alertas visuales -->
+                                <div t-if="record.alerta_vencimiento.raw_value"
+                                     class="mt-1 small text-warning fw-bold">
+                                    <i class="fa fa-clock-o me-1" title="Vencimiento"/>
+                                    Vence en
+                                    <t t-esc="record.dias_para_vencer.raw_value"/>
+                                    días
+                                </div>
+                                <div t-if="record.inquilino_riesgo.raw_value"
+                                     class="mt-1 small text-danger fw-bold">
+                                    <i class="fa fa-exclamation-triangle me-1"
+                                       title="Riesgo"/>
+                                    Inquilino en riesgo
+                                </div>
+
+                                <!-- Comisión -->
+                                <div t-if="record.comision_monto.raw_value > 0"
+                                     t-attf-class="mt-1 small
+                                     #{'text-success' if record.comision_pagada.raw_value else 'text-muted'}">
+                                    <i class="fa fa-money me-1" title="Comisión"/>
+                                    Comisión:
+                                    <field name="comision_monto" widget="monetary"/>
+                                    <t t-if="record.comision_pagada.raw_value"> ✓</t>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span class="text-muted"
+                                              style="font-size: 0.65rem;"
+                                              t-if="record.fecha_fin.value">
+                                            <i class="fa fa-calendar me-1" title="Vencimiento"/>
+                                            <field name="fecha_fin"/>
+                                        </span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="asesor_id"
+                                               widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA TREE — CONTRATOS
+    ================================================ -->
+    <record id="view_re_contrato_tree" model="ir.ui.view">
+        <field name="name">re.contrato.tree</field>
+        <field name="model">re.contrato</field>
+        <field name="arch" type="xml">
+            <tree sample="1"
+                  decoration-warning="alerta_vencimiento == True"
+                  decoration-danger="inquilino_riesgo == True or estado == 'vencido'"
+                  decoration-success="estado == 'activo' and not alerta_vencimiento"
+                  decoration-secondary="estado in ['terminado','cancelado','renovado']">
+                <field name="name"/>
+                <field name="tipo_operacion"
+                       widget="badge"
+                       decoration-info="tipo_operacion == 'renta'"
+                       decoration-warning="tipo_operacion == 'venta'"/>
+                <field name="propiedad_id"/>
+                <field name="contraparte_id"/>
+                <field name="propietario_id"/>
+                <field name="fecha_inicio"/>
+                <field name="fecha_fin"
+                       invisible="tipo_operacion != 'renta'"/>
+                <field name="dias_para_vencer"
+                       invisible="tipo_operacion != 'renta'"
+                       optional="show"/>
+                <field name="monto_renta"
+                       widget="monetary"
+                       invisible="tipo_operacion != 'renta'"/>
+                <field name="precio_venta_final"
+                       widget="monetary"
+                       invisible="tipo_operacion != 'venta'"
+                       optional="show"/>
+                <field name="comision_monto"
+                       widget="monetary"
+                       optional="show"/>
+                <field name="comision_pagada"
+                       widget="boolean_toggle"
+                       optional="show"/>
+                <field name="pago_puntualidad_pct"
+                       invisible="tipo_operacion != 'renta'"
+                       optional="show"/>
+                <field name="asesor_id"
+                       widget="many2one_avatar_user"/>
+                <field name="estado"
+                       widget="badge"
+                       decoration-success="estado == 'activo'"
+                       decoration-warning="estado == 'por_vencer'"
+                       decoration-danger="estado == 'vencido'"
+                       decoration-info="estado == 'borrador'"
+                       decoration-secondary="estado in ['terminado','cancelado','renovado']"/>
+                <field name="alerta_vencimiento" column_invisible="True"/>
+                <field name="inquilino_riesgo" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA TREE — PAGOS (global)
+    ================================================ -->
+    <record id="view_re_pago_tree" model="ir.ui.view">
+        <field name="name">re.pago.tree</field>
+        <field name="model">re.pago</field>
+        <field name="arch" type="xml">
+            <tree sample="1"
+                  decoration-danger="estado == 'atrasado'"
+                  decoration-warning="estado == 'parcial'"
+                  decoration-success="estado == 'pagado' and not pago_tardio"
+                  decoration-secondary="estado == 'cancelado'">
+                <field name="contrato_id"/>
+                <field name="propiedad_id"/>
+                <field name="inquilino_id"/>
+                <field name="numero_pago"/>
+                <field name="fecha_vencimiento" widget="remaining_days"/>
+                <field name="fecha_pago"/>
+                <field name="monto_esperado" widget="monetary"/>
+                <field name="monto_pagado" widget="monetary"/>
+                <field name="pago_tardio"
+                       widget="boolean_toggle"
+                       readonly="1"/>
+                <field name="dias_atraso" optional="show"/>
+                <field name="metodo_pago" optional="show"/>
+                <field name="estado"
+                       widget="badge"
+                       decoration-success="estado == 'pagado'"
+                       decoration-warning="estado == 'parcial'"
+                       decoration-danger="estado == 'atrasado'"
+                       decoration-secondary="estado in ['cancelado','pendiente']"/>
+                <button name="action_registrar_pago"
+                        string="Registrar"
+                        type="object"
+                        class="btn-sm btn-primary"
+                        invisible="estado in ['pagado','cancelado']"/>
+                <field name="currency_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA SEARCH — CONTRATOS
+    ================================================ -->
+    <record id="view_re_contrato_search" model="ir.ui.view">
+        <field name="name">re.contrato.search</field>
+        <field name="model">re.contrato</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="propiedad_id"/>
+                <field name="contraparte_id"/>
+                <field name="propietario_id"/>
+                <field name="asesor_id"/>
+                <!-- Filtros operación -->
+                <filter string="🔑 Renta"
+                        name="renta"
+                        domain="[('tipo_operacion', '=', 'renta')]"/>
+                <filter string="💰 Venta"
+                        name="venta"
+                        domain="[('tipo_operacion', '=', 'venta')]"/>
+                <separator/>
+                <!-- Filtros estado -->
+                <filter string="✅ Activos"
+                        name="activos"
+                        domain="[('estado', '=', 'activo')]"/>
+                <filter string="⚠️ Por Vencer"
+                        name="por_vencer"
+                        domain="[('estado', '=', 'por_vencer')]"/>
+                <filter string="🔴 Vencidos"
+                        name="vencidos"
+                        domain="[('estado', '=', 'vencido')]"/>
+                <filter string="📝 Borradores"
+                        name="borradores"
+                        domain="[('estado', '=', 'borrador')]"/>
+                <separator/>
+                <!-- Filtros de alerta -->
+                <filter string="🚨 Inquilinos en Riesgo"
+                        name="inquilinos_riesgo"
+                        domain="[('inquilino_riesgo', '=', True)]"/>
+                <filter string="💼 Comisión Pendiente"
+                        name="comision_pendiente"
+                        domain="[('comision_pagada', '=', False),
+                                 ('estado', '=', 'activo')]"/>
+                <separator/>
+                <filter string="Mis Contratos"
+                        name="mis_contratos"
+                        domain="[('asesor_id', '=', uid)]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por...">
+                    <filter string="Estado"
+                            name="group_estado"
+                            context="{'group_by': 'estado'}"/>
+                    <filter string="Tipo de Operación"
+                            name="group_tipo"
+                            context="{'group_by': 'tipo_operacion'}"/>
+                    <filter string="Propiedad"
+                            name="group_propiedad"
+                            context="{'group_by': 'propiedad_id'}"/>
+                    <filter string="Asesor"
+                            name="group_asesor"
+                            context="{'group_by': 'asesor_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA SEARCH — PAGOS
+    ================================================ -->
+    <record id="view_re_pago_search" model="ir.ui.view">
+        <field name="name">re.pago.search</field>
+        <field name="model">re.pago</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="contrato_id"/>
+                <field name="propiedad_id"/>
+                <field name="inquilino_id"/>
+                <filter string="⏳ Pendientes"
+                        name="pendientes"
+                        domain="[('estado', 'in', ['pendiente','atrasado'])]"/>
+                <filter string="🔴 Atrasados"
+                        name="atrasados"
+                        domain="[('estado', '=', 'atrasado')]"/>
+                <filter string="⚠️ Parciales"
+                        name="parciales"
+                        domain="[('estado', '=', 'parcial')]"/>
+                <filter string="✅ Pagados"
+                        name="pagados"
+                        domain="[('estado', '=', 'pagado')]"/>
+                <filter string="⏰ Pagos Tardíos"
+                        name="tardios"
+                        domain="[('pago_tardio', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por...">
+                    <filter string="Contrato"
+                            name="group_contrato"
+                            context="{'group_by': 'contrato_id'}"/>
+                    <filter string="Propiedad"
+                            name="group_propiedad"
+                            context="{'group_by': 'propiedad_id'}"/>
+                    <filter string="Inquilino"
+                            name="group_inquilino"
+                            context="{'group_by': 'inquilino_id'}"/>
+                    <filter string="Estado"
+                            name="group_estado"
+                            context="{'group_by': 'estado'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================
+         MENÚS — CONTRATOS Y PAGOS
+    ================================================ -->
+    <menuitem id="menu_re_contratos"
+              name="Contratos"
+              parent="menu_re_root"
+              action="action_re_contrato"
+              sequence="30"/>
+
+    <menuitem id="menu_re_pagos"
+              name="Pagos de Renta"
+              parent="menu_re_root"
+              action="action_re_pago"
+              sequence="40"/>
+
+</odoo>

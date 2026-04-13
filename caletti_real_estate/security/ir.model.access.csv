@@ -9,3 +9,9 @@ access_re_propiedad_portal,re.propiedad.portal,model_re_propiedad,base.group_por
 access_re_prospecto_asesor,re.prospecto.asesor,model_re_prospecto,caletti_real_estate.group_re_asesor,1,1,1,0
 access_re_prospecto_coordinador,re.prospecto.coordinador,model_re_prospecto,caletti_real_estate.group_re_coordinador,1,1,1,0
 access_re_prospecto_admin,re.prospecto.admin,model_re_prospecto,caletti_real_estate.group_re_admin,1,1,1,1
+access_re_contrato_asesor,re.contrato.asesor,model_re_contrato,caletti_real_estate.group_re_asesor,1,1,1,0
+access_re_contrato_coordinador,re.contrato.coordinador,model_re_contrato,caletti_real_estate.group_re_coordinador,1,1,1,0
+access_re_contrato_admin,re.contrato.admin,model_re_contrato,caletti_real_estate.group_re_admin,1,1,1,1
+access_re_pago_asesor,re.pago.asesor,model_re_pago,caletti_real_estate.group_re_asesor,1,1,1,0
+access_re_pago_coordinador,re.pago.coordinador,model_re_pago,caletti_real_estate.group_re_coordinador,1,1,1,0
+access_re_pago_admin,re.pago.admin,model_re_pago,caletti_real_estate.group_re_admin,1,1,1,1
