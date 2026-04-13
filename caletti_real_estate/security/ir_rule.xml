@@ -171,5 +171,54 @@
             <field name="domain_force">[(1, '=', 1)]</field>
         </record>
 
+        <!-- ================================================
+             RECORD RULES: RE.MANTENIMIENTO
+        ================================================ -->
+
+        <record id="rule_re_mantenimiento_asesor" model="ir.rule">
+            <field name="name">Mantenimiento: Asesor ve sus registros</field>
+            <field name="model_id" ref="model_re_mantenimiento"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_real_estate.group_re_asesor'))]"/>
+            <field name="domain_force">[
+                ('asesor_id', '=', user.id)
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_re_mantenimiento_coordinador" model="ir.rule">
+            <field name="name">Mantenimiento: Coordinador acceso total</field>
+            <field name="model_id" ref="model_re_mantenimiento"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_real_estate.group_re_coordinador'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="rule_re_mantenimiento_admin" model="ir.rule">
+            <field name="name">Mantenimiento: Admin control total</field>
+            <field name="model_id" ref="model_re_mantenimiento"/>
+            <field name="groups"
+                   eval="[(4, ref('caletti_real_estate.group_re_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Portal: inquilino ve solo mantenimientos de su propiedad -->
+        <record id="rule_re_mantenimiento_portal" model="ir.rule">
+            <field name="name">Mantenimiento: Portal ve tickets de su propiedad</field>
+            <field name="model_id" ref="model_re_mantenimiento"/>
+            <field name="groups"
+                   eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[
+                ('propiedad_id.propietario_id', '=', user.partner_id.id)
+            ]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>
