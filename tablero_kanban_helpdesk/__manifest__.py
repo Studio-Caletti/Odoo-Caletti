@@ -9,7 +9,7 @@
 #   Lead Architect & Developer: Carlos Caletti - 2026
 # --------------------------------------------------------------------------
 {
-    'name': 'Tablero Kanban - Helpdesk Caletti Extension ',
+    'name': 'Caletti Helpdesk Extension ',
     'version': '17.0.2.0.0', #Nueva versión
     'category': 'Services/Helpdesk',
     'summary': 'Extensión Sistema de Tickets con Mail Alias y Portal para el Core de Caletti Studio',
