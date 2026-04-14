@@ -675,6 +675,17 @@ class RePropiedad(models.Model):
         """Acción rápida — suspende la propiedad del mercado."""
         return self.write({'estado': ESTADO_SUSPENDIDA})
 
+    def action_view_photos(self):
+    self.ensure_one()
+    return {
+        'name': _('Fotos de la Propiedad'),
+        'type': 'ir.actions.act_window',
+        'res_model': 're.propiedad.foto',
+        'view_mode': 'kanban,tree,form',
+        'domain': [('propiedad_id', '=', self.id)],
+        'context': {'default_propiedad_id': self.id},
+    }
+
 
 # =============================================================================
 # SUBMODELO: re.propiedad.foto
