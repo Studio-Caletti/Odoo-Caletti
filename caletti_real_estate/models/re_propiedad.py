@@ -483,6 +483,8 @@ class RePropiedad(models.Model):
         string='Amenidades / Características Extra',
         help="Piscina, gimnasio, seguridad 24h, cisterna, paneles solares, etc."
     )
+    
+    color = fields.Integer(string='Color Index', default=0)
 
     # =========================================================================
     # LÓGICA COMPUTED
