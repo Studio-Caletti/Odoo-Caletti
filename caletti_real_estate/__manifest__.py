@@ -54,9 +54,9 @@
         'security/ir_rule.xml',
         'views/re_propiedad_views.xml',
         'views/re_prospecto_views.xml',
+        'views/re_operacion_views.xml',
         'views/re_contrato_views.xml',
         'views/re_mantenimiento_views.xml',
-        # 'views/re_operacion_views.xml',   # próximo sprint
         # 'views/re_contrato_views.xml',    # próximo sprint
         # 'views/re_mantenimiento_views.xml', # próximo sprint
         # 'views/portal_re_templates.xml',  # v1.1
