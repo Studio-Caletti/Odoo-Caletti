@@ -690,7 +690,7 @@ class RePropiedad(models.Model):
 # =============================================================================
 # SUBMODELO: re.propiedad.foto
 # Patrón idéntico a product.image de Odoo nativo
-# Límite controlado por constante MAX_FOTOS_PROPIEDAD en re.propiedad
+# Límite es controlado por constante MAX_FOTOS_PROPIEDAD en re.propiedad
 # =============================================================================
 
 class RePropiedadFoto(models.Model):
