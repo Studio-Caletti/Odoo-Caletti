@@ -676,8 +676,8 @@ class RePropiedad(models.Model):
         return self.write({'estado': ESTADO_SUSPENDIDA})
 
     def action_view_photos(self):
-    self.ensure_one()
-    return {
+        self.ensure_one()
+        return {
         'name': _('Fotos de la Propiedad'),
         'type': 'ir.actions.act_window',
         'res_model': 're.propiedad.foto',
