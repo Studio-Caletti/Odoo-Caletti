@@ -11,7 +11,7 @@
 <!-- Opción B: Grupos propios — aislados del Core (juntos pero no revueltos) -->
 
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <!-- ================================================
              CATEGORÍA DEL VERTICAL INMOBILIARIO

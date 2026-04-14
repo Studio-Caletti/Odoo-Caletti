@@ -57,8 +57,6 @@
         'views/re_operacion_views.xml',
         'views/re_contrato_views.xml',
         'views/re_mantenimiento_views.xml',
-        # 'views/re_contrato_views.xml',    # próximo sprint
-        # 'views/re_mantenimiento_views.xml', # próximo sprint
         # 'views/portal_re_templates.xml',  # v1.1
         # 'data/re_data.xml',               # próximo sprint
     ],
