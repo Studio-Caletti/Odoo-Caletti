@@ -444,6 +444,8 @@ class ReMantenimiento(models.Model):
              "en el Chatter. Las fotos se suben como adjuntos al mensaje."
     )
 
+    color = fields.Integer(string='Color Index', default=0)
+
     # =========================================================================
     # LÓGICA COMPUTED
     # =========================================================================

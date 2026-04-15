@@ -185,6 +185,8 @@ class ReOperacion(models.Model):
         help="Días desde que la operación fue creada"
     )
 
+    color = fields.Integer(string='Color Index', default=0)
+
     # =========================================================================
     # COMPUTED
     # =========================================================================

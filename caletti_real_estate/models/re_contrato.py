@@ -554,6 +554,8 @@ class ReContrato(models.Model):
              "o las partes involucradas"
     )
 
+    color = fields.Integer(string='Color Index', default=0)
+
     # =========================================================================
     # LÓGICA COMPUTED
     # =========================================================================

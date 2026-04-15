@@ -447,6 +447,8 @@ class ReProspecto(models.Model):
              "condiciones particulares, historial de la relación."
     )
 
+    color = fields.Integer(string='Color Index', default=0)
+
     # =========================================================================
     # CAMPOS COMPUTED
     # =========================================================================
