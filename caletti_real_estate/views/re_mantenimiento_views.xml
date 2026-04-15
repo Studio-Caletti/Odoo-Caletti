@@ -437,7 +437,7 @@
                   decoration-danger="prioridad == 'urgente' and estado not in ['resuelto','cerrado','cancelado']"
                   decoration-warning="prioridad == 'alta' and estado not in ['resuelto','cerrado','cancelado']"
                   decoration-success="estado == 'cerrado'"
-                  decoration-info="estado == 'cancelado'">
+                  decoration-muted="estado == 'cancelado'">
                 <field name="ticket_ref"/>
                 <field name="name"/>
                 <field name="propiedad_id"/>
@@ -467,8 +467,7 @@
                        widget="many2one_avatar_user"/>
                 <field name="estado"
                        widget="badge"
-                       decoration-info="estado == 'solicitado'"
-                       decoration-info="estado == 'evaluando'"
+                       decoration-info="estado in ['solicitado', 'evaluando']"
                        decoration-warning="estado == 'aprobado'"
                        decoration-primary="estado == 'en_proceso'"
                        decoration-success="estado in ['resuelto','cerrado']"
