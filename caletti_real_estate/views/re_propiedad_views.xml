@@ -594,12 +594,12 @@
 
     <!-- ================================================
          ESTRUCTURA DE MENÚS — VERTICAL INMOBILIARIO
+         groups="caletti_real_estate.group_re_asesor,
+                      caletti_real_estate.group_re_admin"
     ================================================ -->
 
     <menuitem id="menu_re_root"
               name="Caletti Real Estate"
-              groups="caletti_real_estate.group_re_asesor,
-                      caletti_real_estate.group_re_admin"
               web_icon="caletti_real_estate,static/description/icon.png"
               sequence="6"/>
 
