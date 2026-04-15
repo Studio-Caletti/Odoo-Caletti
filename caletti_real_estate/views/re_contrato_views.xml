@@ -461,7 +461,7 @@
             </tree>
         </field>
     </record>
-    
+
 
     <!-- ================================================
          VISTA TREE — PAGOS (global)
@@ -473,32 +473,47 @@
             <tree sample="1"
                   decoration-danger="estado == 'atrasado'"
                   decoration-warning="estado == 'parcial'"
-                  decoration-success="estado == 'pagado' and not pago_tardio"
-                  decoration-secondary="estado == 'cancelado'">
-                <field name="contrato_id"/>
-                <field name="propiedad_id"/>
-                <field name="inquilino_id"/>
-                <field name="numero_pago"/>
+                  decoration-success="estado == 'pagado' and pago_tardio == False"
+                  decoration-muted="estado == 'cancelado'">
+                
+                <field name="contrato_id" readonly="1"/>
+                <field name="propiedad_id" optional="show"/>
+                <field name="inquilino_id" optional="show"/>
+                <field name="numero_pago" widget="handle" optional="hide"/>
+                <field name="numero_pago" string="Nº"/>
+                
                 <field name="fecha_vencimiento" widget="remaining_days"/>
-                <field name="fecha_pago"/>
+                <field name="fecha_pago" optional="show"/>
+                
                 <field name="monto_esperado" widget="monetary"/>
                 <field name="monto_pagado" widget="monetary"/>
+                
                 <field name="pago_tardio"
                        widget="boolean_toggle"
-                       readonly="1"/>
-                <field name="dias_atraso" optional="show"/>
-                <field name="metodo_pago" optional="show"/>
+                       readonly="1"
+                       optional="show"/>
+                
+                <field name="dias_atraso" 
+                       optional="show"
+                       decoration-danger="dias_atraso > 0"/>
+                
+                <field name="metodo_pago" optional="hide"/>
+                
                 <field name="estado"
                        widget="badge"
                        decoration-success="estado == 'pagado'"
                        decoration-warning="estado == 'parcial'"
                        decoration-danger="estado == 'atrasado'"
-                       decoration-secondary="estado in ['cancelado','pendiente']"/>
+                       decoration-info="estado == 'pendiente'"
+                       decoration-muted="estado == 'cancelado'"/>
+
                 <button name="action_registrar_pago"
                         string="Registrar"
                         type="object"
-                        class="btn-sm btn-primary"
+                        icon="fa-money"
+                        class="btn-primary"
                         invisible="estado in ['pagado','cancelado']"/>
+                
                 <field name="currency_id" column_invisible="True"/>
             </tree>
         </field>
