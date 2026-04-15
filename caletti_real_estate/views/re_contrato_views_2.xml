@@ -1,0 +1,135 @@
+<record id="view_re_contrato_form" model="ir.ui.view">
+        <field name="name">re.contrato.form</field>
+        <field name="model">re.contrato</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- Activar contrato -->
+                    <button name="action_activar" 
+                            string="✅ Activar Contrato" 
+                            type="object" 
+                            class="oe_highlight" 
+                            invisible="estado != 'borrador'"/>
+
+                   <!-- Crear renovación -->         
+                    <button name="action_crear_renovacion"
+                            string="🔄 Crear Renovación" 
+                            type="object" 
+                            class="oe_highlight" 
+                            invisible="tipo_operacion != 'renta' or estado not in ['activo','por_vencer','vencido']"/>
+                    <!-- Terminar contrato -->        
+                    <button name="action_terminar" 
+                            string="🚫 Terminar Contrato" 
+                            type="object" 
+                            invisible="estado not in ['activo','por_vencer','vencido']"/>
+
+                    <!-- Cancelar borrador -->
+                    <button name="action_cancelar"
+                            string="❌ Cancelar"
+                            type="object"
+                            invisible="estado != 'borrador'"/>
+
+                    <field name="estado" 
+                           widget="statusbar" 
+                           statusbar_visible="borrador,activo,finalizado"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" 
+                        invisible="not alerta_vencimiento or estado != 'activo'">
+                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <strong>Atención:</strong> Este contrato vence en <field name="dias_para_vencer" readonly="1"/> días.
+                    </div>
+                    
+                    <div class="alert alert-info" role="status" invisible="estado != 'renovado'">
+                        <i class="fa fa-refresh me-2" title="Renovado"/>
+                        <strong>Contrato Renovado.</strong> El nuevo contrato es: <field name="contrato_renovacion_id" readonly="1" nolabel="1" style="display:inline;"/>
+                    </div>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-money" type="object" name="action_view_pagos" invisible="tipo_operacion != 'renta'">
+                            <field name="pago_count" string="Pagos" widget="statinfo"/>
+                        </button>
+                        
+                        <div class="oe_stat_button" icon="fa-bar-chart" invisible="tipo_operacion != 'renta'">
+                            <field name="pago_puntualidad_pct" widget="percentpie" string="Puntualidad"/>
+                        </div>
+                    </div>
+
+                    <div class="oe_title">
+                        <span class="o_form_label">Referencia de Contrato</span>
+                        <h1><field name="name" placeholder="Ej: CONT-2026-001"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="📍 Ubicación y Asignación">
+                            <field name="propiedad_id" options="{'no_create': True}"/>
+                            <field name="tipo_operacion" invisible="1"/>
+                            <field name="propietario_id"/>
+                            <field name="asesor_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group string="👤 Contraparte">
+                            <field name="inquilino_id" invisible="tipo_operacion != 'renta'" required="tipo_operacion == 'renta'"/>
+                            <field name="comprador_id" invisible="tipo_operacion != 'venta'" required="tipo_operacion == 'venta'"/>
+                            <field name="inquilino_riesgo" invisible="tipo_operacion != 'renta'" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="📅 Vigencia y Plazos" name="tab_vigencia">
+                            <group>
+                                <group>
+                                    <field name="fecha_inicio"/>
+                                    <field name="fecha_fin" invisible="tipo_operacion != 'renta'" required="tipo_operacion == 'renta'"/>
+                                    <field name="plazo_meses" invisible="tipo_operacion != 'renta'"/>
+                                </group>
+                                <group invisible="tipo_operacion != 'renta'">
+                                    <field name="dia_pago"/>
+                                    <field name="periodicidad"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="💰 Condiciones Económicas" name="tab_economia">
+                            <group>
+                                <group string="Renta" invisible="tipo_operacion != 'renta'">
+                                    <field name="monto_renta" widget="monetary"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="monto_deposito" widget="monetary"/>
+                                    <field name="deposito_devuelto"/>
+                                </group>
+                                <group string="Venta" invisible="tipo_operacion != 'venta'">
+                                    <field name="precio_venta_final" widget="monetary"/>
+                                </group>
+                                <group string="Comisiones y Ajustes">
+                                    <field name="incremento_anual_pct" invisible="tipo_operacion != 'renta'"/>
+                                    <field name="comision_monto" widget="monetary"/>
+                                    <field name="comision_pagada"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="💳 Pagos de Renta" name="tab_pagos" invisible="tipo_operacion != 'renta'">
+                            <field name="pago_ids">
+                                <tree editable="bottom" decoration-danger="estado == 'atrasado'" decoration-success="estado == 'pagado'">
+                                    <field name="numero_pago"/>
+                                    <field name="fecha_vencimiento"/>
+                                    <field name="monto_esperado" sum="Total Esperado"/>
+                                    <field name="monto_pagado" sum="Total Recibido"/>
+                                    <field name="estado" widget="badge" decoration-info="estado == 'pendiente'" decoration-success="estado == 'pagado'" decoration-danger="estado == 'atrasado'"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="📝 Notas y Documentación" name="tab_notas">
+                            <field name="notas" placeholder="Términos especiales, acuerdos de mantenimiento, etc..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>

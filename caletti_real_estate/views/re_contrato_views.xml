@@ -152,15 +152,13 @@
 
                     <!-- STAT BUTTONS -->
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button"
-                                icon="fa-money"
-                                type="object"
-                                name="pago_ids"
-                                invisible="tipo_operacion != 'renta'">
+                        <div class="oe_stat_button"
+                             icon="fa-money"
+                             invisible="tipo_operacion != 'renta'">
                             <field name="pago_count"
                                    string="Pagos"
                                    widget="statinfo"/>
-                        </button>
+                        </div>
                         <div class="oe_stat_button"
                              icon="fa-bar-chart"
                              invisible="tipo_operacion != 'renta'">
