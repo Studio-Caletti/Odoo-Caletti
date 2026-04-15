@@ -733,6 +733,18 @@ class ReContrato(models.Model):
     # ACCIONES DE WORKFLOW
     # =========================================================================
 
+    def action_view_pagos(self):
+        """ Acción para el Stat Button: abre la lista de pagos vinculados """
+        self.ensure_one()
+        return {
+            'name': _('Pagos de Renta'),
+            'type': 'ir.actions.act_window',
+            'res_model': 're.pago',
+            'view_mode': 'tree,form',
+            'domain': [('contrato_id', '=', self.id)],
+            'context': {'default_contrato_id': self.id},
+        }
+
    
     def action_activar(self):
         """
