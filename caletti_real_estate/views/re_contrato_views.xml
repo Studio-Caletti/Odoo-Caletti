@@ -179,7 +179,7 @@
                                     <field name="comision_pagada" widget="boolean_toggle"/>
                                 </group>
                                 <group string="Fecha de Cobro">
-                                    <field name="fecha_pago_comision"/>
+                                    <field name="fecha_cobro_comision"/>
                                 </group>
                             </group>
                         </page>
