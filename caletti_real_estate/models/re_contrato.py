@@ -24,7 +24,7 @@ TIPO_RENTA  = 'renta'
 TIPO_VENTA  = 'venta'
 
 # =============================================================================
-# CONSTANTES: ESTADOS DEL CONTRATO
+# CONSTANTES: ESTADOS DEL CONTRATO contemplados
 # =============================================================================
 ESTADO_BORRADOR    = 'borrador'      # en preparación, aún no firmado
 ESTADO_ACTIVO      = 'activo'        # firmado y vigente
@@ -733,20 +733,7 @@ class ReContrato(models.Model):
     # ACCIONES DE WORKFLOW
     # =========================================================================
 
-    def action_view_pagos(self):
-    """
-    Abre la vista de lista de los pagos asociados a este contrato.
-    """
-        self.ensure_one()
-        return {
-            'name': _('Pagos de Renta'),
-            'type': 'ir.actions.act_window',
-            'res_model': 're.pago',
-            'view_mode': 'tree,form',
-            'domain': [('contrato_id', '=', self.id)],
-            'context': {'default_contrato_id': self.id},
-        }
-
+   
     def action_activar(self):
         """
         Activa el contrato — de borrador a activo.
