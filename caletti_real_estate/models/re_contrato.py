@@ -548,6 +548,13 @@ class ReContrato(models.Model):
     # SECCIÓN 10: NOTAS
     # =========================================================================
 
+     notas = fields.Text(
+        string='Notas',
+        help="Observaciones sobre el pago: acuerdos especiales, "
+             "descuentos aplicados, penalizaciones, restricciones, etc."
+    )
+
+
     clausulas_especiales = fields.Text(
         string='Cláusulas Especiales',
         tracking=True,
