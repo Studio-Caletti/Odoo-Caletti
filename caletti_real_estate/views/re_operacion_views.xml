@@ -296,42 +296,46 @@
     <!-- ================================================
          VISTA TREE — OPERACIONES
     ================================================ -->
-    <record id="view_re_operacion_tree" model="ir.ui.view">
+  <record id="view_re_operacion_tree" model="ir.ui.view">
         <field name="name">re.operacion.tree</field>
         <field name="model">tablero.tarea</field>
         <field name="arch" type="xml">
             <tree sample="1"
-                  decoration-danger="is_overdue == True"
+                  decoration-danger="is_overdue"
                   decoration-success="etapa_re == 'cierre'"
-                  decoration-secondary="etapa_re == 'cerrada'">
-                <field name="name"/>
+                  decoration-muted="etapa_re == 'cerrada'">
+                
+                <field name="is_overdue" column_invisible="True"/>
+                <field name="es_operacion_re" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="etapa_re" column_invisible="True"/> <field name="name"/>
                 <field name="tipo_operacion_re"
                        widget="badge"
                        decoration-info="tipo_operacion_re == 'renta'"
                        decoration-warning="tipo_operacion_re == 'venta'"/>
                 <field name="propiedad_id"/>
                 <field name="tipo_propiedad_re"/>
-                <field name="propietario_id"/>
+                <field name="propietario_id" optional="hide"/>
                 <field name="prospecto_activo_id" optional="show"/>
                 <field name="precio_objetivo"
                        widget="monetary"
+                       options="{'currency_field': 'currency_id'}"
                        optional="show"/>
                 <field name="dias_en_operacion"/>
                 <field name="date_deadline"
                        widget="remaining_days"
                        optional="show"/>
                 <field name="user_id"
-                       widget="many2one_avatar_user"/>
+                       widget="many2one_avatar_user"
+                       string="Asesor"/>
+                
                 <field name="etapa_re"
                        widget="badge"
                        decoration-info="etapa_re in ['captacion','difusion']"
                        decoration-warning="etapa_re in ['con_prospecto','negociacion']"
                        decoration-primary="etapa_re == 'documentacion'"
                        decoration-success="etapa_re == 'cierre'"
-                       decoration-secondary="etapa_re == 'cerrada'"/>
-                <field name="is_overdue" column_invisible="True"/>
-                <field name="es_operacion_re" column_invisible="True"/>
-                <field name="currency_id" column_invisible="True"/>
+                       decoration-muted="etapa_re == 'cerrada'"/>
             </tree>
         </field>
     </record>
