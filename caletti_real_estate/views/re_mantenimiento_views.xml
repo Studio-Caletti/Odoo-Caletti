@@ -437,7 +437,7 @@
                   decoration-danger="prioridad == 'urgente' and estado not in ['resuelto','cerrado','cancelado']"
                   decoration-warning="prioridad == 'alta' and estado not in ['resuelto','cerrado','cancelado']"
                   decoration-success="estado == 'cerrado'"
-                  decoration-secondary="estado == 'cancelado'">
+                  decoration-info="estado == 'cancelado'">
                 <field name="ticket_ref"/>
                 <field name="name"/>
                 <field name="propiedad_id"/>
@@ -446,7 +446,7 @@
                        widget="badge"
                        decoration-danger="prioridad == 'urgente'"
                        decoration-warning="prioridad == 'alta'"
-                       decoration-secondary="prioridad in ['normal','baja']"/>
+                       decoration-info="prioridad in ['normal','baja']"/>
                 <field name="tipo_ejecutor"/>
                 <field name="proveedor_id" optional="show"/>
                 <field name="fecha_solicitud"/>
@@ -467,7 +467,7 @@
                        widget="many2one_avatar_user"/>
                 <field name="estado"
                        widget="badge"
-                       decoration-secondary="estado == 'solicitado'"
+                       decoration-info="estado == 'solicitado'"
                        decoration-info="estado == 'evaluando'"
                        decoration-warning="estado == 'aprobado'"
                        decoration-primary="estado == 'en_proceso'"
