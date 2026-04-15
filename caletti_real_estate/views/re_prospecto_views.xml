@@ -475,7 +475,10 @@
                   decoration-success="etapa == 'cerrado'"
                   decoration-danger="etapa == 'descartado'"
                   decoration-warning="calificacion == 'caliente' and etapa not in ['cerrado','descartado']"
-                  decoration-secondary="etapa == 'descartado'">
+                  decoration-muted="etapa == 'descartado'"> 
+                <field name="currency_id" column_invisible="True"/>
+                <field name="color" column_invisible="True"/>
+                
                 <field name="name"/>
                 <field name="telefono"/>
                 <field name="tipo_interes"/>
@@ -483,13 +486,14 @@
                        widget="badge"
                        decoration-danger="calificacion == 'caliente'"
                        decoration-warning="calificacion == 'tibio'"
-                       decoration-secondary="calificacion == 'frio'"/>
-                <field name="fuente_captacion"/>
+                       decoration-info="calificacion == 'frio'"/>
+                <field name="fuente_captacion" optional="hide"/>
                 <field name="zona_interes"/>
                 <field name="presupuesto_max"
                        widget="monetary"
+                       options="{'currency_field': 'currency_id'}"
                        optional="show"/>
-                <field name="propiedad_count"/>
+                <field name="propiedad_count" string="Fotos/Props"/>
                 <field name="propiedad_elegida_id" optional="show"/>
                 <field name="asesor_id" widget="many2one_avatar_user"/>
                 <field name="dias_en_pipeline"/>
@@ -501,7 +505,6 @@
                        decoration-primary="etapa in ['investigacion','negociacion']"
                        decoration-success="etapa == 'cerrado'"
                        decoration-danger="etapa == 'descartado'"/>
-                <field name="currency_id" column_invisible="True"/>
             </tree>
         </field>
     </record>
