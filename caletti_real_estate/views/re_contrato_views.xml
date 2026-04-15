@@ -82,6 +82,10 @@
                 </header>
 
                 <sheet>
+                    <field name="alerta_vencimiento" invisible="1"/>
+                    <field name="inquilino_riesgo" invisible="1"/>
+                    <field name="pago_puntualidad_pct" invisible="1"/>
+                    
                     <div class="alert alert-warning" role="status" invisible="not alerta_vencimiento">
                         <i class="fa fa-clock-o me-2" title="Vencimiento"/>
                         <strong>¡Contrato próximo a vencer!</strong>
