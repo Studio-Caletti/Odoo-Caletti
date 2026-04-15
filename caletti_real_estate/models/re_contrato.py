@@ -537,6 +537,13 @@ class ReContrato(models.Model):
              f"{UMBRAL_PAGOS_ATRASADOS} pagos atrasados"
     )
 
+    mantenimiento_ids = fields.One2many(
+        're.mantenimiento', # Modelo destino
+        'contrato_id',      # Campo inverso en re.mantenimiento
+        string='Mantenimientos Relacionados',
+        help="Historial de mantenimientos realizados durante la vigencia de este contrato."
+    )
+
     # =========================================================================
     # SECCIÓN 10: NOTAS
     # =========================================================================
