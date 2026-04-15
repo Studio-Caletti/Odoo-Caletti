@@ -85,7 +85,7 @@
                     <field name="alerta_vencimiento" invisible="1"/>
                     <field name="inquilino_riesgo" invisible="1"/>
                     <field name="pago_puntualidad_pct" invisible="1"/>
-                    
+
                     <div class="alert alert-warning" role="status" invisible="not alerta_vencimiento">
                         <i class="fa fa-clock-o me-2" title="Vencimiento"/>
                         <strong>¡Contrato próximo a vencer!</strong>
@@ -404,6 +404,7 @@
     <!-- ================================================
          VISTA TREE — CONTRATOS
     ================================================ -->
+
     <record id="view_re_contrato_tree" model="ir.ui.view">
         <field name="name">re.contrato.tree</field>
         <field name="model">re.contrato</field>
@@ -411,53 +412,56 @@
             <tree sample="1"
                   decoration-warning="alerta_vencimiento == True"
                   decoration-danger="inquilino_riesgo == True or estado == 'vencido'"
-                  decoration-success="estado == 'activo' and not alerta_vencimiento"
-                  decoration-secondary="estado in ['terminado','cancelado','renovado']">
-                <field name="name"/>
+                  decoration-success="estado == 'activo' and alerta_vencimiento == False"
+                  decoration-muted="estado in ['terminado','cancelado','renovado']">
+                
+                <field name="name" readonly="1"/>
                 <field name="tipo_operacion"
                        widget="badge"
                        decoration-info="tipo_operacion == 'renta'"
                        decoration-warning="tipo_operacion == 'venta'"/>
                 <field name="propiedad_id"/>
                 <field name="contraparte_id"/>
-                <field name="propietario_id"/>
                 <field name="fecha_inicio"/>
-                <field name="fecha_fin"
-                       invisible="tipo_operacion != 'renta'"/>
-                <field name="dias_para_vencer"
-                       invisible="tipo_operacion != 'renta'"
+                
+                <field name="fecha_fin" optional="show"/>
+                <field name="dias_para_vencer" optional="hide"/>
+                
+                <field name="monto_renta" 
+                       widget="monetary" 
                        optional="show"/>
-                <field name="monto_renta"
-                       widget="monetary"
-                       invisible="tipo_operacion != 'renta'"/>
-                <field name="precio_venta_final"
-                       widget="monetary"
-                       invisible="tipo_operacion != 'venta'"
+                <field name="precio_venta_final" 
+                       widget="monetary" 
                        optional="show"/>
-                <field name="comision_monto"
-                       widget="monetary"
+                
+                <field name="comision_monto" 
+                       widget="monetary" 
                        optional="show"/>
-                <field name="comision_pagada"
-                       widget="boolean_toggle"
+                <field name="comision_pagada" 
+                       widget="boolean_toggle" 
                        optional="show"/>
-                <field name="pago_puntualidad_pct"
-                       invisible="tipo_operacion != 'renta'"
+                
+                <field name="pago_puntualidad_pct" 
+                       widget="percentage"
                        optional="show"/>
-                <field name="asesor_id"
-                       widget="many2one_avatar_user"/>
+                
+                <field name="asesor_id" widget="many2one_avatar_user"/>
+                
                 <field name="estado"
                        widget="badge"
                        decoration-success="estado == 'activo'"
                        decoration-warning="estado == 'por_vencer'"
                        decoration-danger="estado == 'vencido'"
                        decoration-info="estado == 'borrador'"
-                       decoration-secondary="estado in ['terminado','cancelado','renovado']"/>
+                       decoration-muted="estado in ['terminado','cancelado','renovado']"/>
+
                 <field name="alerta_vencimiento" column_invisible="True"/>
                 <field name="inquilino_riesgo" column_invisible="True"/>
                 <field name="currency_id" column_invisible="True"/>
             </tree>
         </field>
     </record>
+    
 
     <!-- ================================================
          VISTA TREE — PAGOS (global)
