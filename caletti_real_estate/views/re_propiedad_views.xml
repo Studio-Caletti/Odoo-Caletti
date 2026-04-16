@@ -346,11 +346,19 @@
                             </group>
 
                             <!-- Amenidades — todos los tipos -->
-                            <group string="Amenidades y Extras">
+                            <div>
+                                <strong>Amenidades Extras</strong>
                                 <field name="amenidades"
                                        placeholder="Piscina, gimnasio, seguridad 24h, cisterna, paneles solares, jardín, terraza..."
                                        nolabel="1"/>
-                            </group>
+                            </div>
+
+
+                            <!-- <group string="Amenidades y Extras">
+                                <field name="amenidades"
+                                       placeholder="Piscina, gimnasio, seguridad 24h, cisterna, paneles solares, jardín, terraza..."
+                                       nolabel="1"/>
+                            </group> -->
 
                         </page>
 
