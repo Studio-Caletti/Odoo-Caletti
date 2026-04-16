@@ -116,10 +116,14 @@
                                         <i class="fa fa-bed me-1" title="Recámaras"/>
                                         <t t-esc="record.recamaras.raw_value"/>rec
                                     </span>
+
                                     <span t-if="record.banos.raw_value">
                                         <i class="fa fa-bath me-1" title="Baños"/>
+                                        <field name="banos"/>
+                                    <!--<span t-if="record.banos.raw_value">
+                                        <i class="fa fa-bath me-1" title="Baños"/>
                                         <t t-esc="'%.1f' % record.banos.raw_value"/>
-                                    </span>
+                                    </span> -->
                                     <span t-if="record.foto_count.raw_value > 0"
                                           class="ms-auto">
                                         <i class="fa fa-camera me-1" title="Fotos"/>
