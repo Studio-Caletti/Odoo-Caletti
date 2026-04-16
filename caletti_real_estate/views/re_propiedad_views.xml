@@ -347,7 +347,7 @@
 
                             <!-- Amenidades — todos los tipos -->
                             <div>
-                                <strong>Amenidades con Extras</strong>
+                                <strong>AMENIDADES y SERVICIOS EXTRAS</strong>
                                 <field name="amenidades"
                                        placeholder="Piscina, gimnasio, seguridad 24h, cisterna, paneles solares, jardín, terraza..."
                                        nolabel="1"/>
