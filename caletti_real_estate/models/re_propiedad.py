@@ -317,6 +317,7 @@ class RePropiedad(models.Model):
         string='M² Terreno',
         digits=(10, 2),
         tracking=True,
+        default=0.0,
         help="Metros cuadrados totales del terreno"
     )
 
@@ -329,6 +330,7 @@ class RePropiedad(models.Model):
     banos = fields.Float(
         string='Baños',
         digits=(4, 1),
+        default=0.0,
         help="Número de baños completos y medios. Ej: 2.5 = 2 completos + 1 medio"
     )
 
@@ -365,6 +367,7 @@ class RePropiedad(models.Model):
     altura_bodega = fields.Float(
         string='Altura Interior (m)',
         digits=(6, 2),
+        defautl=0.0,
         help="Altura libre interior en metros. Relevante para bodegas y naves."
     )
 
