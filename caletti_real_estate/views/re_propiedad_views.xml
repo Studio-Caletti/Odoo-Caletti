@@ -118,7 +118,7 @@
                                     </span>
 
                                     <span t-if="record.banos.raw_value">
-                                        <i class="fa fa-bath me-1" title="Bañooos"/>
+                                        <i class="fa fa-bed me-1" title="Baños"/>
                                         <field name="banos"/>
                                     <!--<span t-if="record.banos.raw_value">
                                         <i class="fa fa-bath me-1" title="Baños"/>
