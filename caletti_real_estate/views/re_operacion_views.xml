@@ -410,6 +410,31 @@
     </record>
 
     <!-- ================================================
+         INYECCION DE OPERACIONES
+         Las Operaciones se muestran en 
+         tablero.tarea del Core
+    ================================================ -->
+
+
+    <record id="view_re_kanban_inherit_creative" model="ir.ui.view">
+    <field name="name">tablero.tarea.kanban.re.inherit</field>
+    <field name="model">tablero.tarea</field>
+    <field name="inherit_id" ref="caletti_creative.view_creative_project_kanban"/>
+    <field name="arch" type="xml">
+        <xpath expr="//strong[hasclass('o_kanban_record_title')]" position="after">
+            <t t-if="record.es_operacion_re.raw_value">
+                <div class="text-primary fw-bold small mt-1">
+                     <i class="fa fa-home me-1" title="Propiedad"/> 
+                     <field name="propiedad_id"/>
+                </div>
+            </t>
+        </xpath>
+    </field>
+</record>
+
+
+
+    <!-- ================================================
          MENÚS — OPERACIONES E HISTORIAL
          Operaciones activas: menú principal del vertical
          Historial: submenú secundario OK
