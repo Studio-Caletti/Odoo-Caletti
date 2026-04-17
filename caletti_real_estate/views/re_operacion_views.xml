@@ -384,8 +384,7 @@
         <field name="view_ids"
                eval="[(5, 0, 0),
                       (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_re_operacion_kanban')}),
-                      (0, 0, {'view_mode': 'tree',   'view_id': ref('view_re_operacion_tree')}),
-                      (0, 0, {'view_mode': 'form',   'view_id': ref('view_tablero_tarea_form', 'tablero_kanban_caletti')})]"/>
+                      (0, 0, {'view_mode': 'tree',   'view_id': ref('view_re_operacion_tree')})]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 ¡Crea tu primera operación inmobiliaria!
@@ -413,8 +412,7 @@
         <field name="context">{'default_es_operacion_re': True}</field>
         <field name="view_ids"
                eval="[(5, 0, 0),
-                      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_re_operacion_tree')}),
-                      (0, 0, {'view_mode': 'form',  'view_id': ref('view_tablero_tarea_form', 'tablero_kanban_caletti')})]"/>
+                      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_re_operacion_tree')})]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Aún no hay operaciones cerradas.
