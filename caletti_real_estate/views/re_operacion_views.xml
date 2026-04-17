@@ -412,7 +412,7 @@
     <!-- ================================================
          MENÚS — OPERACIONES E HISTORIAL
          Operaciones activas: menú principal del vertical
-         Historial: submenú secundario
+         Historial: submenú secundario OK
     ================================================ -->
     <menuitem id="menu_re_operaciones"
               name="Operaciones"
