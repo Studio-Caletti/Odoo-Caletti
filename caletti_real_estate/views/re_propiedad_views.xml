@@ -18,13 +18,6 @@
         <field name="name">Propiedades</field>
         <field name="res_model">re.propiedad</field>
         <field name="view_mode">kanban,tree,form</field>
-
-        <field name="view_ids" eval="[(5, 0, 0), 
-        (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_re_propiedad_kanban')}),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_re_propiedad_tree')}),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('view_re_propiedad_form')})]"/>
-    
-
         <field name="context">{'default_asesor_id': uid}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
