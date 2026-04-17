@@ -108,7 +108,7 @@
 
                                 <!-- Características rápidas -->
                                 <div class="d-flex gap-2 mt-2 small text-muted">
-                                    <span t-if="record.m2_construccion.raw_value">
+                                    <span t-if="record.m2_construccion.raw_value  > 0">
                                         <i class="fa fa-building-o me-1" title="Construcción"/>
                                         <t t-esc="'%.0f' % record.m2_construccion.raw_value"/>m²
                                     </span>
@@ -118,7 +118,7 @@
                                     </span>
 
                                     <span t-if="record.banos.raw_value > 0">
-                                        <i class="fa fa-bed me-1" title="Bañoooos"/>
+                                        <i class="fa fa-bath me-1" title="Bañoooos"/>
                                         <field name="banos"/>
                                     </span>
 
