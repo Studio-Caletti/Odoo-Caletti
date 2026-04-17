@@ -136,6 +136,9 @@
                     </group>
 
                     <notebook>
+                        <!-- ================================================
+                            Tab Vigencia de contrato
+                        ================================================ -->
                         <page string="📅 Vigencia" name="tab_vigencia">
                             <group>
                                 <group string="Fechas del Contrato">
@@ -149,6 +152,10 @@
                                 </group>
                             </group>
                         </page>
+
+                        <!-- ================================================
+                            Tab Condiciones de Renta
+                        ================================================ -->
 
                         <page string="🔑 Condiciones Renta" name="tab_condiciones_renta" invisible="tipo_operacion != 'renta'">
                             <group>
@@ -164,6 +171,10 @@
                             </group>
                         </page>
 
+                        <!-- ================================================
+                            Tab Condiciones de Venta
+                        ================================================ -->
+
                         <page string="💰 Condiciones Venta" name="tab_condiciones_venta" invisible="tipo_operacion != 'venta'">
                             <group>
                                 <group string="Precio y Enganche">
@@ -175,6 +186,10 @@
                                 </group>
                             </group>
                         </page>
+
+                        <!-- ================================================
+                            Tab Comisiones
+                        ================================================ -->
 
                         <page string="🏷️ Comisiones" name="tab_comisiones">
                             <group>
@@ -188,6 +203,10 @@
                             </group>
                         </page>
 
+                        <!-- ================================================
+                            Tab Terminción de contrato
+                        ================================================ -->
+
                         <page string="🏁 Terminación" name="tab_terminacion" invisible="estado not in ['terminado','vencido','cancelado']">
                             <group>
                                 <group string="Datos de Cierre">
@@ -198,6 +217,10 @@
                                 </group>
                             </group>
                         </page>
+
+                        <!-- ================================================
+                            Tab Pagos de Renta
+                        ================================================ -->
 
                         <page string="💳 Pagos de Renta" name="tab_pagos" invisible="tipo_operacion != 'renta'">
                             <div class="row mb-3" invisible="pago_count == 0">

@@ -698,6 +698,7 @@ class ReContrato(models.Model):
 
     @api.constrains('monto_renta')
     def _check_monto_renta_positivo(self):
+        """Verifica que el monto el pago de la renta sea mayor a 0."""
         for contrato in self:
             if contrato.tipo_operacion == TIPO_RENTA and contrato.monto_renta <= 0:
                 raise ValidationError(_(

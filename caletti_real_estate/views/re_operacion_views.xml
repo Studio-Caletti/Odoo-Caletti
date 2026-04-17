@@ -73,8 +73,10 @@
          Hereda tablero.tarea pero con vista propia del vertical.
     ================================================ -->
     <record id="view_re_operacion_kanban" model="ir.ui.view">
-        <field name="name">re.operacion.kanban</field>
+        <field name="name">re.operacion.kanban.primary</field>
         <field name="model">tablero.tarea</field>
+        <field name="mode">primary</field>
+        <fied name="priority">10</fied>
         <field name="arch" type="xml">
             <kanban default_group_by="etapa_re"
                     quick_create="false"
