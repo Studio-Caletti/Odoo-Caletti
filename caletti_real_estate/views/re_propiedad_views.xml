@@ -110,7 +110,7 @@
                                 <div class="d-flex gap-2 mt-2 small text-muted">
                                     <span t-if="record.m2_construccion.raw_value  > 0">
                                         <i class="fa fa-building-o me-1" title="Construcción"/>
-                                        <t t-esc="'%.0f' % record.m2_construccion.raw_value"/>m²
+                                        <field name="m2_construccion"/>m²
                                     </span>
                                     <span t-if="record.recamaras.raw_value">
                                         <i class="fa fa-bed me-1" title="Recámaraaas"/>
