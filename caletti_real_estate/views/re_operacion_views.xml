@@ -13,14 +13,68 @@
 <odoo>
 
     <!-- ================================================
+         ACCIÓN DE VENTANA — OPERACIONES ACTIVAS
+         Domain: es_operacion_re = True AND etapa != cerrada
+         Context: fuerza es_operacion_re=True al crear
+    ================================================ -->
+    <record id="action_re_operacion" model="ir.actions.act_window">
+        <field name="name">Operaciones</field>
+        <field name="res_model">tablero.tarea</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[
+            ('es_operacion_re', '=', True),
+            ('etapa_re', '!=', 'cerrada')
+        ]</field>
+        <field name="context">{
+            'default_es_operacion_re': True,
+            'search_default_mis_operaciones': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                ¡Crea tu primera operación inmobiliaria!
+            </p>
+            <p>
+                Cada operación representa la gestión activa de
+                una propiedad — desde la captación hasta el cierre
+                del contrato de renta o venta.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================
+         ACCIÓN HISTORIAL — OPERACIONES CERRADAS
+         Accesible desde el menú secundario
+    ================================================ -->
+    <record id="action_re_operacion_historial"
+            model="ir.actions.act_window">
+        <field name="name">Historial de Operaciones</field>
+        <field name="res_model">tablero.tarea</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[
+            ('es_operacion_re', '=', True),
+            ('etapa_re', '=', 'cerrada')
+        ]</field>
+        <field name="context">{'default_es_operacion_re': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aún no hay operaciones cerradas.
+            </p>
+            <p>
+                Aquí aparecerán las operaciones finalizadas
+                como historial completo por propiedad.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================
          VISTA KANBAN — OPERACIONES INMOBILIARIAS
-         priority=25 supera a la vista de Creative (default=16)
-         garantizando que esta vista gane en el contexto RE.
+         Vista principal del vertical.
+         Agrupada por etapa_re — pipeline visual del asesor.
+         Hereda tablero.tarea pero con vista propia del vertical.
     ================================================ -->
     <record id="view_re_operacion_kanban" model="ir.ui.view">
         <field name="name">re.operacion.kanban</field>
         <field name="model">tablero.tarea</field>
-        <field name="priority">25</field>
         <field name="arch" type="xml">
             <kanban default_group_by="etapa_re"
                     quick_create="false"
@@ -152,24 +206,109 @@
     </record>
 
     <!-- ================================================
-         VISTA TREE — OPERACIONES
-         priority=25 para ganar sobre vista de Creative
+         VISTA FORM — OPERACIÓN INMOBILIARIA
+         Hereda tablero.tarea via xpath.
+         Inyecta los campos del vertical antes del notebook del Core.
     ================================================ -->
-    <record id="view_re_operacion_tree" model="ir.ui.view">
+    <record id="view_re_operacion_form" model="ir.ui.view">
+        <field name="name">re.operacion.form</field>
+        <field name="model">tablero.tarea</field>
+        <field name="inherit_id"
+               ref="tablero_kanban_caletti.view_tablero_tarea_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Campo discriminador — invisible -->
+            <xpath expr="//sheet" position="inside">
+                <field name="es_operacion_re" invisible="1"/>
+                <field name="etapa_re" invisible="1"/>
+            </xpath>
+
+            <!-- Inyectar bloque RE debajo del título del Core -->
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div invisible="not es_operacion_re">
+
+                    <!-- Alerta: operación en negociación -->
+                    <div class="alert alert-info" role="status"
+                         invisible="etapa_re != 'negociacion'">
+                        <i class="fa fa-handshake-o me-2" title="Negociación"/>
+                        <strong>Operación en Negociación.</strong>
+                        Gestiona la oferta y condiciones con las partes.
+                        Vincula el contrato al avanzar a Cierre.
+                    </div>
+
+                    <!-- Pipeline del vertical -->
+                    <group string="Operación Inmobiliaria">
+                        <group>
+                            <field name="propiedad_id"
+                                   options="{'no_create': True}"
+                                   domain="[('asesor_id', '=', uid)]"/>
+                            <field name="tipo_operacion_re"/>
+                            <field name="precio_objetivo"
+                                   widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="etapa_re"
+                                   widget="statusbar"
+                                   statusbar_visible="captacion,difusion,con_prospecto,negociacion,cierre"/>
+                            <field name="prospecto_activo_id"
+                                   domain="[('asesor_id', '=', uid),
+                                            ('etapa', 'not in', ['cerrado','descartado'])]"
+                                   options="{'no_create': True}"
+                                   invisible="etapa_re not in ['con_prospecto','negociacion','documentacion','cierre']"/>
+                            <field name="contrato_id"
+                                   domain="[('propiedad_id', '=', propiedad_id)]"
+                                   options="{'no_create': True}"
+                                   invisible="etapa_re not in ['documentacion','cierre','cerrada']"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Datos de la propiedad (solo lectura — referencia rápida) -->
+                    <group string="Datos de la Propiedad"
+                           invisible="not propiedad_id">
+                        <field name="propietario_id" readonly="1"/>
+                        <field name="tipo_propiedad_re" readonly="1"/>
+                        <field name="estado_propiedad" readonly="1"/>
+                        <field name="dias_en_operacion" readonly="1"/>
+                    </group>
+
+                    <!-- Botones de workflow del pipeline RE -->
+                    <div class="mt-2 mb-2"
+                         invisible="etapa_re == 'cerrada'">
+                        <button name="action_avanzar_etapa_re"
+                                string="Avanzar Etapa ▶"
+                                type="object"
+                                class="btn btn-primary btn-sm me-2"
+                                invisible="etapa_re in ['cierre','cerrada']"/>
+                        <button name="action_cerrar_operacion"
+                                string="📦 Cerrar y Archivar"
+                                type="object"
+                                class="btn btn-secondary btn-sm"
+                                invisible="etapa_re != 'cierre'"/>
+                    </div>
+
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ================================================
+         VISTA TREE — OPERACIONES
+    ================================================ -->
+  <record id="view_re_operacion_tree" model="ir.ui.view">
         <field name="name">re.operacion.tree</field>
         <field name="model">tablero.tarea</field>
-        <field name="priority">25</field>
         <field name="arch" type="xml">
             <tree sample="1"
                   decoration-danger="is_overdue"
                   decoration-success="etapa_re == 'cierre'"
                   decoration-muted="etapa_re == 'cerrada'">
-
+                
                 <field name="is_overdue" column_invisible="True"/>
                 <field name="es_operacion_re" column_invisible="True"/>
                 <field name="currency_id" column_invisible="True"/>
-                <field name="etapa_re" column_invisible="True"/>
-                <field name="name"/>
+                <field name="etapa_re" column_invisible="True"/> <field name="name"/>
                 <field name="tipo_operacion_re"
                        widget="badge"
                        decoration-info="tipo_operacion_re == 'renta'"
@@ -189,6 +328,7 @@
                 <field name="user_id"
                        widget="many2one_avatar_user"
                        string="Asesor"/>
+                
                 <field name="etapa_re"
                        widget="badge"
                        decoration-info="etapa_re in ['captacion','difusion']"
@@ -206,7 +346,6 @@
     <record id="view_re_operacion_search" model="ir.ui.view">
         <field name="name">re.operacion.search</field>
         <field name="model">tablero.tarea</field>
-        <field name="priority">25</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -214,6 +353,7 @@
                 <field name="propietario_id"/>
                 <field name="user_id"/>
                 <field name="prospecto_activo_id"/>
+                <!-- Filtros de etapa -->
                 <filter string="📋 Captación"
                         name="captacion"
                         domain="[('etapa_re', '=', 'captacion')]"/>
@@ -230,6 +370,7 @@
                         name="cierre"
                         domain="[('etapa_re', '=', 'cierre')]"/>
                 <separator/>
+                <!-- Filtros de tipo -->
                 <filter string="🔑 Renta"
                         name="renta"
                         domain="[('tipo_operacion_re', '=', 'renta')]"/>
@@ -237,6 +378,7 @@
                         name="venta"
                         domain="[('tipo_operacion_re', '=', 'venta')]"/>
                 <separator/>
+                <!-- Alerta vencidas — hereda del Core -->
                 <filter string="⚠️ Vencidas"
                         name="vencidas"
                         domain="[('is_overdue', '=', True),
@@ -267,167 +409,14 @@
         </field>
     </record>
 
-    <!-- ================================================
-         VISTA FORM — OPERACIÓN INMOBILIARIA
-         Hereda tablero.tarea via xpath.
-         priority=25 para consistencia con otras vistas RE.
-    ================================================ -->
-    <record id="view_re_operacion_form" model="ir.ui.view">
-        <field name="name">re.operacion.form</field>
-        <field name="model">tablero.tarea</field>
-        <field name="priority">25</field>
-        <field name="inherit_id"
-               ref="tablero_kanban_caletti.view_tablero_tarea_form"/>
-        <field name="arch" type="xml">
+  
 
-            <xpath expr="//sheet" position="inside">
-                <field name="es_operacion_re" invisible="1"/>
-                <field name="etapa_re" invisible="1"/>
-            </xpath>
 
-            <xpath expr="//div[hasclass('oe_title')]" position="after">
-                <div invisible="not es_operacion_re">
-
-                    <div class="alert alert-info" role="status"
-                         invisible="etapa_re != 'negociacion'">
-                        <i class="fa fa-handshake-o me-2" title="Negociación"/>
-                        <strong>Operación en Negociación.</strong>
-                        Gestiona la oferta y condiciones con las partes.
-                        Vincula el contrato al avanzar a Cierre.
-                    </div>
-
-                    <group string="Operación Inmobiliaria">
-                        <group>
-                            <field name="propiedad_id"
-                                   options="{'no_create': True}"
-                                   domain="[('asesor_id', '=', uid)]"/>
-                            <field name="tipo_operacion_re"/>
-                            <field name="precio_objetivo"
-                                   widget="monetary"/>
-                        </group>
-                        <group>
-                            <field name="etapa_re"
-                                   widget="statusbar"
-                                   statusbar_visible="captacion,difusion,con_prospecto,negociacion,cierre"/>
-                            <field name="prospecto_activo_id"
-                                   domain="[('asesor_id', '=', uid),
-                                            ('etapa', 'not in', ['cerrado','descartado'])]"
-                                   options="{'no_create': True}"
-                                   invisible="etapa_re not in ['con_prospecto','negociacion','documentacion','cierre']"/>
-                            <field name="contrato_id"
-                                   domain="[('propiedad_id', '=', propiedad_id)]"
-                                   options="{'no_create': True}"
-                                   invisible="etapa_re not in ['documentacion','cierre','cerrada']"
-                                   readonly="1"/>
-                        </group>
-                    </group>
-
-                    <group string="Datos de la Propiedad"
-                           invisible="not propiedad_id">
-                        <field name="propietario_id" readonly="1"/>
-                        <field name="tipo_propiedad_re" readonly="1"/>
-                        <field name="estado_propiedad" readonly="1"/>
-                        <field name="dias_en_operacion" readonly="1"/>
-                    </group>
-
-                    <div class="mt-2 mb-2"
-                         invisible="etapa_re == 'cerrada'">
-                        <button name="action_avanzar_etapa_re"
-                                string="Avanzar Etapa ▶"
-                                type="object"
-                                class="btn btn-primary btn-sm me-2"
-                                invisible="etapa_re in ['cierre','cerrada']"/>
-                        <button name="action_cerrar_operacion"
-                                string="📦 Cerrar y Archivar"
-                                type="object"
-                                class="btn btn-secondary btn-sm"
-                                invisible="etapa_re != 'cierre'"/>
-                    </div>
-
-                </div>
-            </xpath>
-
-            <!-- ================================================
-                 OCULTAR GRUPOS DEL CORE QUE NO APLICAN EN RE
-                 Los grupos nativos de tablero.tarea (Responsabilidades,
-                 Clasificación y Alertas) se ocultan cuando el registro
-                 es una operación inmobiliaria.
-            ================================================ -->
-            <xpath expr="//group[@name='left_info']" position="attributes">
-                <attribute name="invisible">es_operacion_re</attribute>
-            </xpath>
-
-            <xpath expr="//group[@name='right_info']" position="attributes">
-                <attribute name="invisible">es_operacion_re</attribute>
-            </xpath>
-
-        </field>
-    </record>
-
-    <!-- ================================================
-         ACCIÓN DE VENTANA — OPERACIONES ACTIVAS
-         view_ids fuerza exactamente qué vistas usar,
-         eliminando contaminación cruzada con Creative.
-    ================================================ -->
-    <record id="action_re_operacion" model="ir.actions.act_window">
-        <field name="name">Operaciones</field>
-        <field name="res_model">tablero.tarea</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="domain">[
-            ('es_operacion_re', '=', True),
-            ('etapa_re', '!=', 'cerrada')
-        ]</field>
-        <field name="context">{
-            'default_es_operacion_re': True,
-            'search_default_mis_operaciones': 1
-        }</field>
-        <field name="view_ids"
-               eval="[(5, 0, 0),
-                      (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_re_operacion_kanban')}),
-                      (0, 0, {'view_mode': 'tree',   'view_id': ref('view_re_operacion_tree')}),
-                      (0, 0, {'view_mode': 'form',   'view_id': ref('view_tablero_tarea_form', 'tablero_kanban_caletti')})]"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                ¡Crea tu primera operación inmobiliaria!
-            </p>
-            <p>
-                Cada operación representa la gestión activa de
-                una propiedad — desde la captación hasta el cierre
-                del contrato de renta o venta.
-            </p>
-        </field>
-    </record>
-
-    <!-- ================================================
-         ACCIÓN HISTORIAL — OPERACIONES CERRADAS
-    ================================================ -->
-    <record id="action_re_operacion_historial"
-            model="ir.actions.act_window">
-        <field name="name">Historial de Operaciones</field>
-        <field name="res_model">tablero.tarea</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[
-            ('es_operacion_re', '=', True),
-            ('etapa_re', '=', 'cerrada')
-        ]</field>
-        <field name="context">{'default_es_operacion_re': True}</field>
-        <field name="view_ids"
-               eval="[(5, 0, 0),
-                      (0, 0, {'view_mode': 'tree', 'view_id': ref('view_re_operacion_tree')}),
-                      (0, 0, {'view_mode': 'form',  'view_id': ref('view_tablero_tarea_form', 'tablero_kanban_caletti')})]"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Aún no hay operaciones cerradas.
-            </p>
-            <p>
-                Aquí aparecerán las operaciones finalizadas
-                como historial completo por propiedad.
-            </p>
-        </field>
-    </record>
 
     <!-- ================================================
          MENÚS — OPERACIONES E HISTORIAL
+         Operaciones activas: menú principal del vertical
+         Historial: submenú secundario OK
     ================================================ -->
     <menuitem id="menu_re_operaciones"
               name="Operaciones"
