@@ -383,15 +383,14 @@
 
                                 <!-- Costo -->
                                 <div class="mt-1 small"
-                                     t-if="record.costo_estimado.raw_value > 0">
-                                    <i class="fa fa-usd me-1" title="Costo"/>
-                                    <field name="costo_estimado" widget="monetary"/>
-                                    <t t-if="record.requiere_aprobacion.raw_value
-                                             and not record.aprobado_por_propietario.raw_value">
-                                        <span class="text-warning ms-1">
-                                            ⚠️ Sin aprobar
-                                        </span>
-                                    </t>
+                                  t-if="record.costo_estimado.raw_value > 0">
+                                  <i class="fa fa-usd me-1" title="Costo"/>
+                                  <field name="costo_estimado" widget="monetary"/>
+                                  <t t-if="record.requiere_aprobacion.raw_value and !record.aprobado_por_propietario.raw_value">
+                                  <span class="text-warning ms-1">
+                                    ⚠️ Sin aprobar
+                                  </span>
+                                  </t>
                                 </div>
 
                                 <!-- Días en proceso -->
@@ -402,21 +401,12 @@
                                 </div>
 
                                 <!-- Footer -->
-                                <div class="o_kanban_record_bottom mt-2">
-                                    <div class="oe_kanban_bottom_left">
-                                        <span t-attf-class="badge rounded-pill
-                                            #{'text-bg-danger' if record.prioridad.raw_value == 'urgente'
-                                              else 'text-bg-warning text-dark' if record.prioridad.raw_value == 'alta'
-                                              else 'text-bg-secondary'}"
-                                              style="font-size: 0.6rem;">
-                                            <t t-esc="record.prioridad.value"/>
-                                        </span>
-                                    </div>
-                                    <div class="oe_kanban_bottom_right">
-                                        <field name="asesor_id"
-                                               widget="many2one_avatar_user"/>
-                                    </div>
-                                </div>
+                                <span t-attf-class="badge rounded-pill
+                                      #{record.prioridad.raw_value == 'urgente' ?
+                                       'text-bg-danger' : record.prioridad.raw_value == 'alta' ? 'text-bg-warning text-dark' :       'text-bg-secondary'}"
+                                       style="font-size: 0.6rem;">
+                                       <t t-esc="record.prioridad.value"/>
+                                </span>
 
                             </div>
                         </div>
