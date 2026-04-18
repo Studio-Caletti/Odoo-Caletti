@@ -10,7 +10,7 @@
 {
     'name': 'Caletti Real Estate — Vertical Gestión Inmobiliaria',
     'version': '17.0.1.0.0',
-    'category': 'Real Estate',
+    'category': 'Administration/Real Estate',
     'summary': 'Gestión de propiedades, prospectos, contratos y mantenimiento para asesores inmobiliarios',
     'description': """
 
