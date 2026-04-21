@@ -4,11 +4,13 @@
 
 # Creative Management System
 
+# Real Estate Management
+
 **Framework Modular Extensible para Odoo 17 | Caletti Studio**
 
 [![Odoo Version](https://img.shields.io/badge/Odoo-17.0-875A7B.svg)](https://www.odoo.com)
 [![License](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-4.0.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
+[![Version](https://img.shields.io/badge/Version-5.0.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
 
 [Español](#español) | [English](#english) | [Italiano](#italiano)
 
@@ -16,9 +18,9 @@
 
 ## <a name="español"></a> 🇪🇸 Español <img src="https://flagcdn.com/w20/es.png" width="20">
 
-### 1. 📄 Descripción del Ecosistema V4
+### 1. 📄 Descripción del Ecosistema V5
 
-**Odoo-Caletti V4** es una plataforma de gestión de alto rendimiento diseñada sobre **Odoo 17 Community**. Su esencia no es la de un software cerrado, sino la de un ecosistema vivo compuesto por un **Núcleo Core** de tarjetas dinámicas que orquesta el quehacer cotidiano empresarial.
+**Odoo-Caletti V5** es una plataforma de gestión de alto rendimiento diseñada sobre **Odoo 17 Community**. Su esencia no es la de un software cerrado, sino la de un ecosistema vivo compuesto por un **Núcleo Core** de tarjetas dinámicas que orquesta el quehacer cotidiano empresarial.
 
 A diferencia de las soluciones aisladas (hojas de cálculo o apps simples), este ecosistema ofrece el poder de un **ERP (Enterprise Resource Planning)**. Esto significa que mientras nuestras verticales resuelven nichos específicos como el **Auxiliar de Soporte (Helpdesk)** o el **Sistema de Gestión Creativa (SGC)**, el usuario mantiene la puerta abierta para integrar módulos nativos de Odoo como **CRM, Calendario, Pagos Electrónicos, Recursos Humanos o Facturación**, todo bajo una misma base de datos y una sola interfaz.
 
@@ -29,6 +31,8 @@ A diferencia de las soluciones aisladas (hojas de cálculo o apps simples), este
 - **Helpdesk Vertical**: Sistema de ticketing que transforma las solicitudes de soporte en flujos de trabajo con tiempos de respuesta (SLA) garantizados.
 
 - **Sistema de Gestión Creativa (SGC)**: Diseñado para **Despachos de Artes Gráficas**, agencias de medios y estudios digitales. Administra desde el Brief (directiva de diseño) hasta los entregables finales, asegurando rentabilidad y acuerdos claros.
+
+- **Caletti Real Estate (CRE):** Diseñado para **Asesores Inmobiliarios Independientes** y pequeñas administradoras de propiedades. Gestiona el ciclo completo del negocio inmobiliario: cartera de propiedades (residencial, comercial y terrenos), pipeline de captación de prospectos, contratos unificados de renta y venta, seguimiento de pagos mensuales con métricas de puntualidad de inquilinos, y solicitudes de mantenimiento con control de costos y aprobación del propietario. Migra al asesor de las hojas de cálculo a la potencia de un ERP especializado.
 
 - **El "Chatter" y la Comunicación Contextual**: Aprovechamos la potencia del motor de comunicación de Odoo para que cada tarea, ticket o brief tenga su propio muro de colaboración. Olvídese de correos dispersos; toda la historia, archivos adjuntos y decisiones quedan selladas en el historial (Chatter) del documento.
 
@@ -62,6 +66,13 @@ El núcleo del módulo implementa una automatización proactiva:
 
 - **Alertas de Gestión**: Notificaciones automáticas de "Revisiones Excedidas" o "Presupuesto en Alerta", protegiendo el margen de utilidad del despacho.
 
+- **Arquitectura Inmobiliaria:** Modelos propios `re.propiedad`, `re.prospecto`, `re.contrato`, `re.pago` y `re.mantenimiento`. El modelo `re.operacion` extiende `tablero.tarea` del Core mediante `_inherit`, aplicando el patrón de aislamiento Opción B con el campo discriminador `es_operacion_re`.
+- **Pipeline de Prospectos:** Flujo de 8 etapas (Nuevo → Contactado → Visita Agendada → Visita Realizada → Investigación → Negociación → Cerrado / Descartado) con Kanban drag-and-drop, calificación de temperatura (Caliente / Tibio / Frío) y trazabilidad de fuente de captación para análisis de ROI de canales de marketing.
+- **Contratos Unificados:** Un solo modelo `re.contrato` maneja renta Y venta, diferenciados por `tipo_operacion`. Al activar un contrato de renta, genera automáticamente todos los registros `re.pago` mensuales por el plazo acordado. Métricas de puntualidad del inquilino con alerta automática de riesgo al superar el umbral de pagos atrasados.
+- **Motor de Mantenimiento:** Ciclo completo solicitado → evaluando → aprobado → en proceso → resuelto → cerrado. Aprobación automática del propietario obligatoria cuando el costo estimado supera el umbral configurado. Referencia de ticket secuencial `MANT-YYYY-NNNNN`. Soporte para asesor directo y proveedor externo con datos de contacto.
+- **Alertas Automatizadas:** Cron diario de vencimientos de contratos que actualiza estados a `por_vencer` (60 días antes) y `vencido`, con notificación automática en el Chatter del asesor responsable.
+
+
 ### 🎯 Casos de Uso y próximos horizontes
 
 - **Agencias creativas**: Seguimiento de proyectos con clientes en tiempo real.
@@ -74,7 +85,7 @@ El núcleo del módulo implementa una automatización proactiva:
 
 - **Soporte Técnico**: Resolución de incidencias con métricas de desempeño.
 
-- **Futuro: Vertical Bienes Raíces**: Próximamente, un sistema para Venta, Renta y Administración de propiedades, migrando a los profesionales del sector de las hojas de cálculo hacia la potencia de un ERP especializado.
+- **Asesores Inmobiliarios:** Gestión integral de cartera con pipeline de prospectos, contratos, pagos y mantenimiento — todo en un solo ERP. Desde la captación del lead hasta el cobro de la comisión.
 
 ### 
 
@@ -84,15 +95,18 @@ El núcleo del módulo implementa una automatización proactiva:
 
 ### 1. 📄 Ecosystem V4 Description
 
-**Odoo-Caletti V4**, designed under Odoo 17 Community, is a high-performance management ecosystem featuring an advanced Core Nucleus task-card board. It orchestrates daily business operations with a data structure optimized for operational agility. Unlike standalone apps, this ecosystem provides the full power of an ERP (Enterprise Resource Planning), enabling seamless integration with native modules like CRM, Calendar, Payments, HR, and Invoicing under a single interface.
+**Odoo-Caletti V5**, designed under Odoo 17 Community, is a high-performance management ecosystem featuring an advanced Core Nucleus task-card board. It orchestrates daily business operations with a data structure optimized for operational agility. Unlike standalone apps, this ecosystem provides the full power of an ERP (Enterprise Resource Planning), enabling seamless integration with native modules like CRM, Calendar, Payments, HR, and Invoicing under a single interface.
 
 ### 📌Strategic Pillars
 
-- **Core Kanban V3 (The Nucleus)**: Provides BI infrastructure, time traceability, and priority management. It is the engine for overall organizational visibility.
+- **Core Kanban V5 (The Nucleus)**: Provides BI infrastructure, time traceability, and priority management. It is the engine for overall organizational visibility.
 
 - **Vertical Helpdesk**: Specialized in post-sale support, ensuring every ticket is a met commitment through automated workflows and response SLAs.
 
 - **Creative Management (CMS)**: Designed for Graphic Arts Studios and digital agencies. It manages campaign complexity—from traditional print to social media—ensuring clear agreements and profitability.
+
+- **Caletti Real Estate (CRE):** Designed for **Independent Real Estate Agents** and small property management firms. Manages the complete real estate business cycle: property portfolio (residential, commercial, and land), prospect acquisition pipeline, unified rental and sale contracts, monthly payment tracking with tenant punctuality metrics, and maintenance requests with cost control and owner approval workflows. Moves agents from spreadsheets to the power of a specialized ERP.
+
 
 ### 🛠️ Technical Specifications (Architecture)
 - **Multilevel Inheritance**: Verticals extend the tablero.tarea model, ensuring Core improvements reflect instantly across the ecosystem.
@@ -110,28 +124,37 @@ El núcleo del módulo implementa una automatización proactiva:
 
 Designed to move businesses away from fragmented spreadsheets into a unified environment. Start with creative project management today and scale to full enterprise resource planning tomorrow.
 
+- **Real Estate Architecture:** Dedicated models `re.propiedad`, `re.prospecto`, `re.contrato`, `re.pago` and `re.mantenimiento`. The `re.operacion` model extends the Core's `tablero.tarea` via `_inherit`, applying the Option B isolation pattern with the `es_operacion_re` discriminator field.
+- **Prospect Pipeline:** 8-stage flow (New → Contacted → Visit Scheduled → Visit Done → Investigation → Negotiation → Closed / Discarded) with Kanban drag-and-drop, lead temperature scoring (Hot / Warm / Cold), and acquisition source tracking for marketing ROI analysis.
+- **Unified Contracts:** A single `re.contrato` model handles both rental AND sale contracts, differentiated by `tipo_operacion`. Activating a rental contract automatically generates all monthly `re.pago` records for the agreed term. Tenant punctuality metrics with automatic risk alert when the overdue payments threshold is exceeded.
+- **Maintenance Engine:** Complete cycle: requested → evaluating → approved → in progress → resolved → closed. Mandatory owner approval when estimated cost exceeds the configured threshold. Sequential ticket reference `MANT-YYYY-NNNNN`. Support for direct agent execution and external provider with contact details.
+- **Automated Alerts:** Daily contract expiration cron that updates states to `por_vencer` (60 days ahead) and `vencido`, with automatic Chatter notification to the responsible agent.
+
+
 ## 🎯 Use Cases and Horizons
 - Graphic Arts & Agencies: Management of complex campaigns with client approval via the portal.
 
 - Technical Support: Incident management with real-time resolution metrics.
 
-- Future: Real Estate: Upcoming vertical for Sales, Rentals, and Property Management, migrating the sector from spreadsheets to specialized ERP power.
+- **Real Estate Agents:** Full portfolio management with prospect pipeline, contracts, payments and maintenance — all in one ERP. From lead capture to commission collection.
 
 ---
 
 ## <a name="italiano"></a> 🇮🇹 Italiano <img src="https://flagcdn.com/w20/it.png" width="20">
 
-### 📄 Descrizione dell'Ecosistema V4
+### 📄 Descrizione dell'Ecosistema V5
 
 **Odoo-Caletti V4**, progettato su Odoo 17 Community, è un ecosistema di gestione ad alte prestazioni composto da un Nucleo Core avanzato basato su un sistema di schede attività. Questo nucleo permette di orchestrare le operazioni aziendali quotidiane con una struttura dati ottimizzata per l'agilità operativa. A differenza delle soluzioni isolate, questo ecosistema offre la potenza di un **ERP (Enterprise Resource Planning**), consentendo l'integrazione di moduli nativi come **CRM, Calendario, Pagamenti, Risorse Umane e Fatturazione** in un'unica interfaccia.
 
 ### 📌 Pilastri Strategici
 
-- **Core Kanban V3 (Il Nucleo)**: Fornisce l'infrastruttura di BI, la tracciabilità temporale e la gestione delle priorità. È il motore della visibilità dell'intera organizzazione.
+- **Core Kanban V5 (Il Nucleo)**: Fornisce l'infrastruttura di BI, la tracciabilità temporale e la gestione delle priorità. È il motore della visibilità dell'intera organizzazione.
 
 - **Helpdesk Verticale**: Specializzato nell'assistenza post-vendita, garantisce che ogni ticket sia un impegno rispettato attraverso flussi automatizzati e SLA di risposta.
 
 - **Gestione Creativa (SGC)**: Progettato per Studi di Arti Grafiche e agenzie digitali. Gestisce la complessità delle campagne, dalla stampa tradizionale ai social media, garantendo accordi chiari e redditività.
+
+- **Caletti Real Estate (CRE):** Progettato per **Agenti Immobiliari Indipendenti** e piccole società di gestione immobiliare. Gestisce l'intero ciclo del business immobiliare: portafoglio immobili (residenziale, commerciale e terreni), pipeline di acquisizione prospect, contratti unificati di affitto e vendita, monitoraggio dei pagamenti mensili con metriche di puntualità degli inquilini, e richieste di manutenzione con controllo dei costi e approvazione del proprietario. Migra l'agente dai fogli di calcolo alla potenza di un ERP specializzato.
 
 ### 🛠️ Specifiche tecniche (architettura)
 
@@ -142,6 +165,12 @@ Designed to move businesses away from fragmented spreadsheets into a unified env
 - **Sicurezza Isolata**: Implementazione di regole di record (ir.rule) per un isolamento totale tra i reparti creativi e di supporto.
 
 - **Sicurezza (RBAC)🛡️**: Regole di registrazione che garantiscono l'isolamento dei dati per client e gerarchia interna (Utente, Manager, Amministratore, Client).
+
+- **Architettura Immobiliare:** Modelli dedicati `re.propiedad`, `re.prospecto`, `re.contrato`, `re.pago` e `re.mantenimiento`. Il modello `re.operacion` estende il `tablero.tarea` del Core tramite `_inherit`, applicando il pattern di isolamento Opzione B con il campo discriminatore `es_operacion_re`.
+- **Pipeline Prospect:** Flusso a 8 fasi (Nuovo → Contattato → Visita Programmata → Visita Effettuata → Indagine → Negoziazione → Chiuso / Scartato) con Kanban drag-and-drop, scoring della temperatura del lead (Caldo / Tiepido / Freddo) e tracciabilità della fonte di acquisizione per l'analisi del ROI dei canali marketing.
+- **Contratti Unificati:** Un unico modello `re.contrato` gestisce sia i contratti di affitto CHE di vendita, differenziati da `tipo_operacion`. L'attivazione di un contratto di affitto genera automaticamente tutti i record `re.pago` mensili per la durata concordata. Metriche di puntualità dell'inquilino con alert automatico di rischio al superamento della soglia di pagamenti in ritardo.
+- **Motore di Manutenzione:** Ciclo completo: richiesto → in valutazione → approvato → in corso → risolto → chiuso. Approvazione obbligatoria del proprietario quando il costo stimato supera la soglia configurata. Riferimento ticket sequenziale `MANT-YYYY-NNNNN`. Supporto per esecuzione diretta dell'agente e fornitore esterno con dati di contatto.
+- **Alert Automatizzati:** Cron giornaliero di scadenza contratti che aggiorna gli stati a `por_vencer` (60 giorni prima) e `vencido`, con notifica automatica nella Chatter dell'agente responsabile.
 
 ### ⚙️ Logica di Stato Robusta
 
@@ -157,7 +186,7 @@ Designed to move businesses away from fragmented spreadsheets into a unified env
 
 - **Supporto Tecnico**: Gestione degli incidenti con metriche di risoluzione in tempo reale.
 
-- **Futuro**: Real Estate: Prossima verticale per Vendita, Affitto e Amministrazione immobiliare, migrando il settore dai fogli di calcolo alla potenza di un ERP specializzato.
+- **Agenti Immobiliari:** Gestione completa del portafoglio con pipeline prospect, contratti, pagamenti e manutenzione — tutto in un unico ERP. Dalla cattura del lead alla riscossione della commissione.
 
 ---
 
@@ -171,9 +200,10 @@ La V4 marca el nacimiento de una arquitectura que no compite con Odoo, sino que 
 
 3. **Creative**: El estándar para Artes Gráficas y Agencias.
 
-4. **Próximamente**: Real Estate (Bienes Raíces).
+4. **Real Estate (CRE) v1.0**: Gestión inmobiliaria integral para asesores independientes.
 
-# 
+5. **Próximamente**: Portal del propietario e inquilino, integración con facturación.
+ 
 
 ---
 
@@ -228,39 +258,39 @@ Si eres desarrollador y deseas contribuir o entender la lógica profunda de este
 
 ```text
 Odoo-Caletti/
-├── tablero_kanban_caletti/          # 🧠 MÓDULO BASE
+├── tablero_kanban_caletti/                 # 🧠 MÓDULO BASE
 │   ├── controllers/
-│   │   └── main.py                   # Portal routes
+│   │   └── main.py                         # Portal routes
 │   ├── data/
-│   │   ├── ir_cron.xml              # Cron de alertas
-│   │   └── mail_template_data.xml   # Template de tareas vencidas
+│   │   ├── ir_cron.xml                     # Cron de alertas
+│   │   └── mail_template_data.xml          # Template de tareas vencidas
 │   ├── models/
-│   │   └── mensaje.py               # Modelo tablero.tarea
+│   │   └── mensaje.py                      # Modelo tablero.tarea
 │   ├── security/
-│   │   ├── security_groups.xml      # Grupos de seguridad
-│   │   ├── ir.model.access.csv      # Permisos de acceso
-│   │   ├── ir_rule.xml              # Record Rules (User, Manager)
-│   │   └── tablero_rules.xml        # Record Rule Portal
+│   │   ├── security_groups.xml             # Grupos de seguridad
+│   │   ├── ir.model.access.csv             # Permisos de acceso
+│   │   ├── ir_rule.xml                     # Record Rules (User, Manager)
+│   │   └── tablero_rules.xml               # Record Rule Portal
 │   ├── static/description/
 │   │   ├── icon.png
-│   │   └── screenshots/             # Capturas de pantalla
+│   │   └── screenshots/                    # Capturas de pantalla
 │   ├── views/
-│   │   ├── views.xml                # Kanban, Form, List, Graph, Pivot
-│   │   ├── portal_templates.xml     # Templates del portal
-│   │   └── report_tarea.xml         # Reportes PDF
+│   │   ├── views.xml                       # Kanban, Form, List, Graph, Pivot
+│   │   ├── portal_templates.xml            # Templates del portal
+│   │   └── report_tarea.xml                # Reportes PDF
 │   ├── __init__.py
 │   └── __manifest__.py
 │
-├── tablero_kanban_helpdesk/         # 🎧 VERTICAL HELPDESK
+├── tablero_kanban_helpdesk/                # 🎧 VERTICAL HELPDESK
 │   ├── controllers/
-│   │   └── helpdesk_portal.py       # Portal routes (tickets)
+│   │   └── helpdesk_portal.py              # Portal routes (tickets)
 │   ├── data/
-│   │   └── helpdesk_data.xml        # Sequence, Template confirmación
+│   │   └── helpdesk_data.xml               # Sequence, Template confirmación
 │   ├── models/
-│   │   └── tablero_ticket.py        # Herencia + campos helpdesk
+│   │   └── tablero_ticket.py               # Herencia + campos helpdesk
 │   ├── views/
-│   │   ├── helpdesk_views.xml       # Vistas backend
-│   │   └── portal_helpdesk_views.xml # Vistas portal
+│   │   ├── helpdesk_views.xml              # Vistas backend
+│   │   └── portal_helpdesk_views.xml       # Vistas portal
 │   ├── __init__.py
 │   └── __manifest__.py
 │
@@ -284,12 +314,34 @@ Odoo-Caletti/
 │   │   └── creative_data.xml                # Sequence, Template confirmación
 │   ├── __init__.py
 │   └── __manifest__.py
+│ 
+├── caletti_real_estate/                     # 🏠 VERTICAL INMOBILIARIO v1.0
+│   ├── models/
+│   │   ├── re_propiedad.py                  # Cartera de propiedades + submodelo re.propiedad.foto
+│   │   ├── re_prospecto.py                  # Pipeline de captación (8 etapas)
+│   │   ├── re_operacion.py                  # _inherit tablero.tarea — operación activa
+│   │   ├── re_contrato.py                   # Contratos renta/venta + submodelo re.pago
+│   │   └── re_mantenimiento.py              # Solicitudes de mantenimiento con ticket
+│   ├── views/
+│   │   ├── re_propiedad_views.xml           # Kanban, Form, Tree, Search
+│   │   ├── re_prospecto_views.xml           # Pipeline Kanban por etapa
+│   │   ├── re_operacion_views.xml           # Vista propia sobre tablero.tarea
+│   │   ├── re_contrato_views.xml            # Contratos + pagos inline + cron
+│   │   └── re_mantenimiento_views.xml       # Kanban mantenimiento + secuencia
+│   ├── security/
+│   │   ├── security_groups.xml              # group_re_asesor, coordinador, admin
+│   │   ├── ir.model.access.csv              # Permisos por rol y modelo
+│   │   └── ir_rule.xml                      # Record Rules: asesor ve solo sus registros
+│   ├── controllers/
+│   │   └── __init__.py                      # Portal v1.1 — pendiente
+│   ├── __init__.py
+│   └── __manifest__.py
 │
 ├── docs/
 │   ├── INSTALL.md
 │   └── TECHNICAL_NOTES.md
 │
-└── README.md                         # Este archivo
+└── README.md                                # Este archivo
 ```
 
 **Carlos Caletti** - ** *Lead Architect & Developer* 2026
