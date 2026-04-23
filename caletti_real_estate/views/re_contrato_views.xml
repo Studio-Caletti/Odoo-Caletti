@@ -11,26 +11,7 @@
 
 <odoo>
 
-    <!-- ================================================
-         CRON: ALERTAS DE VENCIMIENTO
-         Ejecuta diariamente — mismo patrón que Core
-    ================================================ -->
-    <record id="ir_cron_alertas_vencimiento_contratos"
-            model="ir.cron">
-        <field name="name">
-            Real Estate: Alertas de Vencimiento de Contratos
-        </field>
-        <field name="model_id"
-               ref="caletti_real_estate.model_re_contrato"/>
-        <field name="state">code</field>
-        <field name="code">
-            model._cron_alertas_vencimiento()
-        </field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
-        <field name="active" eval="True"/>
-    </record>
+
 
     <!-- ================================================
          ACCIÓN — CONTRATOS
@@ -667,5 +648,51 @@
               parent="menu_re_root"
               action="action_re_pago"
               sequence="40"/>
+
+      <!-- ================================================
+         CRON: ALERTAS DE VENCIMIENTO
+         Ejecuta diariamente — mismo patrón que Core
+    ================================================ -->
+    <record id="ir_cron_alertas_vencimiento_contratos"
+            model="ir.cron">
+        <field name="name">
+            Real Estate: Alertas de Vencimiento de Contratos
+        </field>
+        <field name="model_id"
+               ref="caletti_real_estate.model_re_contrato"/>
+        <field name="state">code</field>
+        <field name="code">
+            model._cron_alertas_vencimiento()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+    </record>
+
+
+    <!-- ================================================
+         CRON: MARCADO AUTOMÁTICO DE PAGOS ATRASADOS
+         Se ejecuta diariamente a las 7:00 AM —
+         complementa el cron de vencimientos de contratos.
+         Solo actúa sobre pagos pendientes con fecha
+         de vencimiento ya superada.
+    ================================================ -->
+    <record id="ir_cron_marcar_pagos_atrasados" model="ir.cron">
+        <field name="name">
+            Real Estate: Marcar Pagos de Renta Atrasados
+        </field>
+        <field name="model_id"
+               ref="caletti_real_estate.model_re_pago"/>
+        <field name="state">code</field>
+        <field name="code">
+            model._cron_marcar_pagos_atrasados()
+        </field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+    </record>
+    
 
 </odoo>

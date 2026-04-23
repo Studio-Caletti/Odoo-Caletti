@@ -1394,3 +1394,85 @@ class RePago(models.Model):
             "🔴 Pago %d del contrato '%s' marcado como atrasado",
             self.numero_pago, self.contrato_id.name
         )
+
+    # =========================================================================
+    # CRON: MARCADO AUTOMÁTICO DE PAGOS ATRASADOS
+    # Se ejecuta diariamente — complementa el cron de vencimientos de contratos
+    # =========================================================================
+
+    @api.model
+    def _cron_marcar_pagos_atrasados(self):
+        """
+        Proceso automático diario que identifica pagos pendientes
+        cuya fecha de vencimiento ya fue superada y los marca como atrasados.
+
+        Solo actúa sobre pagos en estado 'pendiente' con contrato activo
+        o por_vencer — no toca contratos terminados, cancelados o renovados.
+        """
+        _logger.info("🔄 Iniciando marcado automático de pagos atrasados...")
+
+        today = fields.Date.today()
+
+        # Buscar pagos pendientes vencidos con contrato activo
+        pagos_vencidos = self.search([
+            ('estado', '=', PAGO_PENDIENTE),
+            ('fecha_vencimiento', '<', today),
+            ('contrato_id.estado', 'in', [
+                'activo', 'por_vencer', 'vencido'
+            ]),
+        ])
+
+        if not pagos_vencidos:
+            _logger.info("✅ Sin pagos atrasados nuevos detectados.")
+            return
+
+        _logger.info(
+            "📋 %d pagos pendientes vencidos detectados — marcando como atrasados",
+            len(pagos_vencidos)
+        )
+
+        for pago in pagos_vencidos:
+            pago.write({'estado': PAGO_ATRASADO})
+
+            # Notificar en el Chatter del contrato
+            pago.contrato_id.message_post(
+                body=Markup(_(
+                    "🔴 <strong>Pago atrasado detectado automáticamente.</strong><br/>"
+                    "Pago <strong>%(num)d</strong> — Vencimiento: "
+                    "<strong>%(fecha)s</strong><br/>"
+                    "Monto pendiente: "
+                    "<strong>%(monto)s %(moneda)s</strong><br/>"
+                    "Inquilino: <strong>%(inquilino)s</strong>"
+                )) % {
+                    'num':      pago.numero_pago,
+                    'fecha':    str(pago.fecha_vencimiento),
+                    'monto':    f"{pago.monto_esperado:,.2f}",
+                    'moneda':   pago.currency_id.symbol
+                                if pago.currency_id else 'MXN',
+                    'inquilino': pago.inquilino_id.name
+                                 if pago.inquilino_id else _("Sin inquilino"),
+                },
+                message_type='comment',
+                subtype_xmlid='mail.mt_note'
+            )
+
+            _logger.warning(
+                "🔴 Pago %d del contrato '%s' marcado como atrasado. "
+                "Vencimiento: %s. Inquilino: %s",
+                pago.numero_pago,
+                pago.contrato_id.name,
+                pago.fecha_vencimiento,
+                pago.inquilino_id.name if pago.inquilino_id else '—'
+            )
+
+        # Forzar recomputación de métricas en los contratos afectados
+        # para que inquilino_riesgo y pago_puntualidad_pct se actualicen
+        contratos_afectados = pagos_vencidos.mapped('contrato_id')
+        contratos_afectados._compute_metricas_pago()
+
+        _logger.info(
+            "✅ Marcado completado. %d pagos atrasados. %d contratos afectados.",
+            len(pagos_vencidos),
+            len(contratos_afectados)
+        )
+        
