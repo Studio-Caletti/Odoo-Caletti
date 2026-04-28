@@ -9,4 +9,4 @@
 # --------------------------------------------------------------------------
 
 # Portal inmobiliario — se implementa en v1.1
-# from . import re_portal
+from . import re_portal

@@ -251,5 +251,76 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- ================================================
+             RECORD RULES PORTAL: RE.CONTRATO
+             Propietario ve contratos de sus propiedades.
+             Inquilino ve contratos donde es inquilino_id.
+             Ambas reglas son OR — Odoo aplica la más permisiva
+             cuando el usuario cumple más de una condición.
+        ================================================ -->
+
+        <record id="rule_re_contrato_portal_propietario" model="ir.rule">
+            <field name="name">Contrato: Portal propietario ve sus contratos</field>
+            <field name="model_id" ref="model_re_contrato"/>
+            <field name="groups"
+                   eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[
+                '|',
+                ('propiedad_id.propietario_id', '=', user.partner_id.id),
+                ('inquilino_id',                '=', user.partner_id.id)
+            ]</field>
+            <field name="perm_read"   eval="True"/>
+            <field name="perm_write"  eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ================================================
+             RECORD RULES PORTAL: RE.PAGO
+             Propietario ve pagos de sus propiedades.
+             Inquilino ve pagos donde es inquilino_id.
+        ================================================ -->
+
+        <record id="rule_re_pago_portal" model="ir.rule">
+            <field name="name">Pago: Portal ve pagos según rol</field>
+            <field name="model_id" ref="model_re_pago"/>
+            <field name="groups"
+                   eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[
+                '|',
+                ('propiedad_id.propietario_id', '=', user.partner_id.id),
+                ('inquilino_id',                '=', user.partner_id.id)
+            ]</field>
+            <field name="perm_read"   eval="True"/>
+            <field name="perm_write"  eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ================================================
+             RECORD RULES PORTAL: RE.MANTENIMIENTO
+             Reemplaza la regla existente solo-propietario.
+             Inquilino también debe ver sus tickets creados.
+             La regla existente rule_re_mantenimiento_portal
+             ya existe — este record actualiza su domain_force
+             para incluir al inquilino.
+        ================================================ -->
+
+        <record id="rule_re_mantenimiento_portal_inquilino" model="ir.rule">
+            <field name="name">Mantenimiento: Portal inquilino ve sus tickets</field>
+            <field name="model_id" ref="model_re_mantenimiento"/>
+            <field name="groups"
+                   eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[
+                '|',
+                ('propiedad_id.propietario_id', '=', user.partner_id.id),
+                ('inquilino_id',                '=', user.partner_id.id)
+            ]</field>
+            <field name="perm_read"   eval="True"/>
+            <field name="perm_write"  eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>

@@ -1,0 +1,1103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Portal del Cliente — Vertical Inmobiliario Caletti Real Estate -->
+
+<odoo>
+
+    <!-- ================================================
+         PORTAL HOME: Entradas según rol detectado
+         Propietario: mis propiedades
+         Inquilino: mis pagos + mis tickets
+    ================================================ -->
+    <template id="portal_re_home_propietario"
+              name="Portal Home: Mis Propiedades"
+              inherit_id="portal.portal_my_home"
+              priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis Propiedades</t>
+                <t t-set="url" t-value="'/my/mis-propiedades'"/>
+                <t t-set="placeholder">
+                    Propiedades, contratos y pagos de renta
+                </t>
+                <t t-set="count" t-value="re_propiedad_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_re_home_inquilino_pagos"
+              name="Portal Home: Mis Pagos de Renta"
+              inherit_id="portal.portal_my_home"
+              priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis Pagos de Renta</t>
+                <t t-set="url" t-value="'/my/mis-pagos'"/>
+                <t t-set="placeholder">
+                    Estado de pagos y historial de renta
+                </t>
+                <t t-set="count" t-value="re_pago_pendiente_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_re_home_inquilino_tickets"
+              name="Portal Home: Mis Tickets de Mantenimiento"
+              inherit_id="portal.portal_my_home"
+              priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis Tickets de Mantenimiento</t>
+                <t t-set="url" t-value="'/my/mis-tickets'"/>
+                <t t-set="placeholder">
+                    Solicitudes de mantenimiento de tu propiedad
+                </t>
+                <t t-set="count" t-value="re_ticket_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ================================================
+         BREADCRUMBS: Navegación del portal RE
+    ================================================ -->
+    <template id="portal_re_breadcrumbs"
+              name="Portal Breadcrumbs: Real Estate"
+              inherit_id="portal.portal_breadcrumbs"
+              priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+
+            <!-- Propietario: lista propiedades -->
+            <li t-if="page_name in ['re_propiedades'] or propiedad"
+                t-attf-class="breadcrumb-item #{'active' if not propiedad else ''}">
+                <a t-if="propiedad" href="/my/mis-propiedades">
+                    Mis Propiedades
+                </a>
+                <t t-else="">Mis Propiedades</t>
+            </li>
+
+            <!-- Propietario: detalle propiedad -->
+            <li t-if="propiedad" class="breadcrumb-item active">
+                <span t-field="propiedad.name"/>
+            </li>
+
+            <!-- Inquilino: pagos -->
+            <li t-if="page_name in ['re_pagos'] or contrato"
+                t-attf-class="breadcrumb-item #{'active' if not contrato else ''}">
+                <a t-if="contrato" href="/my/mis-pagos">
+                    Mis Pagos
+                </a>
+                <t t-else="">Mis Pagos</t>
+            </li>
+
+            <!-- Inquilino: detalle contrato -->
+            <li t-if="contrato" class="breadcrumb-item active">
+                <span t-field="contrato.name"/>
+            </li>
+
+            <!-- Inquilino: tickets -->
+            <li t-if="page_name in ['re_tickets'] or ticket"
+                t-attf-class="breadcrumb-item #{'active' if not ticket else ''}">
+                <a t-if="ticket" href="/my/mis-tickets">
+                    Mis Tickets
+                </a>
+                <t t-else="">Mis Tickets</t>
+            </li>
+
+            <!-- Inquilino: detalle ticket -->
+            <li t-if="ticket" class="breadcrumb-item active">
+                <span t-field="ticket.ticket_ref"/>
+            </li>
+
+        </xpath>
+    </template>
+
+    <!-- ================================================
+         HUB CENTRAL — /my/re-home
+         Solo se muestra cuando el usuario tiene ambos roles
+    ================================================ -->
+    <template id="portal_re_home"
+              name="Portal RE: Hub Central">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <h3 class="fw-bold">
+                            <i class="fa fa-home me-2 text-primary"/>
+                            Portal Inmobiliario Caletti
+                        </h3>
+                        <p class="text-muted">
+                            Selecciona la sección que deseas consultar.
+                        </p>
+                    </div>
+
+                    <!-- Card Propietario -->
+                    <div class="col-md-6 mb-4" t-if="es_propietario">
+                        <a href="/my/mis-propiedades"
+                           class="text-decoration-none">
+                            <div class="card h-100 shadow-sm border-0
+                                        o_portal_card">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded-circle bg-primary
+                                                    d-flex align-items-center
+                                                    justify-content-center me-3"
+                                             style="width:48px; height:48px;">
+                                            <i class="fa fa-building-o text-white fs-5"
+                                               title="Propietario"/>
+                                        </div>
+                                        <h5 class="fw-bold mb-0 text-dark">
+                                            Soy Propietario
+                                        </h5>
+                                    </div>
+                                    <p class="text-muted small mb-0">
+                                        Ve el estado de tus propiedades,
+                                        pagos de renta recibidos y
+                                        solicitudes de mantenimiento.
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-primary text-white
+                                            text-center py-2">
+                                    Ver mis propiedades →
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card Inquilino -->
+                    <div class="col-md-6 mb-4" t-if="es_inquilino">
+                        <a href="/my/mis-pagos"
+                           class="text-decoration-none">
+                            <div class="card h-100 shadow-sm border-0
+                                        o_portal_card">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded-circle bg-success
+                                                    d-flex align-items-center
+                                                    justify-content-center me-3"
+                                             style="width:48px; height:48px;">
+                                            <i class="fa fa-key text-white fs-5"
+                                               title="Inquilino"/>
+                                        </div>
+                                        <h5 class="fw-bold mb-0 text-dark">
+                                            Soy Inquilino
+                                        </h5>
+                                    </div>
+                                    <p class="text-muted small mb-0">
+                                        Consulta el estado de tus pagos
+                                        de renta y gestiona tus solicitudes
+                                        de mantenimiento.
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-success text-white
+                                            text-center py-2">
+                                    Ver mis pagos →
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Sin rol detectado -->
+                    <div class="col-12"
+                         t-if="not es_propietario and not es_inquilino">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fa fa-info-circle me-2"/>
+                            No tienes propiedades ni contratos de renta
+                            registrados en el sistema.
+                            Contacta a tu asesor Caletti para más información.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================
+         PROPIETARIO: Lista de Propiedades
+         /my/mis-propiedades
+    ================================================ -->
+    <template id="portal_mis_propiedades"
+              name="Portal RE: Mis Propiedades">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mis Propiedades</t>
+            </t>
+
+            <t t-if="not propiedades">
+                <div class="alert alert-info mt-3" role="alert">
+                    <i class="fa fa-info-circle me-2"/>
+                    No tienes propiedades registradas en el sistema.
+                </div>
+            </t>
+
+            <div t-if="propiedades" class="row mt-4">
+                <t t-foreach="propiedades" t-as="prop">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <a t-attf-href="/my/propiedad/#{prop.id}"
+                           class="text-decoration-none">
+                            <div class="card h-100 shadow-sm border-0">
+                                <!-- Header estado -->
+                                <div t-attf-class="card-header py-2
+                                    #{'bg-success text-white' if prop.estado == 'disponible'
+                                      else 'bg-primary text-white' if prop.estado == 'ocupada'
+                                      else 'bg-warning text-dark' if prop.estado == 'en_mantenimiento'
+                                      else 'bg-secondary text-white'}">
+                                    <div class="d-flex justify-content-between
+                                                align-items-center">
+                                        <small class="fw-bold text-uppercase">
+                                            <t t-esc="dict(prop._fields['estado'].selection).get(prop.estado)"/>
+                                        </small>
+                                        <small>
+                                            <t t-esc="dict(prop._fields['tipo_propiedad'].selection).get(prop.tipo_propiedad)"/>
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <h6 class="card-title fw-bold text-dark mb-1">
+                                        <span t-field="prop.name"/>
+                                    </h6>
+                                    <small class="text-muted d-block mb-2">
+                                        <i class="fa fa-map-marker me-1"
+                                           title="Ubicación"/>
+                                        <t t-esc="prop.colonia or ''"/>
+                                        <t t-if="prop.colonia and prop.municipio">, </t>
+                                        <t t-esc="prop.municipio or ''"/>
+                                    </small>
+
+                                    <!-- Precio de renta si está disponible u ocupada -->
+                                    <div t-if="prop.precio_renta > 0"
+                                         class="fw-bold text-primary mb-2">
+                                        <i class="fa fa-key me-1" title="Renta"/>
+                                        <span t-field="prop.precio_renta"
+                                              t-options='{"widget": "monetary",
+                                                          "display_currency": prop.currency_id}'/>
+                                        <small class="text-muted fw-normal">/mes</small>
+                                    </div>
+
+                                    <small class="text-muted">
+                                        <i class="fa fa-user-o me-1" title="Asesor"/>
+                                        Asesor: <span t-field="prop.asesor_id"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </t>
+            </div>
+
+            <div t-if="pager" class="o_portal_pager text-center mt-3">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================
+         PROPIETARIO: Detalle de Propiedad
+         /my/propiedad/<id>
+         Orden: pagos primero, mantenimientos después
+    ================================================ -->
+    <template id="portal_detalle_propiedad"
+              name="Portal RE: Detalle Propiedad">
+        <t t-call="portal.portal_layout">
+
+            <!-- Mensajes de confirmación -->
+            <div t-if="mensaje == 'aprobado'"
+                 class="alert alert-success" role="alert">
+                <i class="fa fa-check-circle me-2"/>
+                <strong>¡Mantenimiento aprobado!</strong>
+                El asesor ha sido notificado y puede iniciar el trabajo.
+            </div>
+            <div t-if="mensaje == 'ya_aprobado'"
+                 class="alert alert-info" role="alert">
+                <i class="fa fa-info-circle me-2"/>
+                Este mantenimiento ya había sido aprobado anteriormente.
+            </div>
+            <div t-if="mensaje == 'error'"
+                 class="alert alert-danger" role="alert">
+                <i class="fa fa-times-circle me-2"/>
+                Ocurrió un error al procesar tu solicitud.
+                Contacta a tu asesor directamente.
+            </div>
+
+            <div class="container bg-white pb-5 shadow-lg
+                        rounded-3 border-0 mt-3 overflow-hidden">
+
+                <!-- Header -->
+                <div class="row bg-light border-bottom p-4 align-items-center">
+                    <div class="col-md-8">
+                        <small class="text-uppercase text-muted fw-bold">
+                            <t t-esc="dict(propiedad._fields['tipo_propiedad'].selection).get(propiedad.tipo_propiedad)"/>
+                            <t t-if="propiedad.subtipo_propiedad">
+                                —
+                                <t t-esc="dict(propiedad._fields['subtipo_propiedad'].selection).get(propiedad.subtipo_propiedad)"/>
+                            </t>
+                        </small>
+                        <h2 class="text-dark mb-0">
+                            <span t-field="propiedad.name"/>
+                        </h2>
+                        <small class="text-muted"
+                               t-if="propiedad.direccion_completa">
+                            <i class="fa fa-map-marker me-1" title="Dirección"/>
+                            <span t-field="propiedad.direccion_completa"/>
+                        </small>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span t-attf-class="badge rounded-pill p-2 px-4 fs-6
+                            #{'text-bg-success' if propiedad.estado == 'disponible'
+                              else 'text-bg-primary' if propiedad.estado == 'ocupada'
+                              else 'text-bg-warning text-dark' if propiedad.estado == 'en_mantenimiento'
+                              else 'text-bg-secondary'}">
+                            <t t-esc="dict(propiedad._fields['estado'].selection).get(propiedad.estado)"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row p-4">
+                    <div class="col-12">
+
+                        <!-- ============================================
+                             SECCIÓN 1: PAGOS DE RENTA
+                             Prioridad de negocio — el propietario entra
+                             primero a verificar el estado de sus rentas
+                        ============================================ -->
+                        <div class="mb-5">
+                            <h5 class="fw-bold border-bottom pb-2">
+                                <i class="fa fa-money me-2 text-primary"
+                                   title="Pagos"/>
+                                Estado de Pagos de Renta
+                            </h5>
+
+                            <t t-if="not pagos">
+                                <p class="text-muted">
+                                    No hay pagos de renta registrados
+                                    para esta propiedad.
+                                </p>
+                            </t>
+
+                            <div t-if="pagos"
+                                 class="table-responsive rounded border">
+                                <table class="table table-hover m-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="ps-3">Nº Pago</th>
+                                            <th>Vencimiento</th>
+                                            <th>Monto Esperado</th>
+                                            <th>Monto Pagado</th>
+                                            <th>Fecha de Pago</th>
+                                            <th class="text-center">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="pagos" t-as="pago">
+                                            <tr t-attf-class="align-middle
+                                                #{'table-danger' if pago.estado == 'atrasado'
+                                                  else 'table-warning' if pago.estado == 'parcial'
+                                                  else 'table-success' if pago.estado == 'pagado'
+                                                  else ''}">
+                                                <td class="ps-3 fw-bold">
+                                                    #<t t-esc="pago.numero_pago"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="pago.fecha_vencimiento"
+                                                          t-options='{"widget": "date"}'/>
+                                                </td>
+                                                <td class="fw-bold">
+                                                    <span t-field="pago.monto_esperado"
+                                                          t-options='{"widget": "monetary",
+                                                                      "display_currency": pago.currency_id}'/>
+                                                </td>
+                                                <td>
+                                                    <span t-if="pago.monto_pagado > 0"
+                                                          t-field="pago.monto_pagado"
+                                                          t-options='{"widget": "monetary",
+                                                                      "display_currency": pago.currency_id}'/>
+                                                    <span t-else=""
+                                                          class="text-muted">—</span>
+                                                </td>
+                                                <td>
+                                                    <span t-if="pago.fecha_pago"
+                                                          t-field="pago.fecha_pago"
+                                                          t-options='{"widget": "date"}'/>
+                                                    <span t-else=""
+                                                          class="text-muted">—</span>
+                                                    <span t-if="pago.pago_tardio"
+                                                          class="badge text-bg-warning ms-1"
+                                                          style="font-size:0.6rem;">
+                                                        TARDÍO
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-attf-class="badge rounded-pill
+                                                        #{'text-bg-success' if pago.estado == 'pagado'
+                                                          else 'text-bg-danger' if pago.estado == 'atrasado'
+                                                          else 'text-bg-warning text-dark' if pago.estado == 'parcial'
+                                                          else 'text-bg-secondary'}">
+                                                        <t t-esc="dict(pago._fields['estado'].selection).get(pago.estado)"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ============================================
+                             SECCIÓN 2: CONTRATOS ACTIVOS
+                        ============================================ -->
+                        <div class="mb-5" t-if="contratos">
+                            <h5 class="fw-bold border-bottom pb-2">
+                                <i class="fa fa-file-text-o me-2 text-primary"
+                                   title="Contratos"/>
+                                Contratos
+                            </h5>
+                            <div class="row">
+                                <t t-foreach="contratos" t-as="contrato">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-0 bg-light rounded-3">
+                                            <div class="card-body p-3">
+                                                <div class="d-flex justify-content-between
+                                                            align-items-start mb-2">
+                                                    <strong>
+                                                        <span t-field="contrato.name"/>
+                                                    </strong>
+                                                    <span t-attf-class="badge rounded-pill
+                                                        #{'text-bg-success' if contrato.estado == 'activo'
+                                                          else 'text-bg-warning text-dark' if contrato.estado == 'por_vencer'
+                                                          else 'text-bg-secondary'}">
+                                                        <t t-esc="dict(contrato._fields['estado'].selection).get(contrato.estado)"/>
+                                                    </span>
+                                                </div>
+                                                <small class="text-muted d-block">
+                                                    <t t-if="contrato.inquilino_id">
+                                                        Inquilino:
+                                                        <strong>
+                                                            <span t-field="contrato.inquilino_id"/>
+                                                        </strong>
+                                                    </t>
+                                                </small>
+                                                <small class="text-muted d-block">
+                                                    Vigencia:
+                                                    <span t-field="contrato.fecha_inicio"
+                                                          t-options='{"widget": "date"}'/>
+                                                    →
+                                                    <span t-if="contrato.fecha_fin"
+                                                          t-field="contrato.fecha_fin"
+                                                          t-options='{"widget": "date"}'/>
+                                                </small>
+                                                <div class="mt-2 fw-bold text-primary">
+                                                    <span t-field="contrato.monto_renta"
+                                                          t-options='{"widget": "monetary",
+                                                                      "display_currency": contrato.currency_id}'/>
+                                                    <small class="text-muted fw-normal">/mes</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- ============================================
+                             SECCIÓN 3: MANTENIMIENTOS
+                             Con botón de aprobación inline
+                        ============================================ -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold border-bottom pb-2">
+                                <i class="fa fa-wrench me-2 text-primary"
+                                   title="Mantenimiento"/>
+                                Mantenimientos Activos
+                                <t t-if="mant_por_aprobar">
+                                    <span class="badge text-bg-danger ms-2">
+                                        <t t-esc="len(mant_por_aprobar)"/>
+                                        requieren tu aprobación
+                                    </span>
+                                </t>
+                            </h5>
+
+                            <t t-if="not mantenimientos">
+                                <p class="text-muted">
+                                    No hay mantenimientos activos
+                                    para esta propiedad.
+                                </p>
+                            </t>
+
+                            <div t-if="mantenimientos"
+                                 class="table-responsive rounded border">
+                                <table class="table table-hover m-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="ps-3">Ticket</th>
+                                            <th>Descripción</th>
+                                            <th>Categoría</th>
+                                            <th>Prioridad</th>
+                                            <th>Costo Est.</th>
+                                            <th class="text-center">Estado</th>
+                                            <th class="text-center">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="mantenimientos"
+                                           t-as="mant">
+                                            <tr t-attf-class="align-middle
+                                                #{'table-warning' if mant.requiere_aprobacion and not mant.aprobado_por_propietario else ''}">
+                                                <td class="ps-3">
+                                                    <small class="fw-bold text-muted">
+                                                        <t t-esc="mant.ticket_ref"/>
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <span t-field="mant.name"/>
+                                                </td>
+                                                <td>
+                                                    <small>
+                                                        <t t-esc="dict(mant._fields['categoria'].selection).get(mant.categoria, '—')"/>
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <span t-attf-class="badge
+                                                        #{'text-bg-danger' if mant.prioridad == 'urgente'
+                                                          else 'text-bg-warning text-dark' if mant.prioridad == 'alta'
+                                                          else 'text-bg-secondary'}"
+                                                          style="font-size:0.65rem;">
+                                                        <t t-esc="dict(mant._fields['prioridad'].selection).get(mant.prioridad)"/>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <t t-if="mant.costo_estimado > 0">
+                                                        <span t-field="mant.costo_estimado"
+                                                              t-options='{"widget": "monetary",
+                                                                          "display_currency": mant.currency_id}'/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">—</span>
+                                                    </t>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-attf-class="badge rounded-pill
+                                                        #{'text-bg-info' if mant.estado in ['solicitado','evaluando']
+                                                          else 'text-bg-warning text-dark' if mant.estado == 'aprobado'
+                                                          else 'text-bg-primary' if mant.estado == 'en_proceso'
+                                                          else 'text-bg-success' if mant.estado == 'resuelto'
+                                                          else 'text-bg-secondary'}"
+                                                          style="font-size:0.65rem;">
+                                                        <t t-esc="dict(mant._fields['estado'].selection).get(mant.estado)"/>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <!-- Botón de aprobación si requiere -->
+                                                    <t t-if="mant.requiere_aprobacion and not mant.aprobado_por_propietario">
+                                                        <form t-attf-action="/my/propiedad/#{propiedad.id}/aprobar-mantenimiento/#{mant.id}"
+                                                              method="POST">
+                                                            <input type="hidden"
+                                                                   name="csrf_token"
+                                                                   t-att-value="request.csrf_token()"/>
+                                                            <button type="submit"
+                                                                    class="btn btn-success btn-sm">
+                                                                <i class="fa fa-check me-1"
+                                                                   title="Aprobar"/>
+                                                                Aprobar
+                                                            </button>
+                                                        </form>
+                                                    </t>
+                                                    <t t-elif="mant.aprobado_por_propietario">
+                                                        <span class="text-success small">
+                                                            <i class="fa fa-check-circle me-1"
+                                                               title="Aprobado"/>
+                                                            Aprobado
+                                                        </span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted small">—</span>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Botón contacto asesor -->
+                        <div class="text-center mt-4">
+                            <a href="mailto:info@studio.caletti.com.mx"
+                               class="btn btn-outline-primary">
+                                <i class="fa fa-envelope me-1"/>
+                                Contactar a mi Asesor Caletti
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================
+         INQUILINO: Lista de Pagos
+         /my/mis-pagos
+    ================================================ -->
+    <template id="portal_mis_pagos"
+              name="Portal RE: Mis Pagos">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mis Pagos de Renta</t>
+            </t>
+
+            <!-- Resumen del contrato activo -->
+            <div t-if="contrato_activo"
+                 class="card border-0 bg-light rounded-3 p-3 mt-3 mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <small class="text-muted text-uppercase fw-bold">
+                            Contrato Activo
+                        </small>
+                        <h6 class="fw-bold mb-0">
+                            <span t-field="contrato_activo.propiedad_id"/>
+                        </h6>
+                        <small class="text-muted">
+                            <span t-field="contrato_activo.name"/>
+                        </small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <small class="text-muted d-block">RENTA MENSUAL</small>
+                        <strong class="text-primary fs-5">
+                            <span t-field="contrato_activo.monto_renta"
+                                  t-options='{"widget": "monetary",
+                                              "display_currency": contrato_activo.currency_id}'/>
+                        </strong>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <small class="text-muted d-block">VENCE</small>
+                        <strong t-attf-class="fs-6
+                            #{'text-danger' if contrato_activo.estado == 'por_vencer' else ''}">
+                            <span t-field="contrato_activo.fecha_fin"
+                                  t-options='{"widget": "date"}'/>
+                        </strong>
+                        <span t-if="contrato_activo.estado == 'por_vencer'"
+                              class="badge text-bg-warning d-block mt-1"
+                              style="font-size:0.6rem;">
+                            PRÓXIMO A VENCER
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <t t-if="not pagos">
+                <div class="alert alert-info mt-3" role="alert">
+                    <i class="fa fa-info-circle me-2"/>
+                    No tienes pagos registrados en el sistema.
+                </div>
+            </t>
+
+            <div t-if="pagos"
+                 class="table-responsive rounded shadow-sm border bg-white mt-3">
+                <table class="table table-hover m-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Nº Pago</th>
+                            <th>Fecha Vencimiento</th>
+                            <th>Monto</th>
+                            <th>Fecha de Pago</th>
+                            <th class="text-center">Puntual</th>
+                            <th class="text-end pe-4">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="pagos" t-as="pago">
+                            <tr t-attf-class="align-middle
+                                #{'table-danger' if pago.estado == 'atrasado'
+                                  else 'table-warning' if pago.estado == 'parcial'
+                                  else 'table-success' if pago.estado == 'pagado'
+                                  else ''}">
+                                <td class="ps-4 fw-bold">
+                                    Pago #<t t-esc="pago.numero_pago"/>
+                                </td>
+                                <td>
+                                    <span t-field="pago.fecha_vencimiento"
+                                          t-options='{"widget": "date"}'/>
+                                </td>
+                                <td class="fw-bold">
+                                    <span t-field="pago.monto_esperado"
+                                          t-options='{"widget": "monetary",
+                                                      "display_currency": pago.currency_id}'/>
+                                </td>
+                                <td>
+                                    <span t-if="pago.fecha_pago"
+                                          t-field="pago.fecha_pago"
+                                          t-options='{"widget": "date"}'/>
+                                    <span t-else="" class="text-muted">
+                                        Pendiente
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <i t-if="pago.estado == 'pagado' and not pago.pago_tardio"
+                                       class="fa fa-check-circle text-success fs-5"
+                                       title="Pago puntual"/>
+                                    <i t-elif="pago.pago_tardio"
+                                       class="fa fa-clock-o text-warning fs-5"
+                                       title="Pago tardío"/>
+                                    <span t-else="" class="text-muted">—</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <span t-attf-class="badge rounded-pill p-2 px-3
+                                        #{'text-bg-success' if pago.estado == 'pagado'
+                                          else 'text-bg-danger' if pago.estado == 'atrasado'
+                                          else 'text-bg-warning text-dark' if pago.estado == 'parcial'
+                                          else 'text-bg-secondary'}">
+                                        <t t-esc="dict(pago._fields['estado'].selection).get(pago.estado).upper()"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <div t-if="pager" class="o_portal_pager text-center mt-3">
+                <t t-call="portal.pager"/>
+            </div>
+
+            <!-- CTA tickets -->
+            <div class="text-center mt-4">
+                <a href="/my/mis-tickets"
+                   class="btn btn-outline-secondary me-2">
+                    <i class="fa fa-wrench me-1"/>
+                    Mis Tickets de Mantenimiento
+                </a>
+                <a href="mailto:info@studio.caletti.com.mx"
+                   class="btn btn-outline-primary">
+                    <i class="fa fa-envelope me-1"/>
+                    Contactar a mi Asesor
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================
+         INQUILINO: Lista de Tickets
+         /my/mis-tickets
+    ================================================ -->
+    <template id="portal_mis_tickets"
+              name="Portal RE: Mis Tickets">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Mis Tickets de Mantenimiento</t>
+            </t>
+
+            <!-- Formulario nuevo ticket — solo si tiene contrato activo -->
+            <div t-if="contrato_activo"
+                 class="card border-0 shadow-sm rounded-3 mt-3 mb-4">
+                <div class="card-header bg-primary text-white fw-bold py-2">
+                    <i class="fa fa-plus-circle me-2"/>
+                    Reportar nuevo problema
+                </div>
+                <div class="card-body">
+                    <form action="/my/ticket/nuevo" method="POST">
+                        <input type="hidden"
+                               name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small">
+                                    Descripción breve
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       name="nombre"
+                                       class="form-control"
+                                       required="required"
+                                       placeholder="Ej: Fuga en tubería de cocina"/>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold small">
+                                    Categoría
+                                </label>
+                                <select name="categoria" class="form-select">
+                                    <option value="fontaneria">🚿 Fontanería</option>
+                                    <option value="electricidad">⚡ Electricidad</option>
+                                    <option value="pintura">🎨 Pintura</option>
+                                    <option value="carpinteria">🪚 Carpintería</option>
+                                    <option value="climatizacion">❄️ Climatización</option>
+                                    <option value="cerrajeria">🔑 Cerrajería</option>
+                                    <option value="electrodomestico">🏠 Electrodoméstico</option>
+                                    <option value="otro" selected="selected">📋 Otro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold small">
+                                    Urgencia
+                                </label>
+                                <select name="prioridad" class="form-select">
+                                    <option value="urgente">🚨 Urgente</option>
+                                    <option value="alta">🔴 Alta</option>
+                                    <option value="normal" selected="selected">
+                                        🟡 Normal
+                                    </option>
+                                    <option value="baja">🟢 Baja</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold small">
+                                    Descripción detallada
+                                </label>
+                                <textarea name="descripcion"
+                                          class="form-control"
+                                          rows="2"
+                                          placeholder="Ubicación exacta, cuándo comenzó, impacto actual..."/>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    <i class="fa fa-paper-plane me-1"/>
+                                    Enviar Ticket
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sin contrato activo — no puede crear tickets -->
+            <div t-if="not contrato_activo"
+                 class="alert alert-info mt-3" role="alert">
+                <i class="fa fa-info-circle me-2"/>
+                Solo puedes reportar mantenimientos si tienes un
+                contrato de renta activo. Contacta a tu asesor.
+            </div>
+
+            <!-- Lista de tickets -->
+            <t t-if="not tickets">
+                <div class="alert alert-light border mt-3" role="alert">
+                    No tienes tickets de mantenimiento registrados.
+                </div>
+            </t>
+
+            <div t-if="tickets"
+                 class="table-responsive rounded shadow-sm border bg-white mt-3">
+                <table class="table table-hover m-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Ticket</th>
+                            <th>Descripción</th>
+                            <th>Categoría</th>
+                            <th>Prioridad</th>
+                            <th>Fecha</th>
+                            <th class="text-end pe-4">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="tickets" t-as="ticket">
+                            <tr class="align-middle"
+                                t-attf-onclick="window.location.href='/my/ticket/#{ticket.id}'"
+                                style="cursor:pointer;">
+                                <td class="ps-4">
+                                    <strong class="text-primary">
+                                        <t t-esc="ticket.ticket_ref"/>
+                                    </strong>
+                                </td>
+                                <td>
+                                    <span t-field="ticket.name"/>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        <t t-esc="dict(ticket._fields['categoria'].selection).get(ticket.categoria, '—')"/>
+                                    </small>
+                                </td>
+                                <td>
+                                    <span t-attf-class="badge
+                                        #{'text-bg-danger' if ticket.prioridad == 'urgente'
+                                          else 'text-bg-warning text-dark' if ticket.prioridad == 'alta'
+                                          else 'text-bg-secondary'}"
+                                          style="font-size:0.65rem;">
+                                        <t t-esc="dict(ticket._fields['prioridad'].selection).get(ticket.prioridad)"/>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span t-field="ticket.fecha_solicitud"
+                                          t-options='{"widget": "date"}'/>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <span t-attf-class="badge rounded-pill p-2 px-3
+                                        #{'text-bg-success' if ticket.estado in ['resuelto','cerrado']
+                                          else 'text-bg-primary' if ticket.estado == 'en_proceso'
+                                          else 'text-bg-warning text-dark' if ticket.estado == 'aprobado'
+                                          else 'text-bg-info' if ticket.estado in ['solicitado','evaluando']
+                                          else 'text-bg-secondary'}">
+                                        <t t-esc="dict(ticket._fields['estado'].selection).get(ticket.estado)"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <div t-if="pager" class="o_portal_pager text-center mt-3">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================
+         INQUILINO: Detalle de Ticket
+         /my/ticket/<id>
+    ================================================ -->
+    <template id="portal_detalle_ticket"
+              name="Portal RE: Detalle Ticket">
+        <t t-call="portal.portal_layout">
+
+            <div t-if="mensaje == 'creado'"
+                 class="alert alert-success" role="alert">
+                <i class="fa fa-check-circle me-2"/>
+                <strong>¡Ticket registrado!</strong>
+                Tu asesor ha sido notificado y atenderá tu solicitud
+                a la brevedad.
+            </div>
+
+            <div class="container bg-white pb-5 shadow-lg
+                        rounded-3 border-0 mt-3 overflow-hidden">
+
+                <!-- Header -->
+                <div class="row bg-light border-bottom p-4 align-items-center">
+                    <div class="col-md-8">
+                        <small class="text-uppercase text-muted fw-bold">
+                            Ticket de Mantenimiento —
+                            <span t-field="ticket.propiedad_id"/>
+                        </small>
+                        <h2 class="text-dark mb-0">
+                            <span t-field="ticket.name"/>
+                        </h2>
+                        <small class="text-muted">
+                            Ref: <strong><t t-esc="ticket.ticket_ref"/></strong>
+                        </small>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span t-attf-class="badge rounded-pill p-2 px-4 fs-6
+                            #{'text-bg-success' if ticket.estado in ['resuelto','cerrado']
+                              else 'text-bg-primary' if ticket.estado == 'en_proceso'
+                              else 'text-bg-warning text-dark' if ticket.estado == 'aprobado'
+                              else 'text-bg-info'}">
+                            <t t-esc="dict(ticket._fields['estado'].selection).get(ticket.estado)"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row p-4">
+                    <div class="col-12 col-lg-8">
+
+                        <!-- Descripción del problema -->
+                        <div class="mb-4"
+                             t-if="ticket.descripcion_problema">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-file-text-o me-2 text-primary"
+                                   title="Descripción"/>
+                                Problema Reportado
+                            </h5>
+                            <div class="p-3 border rounded-3 bg-light">
+                                <span t-field="ticket.descripcion_problema"/>
+                            </div>
+                        </div>
+
+                        <!-- Trabajo realizado si está en proceso o resuelto -->
+                        <div class="mb-4"
+                             t-if="ticket.descripcion_trabajo and ticket.estado in ['en_proceso','resuelto','cerrado']">
+                            <h5 class="fw-bold">
+                                <i class="fa fa-wrench me-2 text-success"
+                                   title="Trabajo"/>
+                                Trabajo Realizado
+                            </h5>
+                            <div class="p-3 border rounded-3 bg-light">
+                                <span t-field="ticket.descripcion_trabajo"/>
+                            </div>
+                        </div>
+
+                        <!-- Chatter -->
+                        <div class="mt-4">
+                            <h5 class="fw-bold mb-3 text-secondary">
+                                <i class="fa fa-comments me-2"/>
+                                Canal de Comunicación
+                            </h5>
+                            <div class="bg-light p-3 rounded-3 shadow-sm">
+                                <t t-call="portal.message_thread">
+                                    <t t-set="object" t-value="ticket"/>
+                                </t>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Sidebar datos del ticket -->
+                    <div class="col-12 col-lg-4 ps-lg-5">
+                        <div class="card border-0 bg-light rounded-3 p-3 mb-4">
+                            <h6 class="text-muted fw-bold border-bottom pb-2 mb-3">
+                                DATOS DEL TICKET
+                            </h6>
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">
+                                    CATEGORÍA:
+                                </label>
+                                <strong>
+                                    <t t-esc="dict(ticket._fields['categoria'].selection).get(ticket.categoria, '—')"/>
+                                </strong>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">
+                                    PRIORIDAD:
+                                </label>
+                                <span t-attf-class="badge
+                                    #{'text-bg-danger' if ticket.prioridad == 'urgente'
+                                      else 'text-bg-warning text-dark' if ticket.prioridad == 'alta'
+                                      else 'text-bg-secondary'}">
+                                    <t t-esc="dict(ticket._fields['prioridad'].selection).get(ticket.prioridad)"/>
+                                </span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-muted small d-block">
+                                    FECHA DE SOLICITUD:
+                                </label>
+                                <strong>
+                                    <span t-field="ticket.fecha_solicitud"
+                                          t-options='{"widget": "date"}'/>
+                                </strong>
+                            </div>
+                            <div class="mb-3"
+                                 t-if="ticket.fecha_resolucion">
+                                <label class="text-muted small d-block">
+                                    FECHA DE RESOLUCIÓN:
+                                </label>
+                                <strong class="text-success">
+                                    <span t-field="ticket.fecha_resolucion"
+                                          t-options='{"widget": "date"}'/>
+                                </strong>
+                            </div>
+                            <div class="mt-4">
+                                <a href="/my/mis-tickets"
+                                   class="btn btn-outline-secondary btn-sm w-100 mb-2">
+                                    <i class="fa fa-arrow-left me-1"/>
+                                    Volver a mis Tickets
+                                </a>
+                                <a href="mailto:info@studio.caletti.com.mx"
+                                   class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="fa fa-envelope me-1"/>
+                                    Contactar al Asesor
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
