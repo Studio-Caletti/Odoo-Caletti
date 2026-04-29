@@ -775,14 +775,13 @@
 
             <!-- CTA tickets -->
             <div class="mt-4 text-center">
-    <a href="/my/mis-tickets"
-       class="btn btn-outline-secondary">
-        <i class="fa fa-wrench me-1"/>
-        Mis Tickets de Mantenimiento
-    </a>
-</div>
+                <a href="/my/mis-tickets" class="btn btn-outline-secondary">
+                <i class="fa fa-wrench me-1"/>
+                Mis Tickets de Mantenimiento
+                </a>
+            </div>
 
-<!-- Chatter del contrato activo del inquilino -->
+            <!-- Chatter del contrato activo del inquilino -->
             <div class="mt-5" t-if="contrato_activo">
                 <h5 class="fw-bold mb-3 text-secondary">
                 <i class="fa fa-comments me-2"/>Comunicación con el Asesor
