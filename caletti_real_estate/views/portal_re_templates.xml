@@ -36,26 +36,8 @@
     </xpath>
 </template>
 
-
-    <template id="portal_re_home_propietario"
-              name="Portal Home: Mis Propiedades"
-              inherit_id="portal.portal_my_home"
-              priority="30">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="title">Mis Propiedades</t>
-                <t t-set="url" t-value="'/my/mis-propiedades'"/>
-                <t t-set="placeholder">
-                    Propiedades, contratos y pagos de renta
-                </t>
-                <t t-set="count" t-value="re_propiedad_count"/>
-            </t>
-        </xpath>
-    </template>
-
+      
     
-    
-
     <template id="portal_re_home_inquilino_pagos"
               name="Portal Home: Mis Pagos de Renta"
               inherit_id="portal.portal_my_home"
