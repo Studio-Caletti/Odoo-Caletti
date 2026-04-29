@@ -109,7 +109,7 @@ class RePropiedad(models.Model):
     """
     _name = 're.propiedad'
     _description = 'Propiedad Inmobiliaria — Caletti Real Estate'
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixxin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
     _rec_name = 'name'
     _order = 'estado asc, date_disponible desc'
 
