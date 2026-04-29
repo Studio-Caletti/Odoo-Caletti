@@ -197,6 +197,7 @@ class CalettiREPortal(CustomerPortal):
             'propiedades':        propiedades,
             'page_name':          're_propiedades',
             'pager':              pager,
+            'default_url':        '/my/mis-propiedades',
             'searchbar_filters':  OrderedDict(sorted(searchbar_filters.items())),
             'searchbar_sortings': searchbar_sortings,
             'sortby':             sortby,
@@ -420,6 +421,7 @@ class CalettiREPortal(CustomerPortal):
             'contrato_activo':   contrato_activo,
             'page_name':         're_pagos',
             'pager':             pager,
+            'default_url':       '/my/mis-pagos',
             'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
             'filterby':          filterby,
             'pago_count':        pago_count,
@@ -533,6 +535,7 @@ class CalettiREPortal(CustomerPortal):
             'contrato_activo':   contrato_activo,
             'page_name':         're_tickets',
             'pager':             pager,
+            'default_url':       '/my/mis-tickets',
             'searchbar_filters': OrderedDict(sorted(searchbar_filters.items())),
             'filterby':          filterby,
         })
