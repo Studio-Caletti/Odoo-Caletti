@@ -16,6 +16,7 @@
          Propietario: mis propiedades
          Inquilino: mis pagos + mis tickets
     ================================================ -->
+    
     <template id="portal_re_home_propietario"
           name="Portal Home: Mis Propiedades"
           inherit_id="portal.portal_my_home"
@@ -38,37 +39,30 @@
 
       
     
-    <template id="portal_re_home_inquilino_pagos"
-              name="Portal Home: Mis Pagos de Renta"
-              inherit_id="portal.portal_my_home"
-              priority="30">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="title">Mis Pagos de Renta</t>
-                <t t-set="url" t-value="'/my/mis-pagos'"/>
-                <t t-set="placeholder">
-                    Estado de pagos y historial de renta
-                </t>
-                <t t-set="count" t-value="re_pago_pendiente_count"/>
-            </t>
-        </xpath>
-    </template>
-
-    <template id="portal_re_home_inquilino_tickets"
-              name="Portal Home: Mis Tickets de Mantenimiento"
-              inherit_id="portal.portal_my_home"
-              priority="30">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="title">Mis Tickets de Mantenimiento</t>
-                <t t-set="url" t-value="'/my/mis-tickets'"/>
-                <t t-set="placeholder">
-                    Solicitudes de mantenimiento de tu propiedad
-                </t>
-                <t t-set="count" t-value="re_ticket_count"/>
-            </t>
-        </xpath>
-    </template>
+   <!-- Entrada portal home: Inquilino -->
+<template id="portal_re_home_inquilino"
+          name="Portal Home: Mis Pagos y Tickets"
+          inherit_id="portal.portal_my_home"
+          priority="30">
+    <xpath expr="//div[@class='o_portal_my_home']" position="inside">
+        <div class="o_portal_section">
+            <p></p>
+            <h3>🔑 Mi Renta</h3>
+            <p>Consulta el estado de tus pagos de renta
+               y gestiona tus solicitudes de mantenimiento.</p>
+            <p>
+                <a class="btn btn-primary me-2"
+                   href="/my/mis-pagos">
+                    Ver mis pagos
+                </a>
+                <a class="btn btn-outline-secondary"
+                   href="/my/mis-tickets">
+                    Mis tickets
+                </a>
+            </p>
+        </div>
+    </xpath>
+</template>
 
     <!-- ================================================
          BREADCRUMBS: Navegación del portal RE
