@@ -271,6 +271,7 @@ class ReContrato(models.Model):
     dias_para_vencer = fields.Integer(
         string='Días para Vencer',
         compute='_compute_dias_vencer',
+        store=True,
         help="Días restantes hasta el vencimiento del contrato"
     )
 
