@@ -78,21 +78,7 @@
     </xpath>
 </template>
 
-    <template id="portal_re_home_inquilino_pagos"
-              name="Portal Home: Mis Pagos de Renta"
-              inherit_id="portal.portal_my_home"
-              priority="30">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="title">Mis Pagos de Renta</t>
-                <t t-set="url" t-value="'/my/mis-pagos'"/>
-                <t t-set="placeholder">
-                    Estado de pagos y historial de renta
-                </t>
-                <t t-set="count" t-value="re_pago_pendiente_count"/>
-            </t>
-        </xpath>
-    </template>
+    
 
     <template id="portal_re_home_inquilino_tickets"
               name="Portal Home: Mis Tickets de Mantenimiento"
