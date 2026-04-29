@@ -634,10 +634,8 @@
                             <div class="bg-light p-3 rounded-3 shadow-sm">
                                 <t t-call="portal.message_thread">
                                 <t t-set="object" t-value="propiedad"/>
+                                <t t-set="chatter_mode" t-value="'frame'"/>
                                 <t t-set="pid" t-value="request.env.user.partner_id.id"/>
-                                <t t-set="token" t-value="propiedad.access_token
-                                      if hasattr(propiedad, 'access_token')
-                                      else ''"/>
                                 </t>
                             </div>
                         </div>
@@ -789,10 +787,8 @@
                 <div class="bg-light p-3 rounded-3 shadow-sm">
                     <t t-call="portal.message_thread">
                     <t t-set="object" t-value="contrato_activo"/>
+                    <t t-set="chatter_mode" t-value="'frame'"/>
                     <t t-set="pid" t-value="request.env.user.partner_id.id"/>
-                    <t t-set="token" t-value="contrato_activo.access_token
-                                      if hasattr(contrato_activo, 'access_token')
-                                      else ''"/>
                     </t>
                 </div>
             </div>
