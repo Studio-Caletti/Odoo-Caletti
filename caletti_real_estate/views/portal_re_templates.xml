@@ -626,15 +626,21 @@
                             </div>
                         </div>
 
-                        <!-- Botón contacto asesor -->
-                        <div class="text-center mt-4">
-                            <a href="mailto:info@studio.caletti.com.mx"
-                               class="btn btn-outline-primary">
-                                <i class="fa fa-envelope me-1"/>
-                                Contactar a mi Asesor Caletti
-                            </a>
+                        <!-- Botón contacto asesor aqui cambio incluyendo chatter-->
+                        <div class="mt-5">
+                            <h5 class="fw-bold mb-3 text-secondary">
+                            <i class="fa fa-comments me-2"/> Comunicación con el Asesor
+                            </h5>
+                            <div class="bg-light p-3 rounded-3 shadow-sm">
+                                <t t-call="portal.message_thread">
+                                <t t-set="object" t-value="propiedad"/>
+                                <t t-set="pid" t-value="request.env.user.partner_id.id"/>
+                                <t t-set="token" t-value="propiedad.access_token
+                                      if hasattr(propiedad, 'access_token')
+                                      else ''"/>
+                                </t>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -768,17 +774,28 @@
             </div>
 
             <!-- CTA tickets -->
-            <div class="text-center mt-4">
-                <a href="/my/mis-tickets"
-                   class="btn btn-outline-secondary me-2">
-                    <i class="fa fa-wrench me-1"/>
-                    Mis Tickets de Mantenimiento
-                </a>
-                <a href="mailto:info@studio.caletti.com.mx"
-                   class="btn btn-outline-primary">
-                    <i class="fa fa-envelope me-1"/>
-                    Contactar a mi Asesor
-                </a>
+            <div class="mt-4 text-center">
+    <a href="/my/mis-tickets"
+       class="btn btn-outline-secondary">
+        <i class="fa fa-wrench me-1"/>
+        Mis Tickets de Mantenimiento
+    </a>
+</div>
+
+<!-- Chatter del contrato activo del inquilino -->
+            <div class="mt-5" t-if="contrato_activo">
+                <h5 class="fw-bold mb-3 text-secondary">
+                <i class="fa fa-comments me-2"/>Comunicación con el Asesor
+                </h5>
+                <div class="bg-light p-3 rounded-3 shadow-sm">
+                    <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="contrato_activo"/>
+                    <t t-set="pid" t-value="request.env.user.partner_id.id"/>
+                    <t t-set="token" t-value="contrato_activo.access_token
+                                      if hasattr(contrato_activo, 'access_token')
+                                      else ''"/>
+                    </t>
+                </div>
             </div>
         </t>
     </template>
