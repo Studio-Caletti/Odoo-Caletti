@@ -17,6 +17,27 @@
          Inquilino: mis pagos + mis tickets
     ================================================ -->
     <template id="portal_re_home_propietario"
+          name="Portal Home: Mis Propiedades"
+          inherit_id="portal.portal_my_home"
+          priority="30">
+    <xpath expr="//div[@class='o_portal_my_home']" position="inside">
+        <div class="o_portal_section">
+            <p></p>
+            <h3>🏠 Mis Propiedades</h3>
+            <p>Consulta el estado de tus propiedades,
+               pagos de renta recibidos y mantenimientos.</p>
+            <p>
+                <a class="btn btn-primary"
+                   href="/my/mis-propiedades">
+                    Ver mis propiedades
+                </a>
+            </p>
+        </div>
+    </xpath>
+</template>
+
+
+    <template id="portal_re_home_propietario"
               name="Portal Home: Mis Propiedades"
               inherit_id="portal.portal_my_home"
               priority="30">
@@ -31,6 +52,31 @@
             </t>
         </xpath>
     </template>
+
+    
+    <template id="portal_re_home_inquilino"
+          name="Portal Home: Mis Pagos y Tickets"
+          inherit_id="portal.portal_my_home"
+          priority="30">
+    <xpath expr="//div[@class='o_portal_my_home']" position="inside">
+        <div class="o_portal_section">
+            <p></p>
+            <h3>🔑 Mi Renta</h3>
+            <p>Consulta el estado de tus pagos de renta
+               y gestiona tus solicitudes de mantenimiento.</p>
+            <p>
+                <a class="btn btn-primary me-2"
+                   href="/my/mis-pagos">
+                    Ver mis pagos
+                </a>
+                <a class="btn btn-outline-secondary"
+                   href="/my/mis-tickets">
+                    Mis tickets
+                </a>
+            </p>
+        </div>
+    </xpath>
+</template>
 
     <template id="portal_re_home_inquilino_pagos"
               name="Portal Home: Mis Pagos de Renta"

@@ -113,7 +113,7 @@ class ReContrato(models.Model):
     """
     _name = 're.contrato'
     _description = 'Contrato Inmobiliario — Caletti Real Estate'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'potal.mixin']
     _rec_name = 'name'
     _order = 'estado asc, fecha_inicio desc'
 
