@@ -21,5 +21,4 @@ access_re_mantenimiento_admin,re.mantenimiento.admin,model_re_mantenimiento,cale
 access_re_mantenimiento_portal,re.mantenimiento.portal,model_re_mantenimiento,base.group_portal,1,1,1,0
 access_re_contrato_portal,re.contrato.portal,model_re_contrato,base.group_portal,1,0,0,0
 access_re_pago_portal,re.pago.portal,model_re_pago,base.group_portal,1,0,0,0
-access_re_mantenimiento_portal_write,re.mantenimiento.portal.write,model_re_mantenimiento,base.group_portal,1,1,1,0
 access_re_propiedad_foto_portal,re.propiedad.foto.portal,model_re_propiedad_foto,base.group_portal,1,0,0,0
