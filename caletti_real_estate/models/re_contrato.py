@@ -1031,9 +1031,7 @@ class ReContrato(models.Model):
         Actualiza estado a 'por_vencer' y notifica al asesor via Chatter.
         Disparado 60 días antes del vencimiento.
         """
-        _logger.info(
-            "🔄 Revisando vencimientos de contratos de renta..."
-        )
+        _logger.info("🔄 Revisando vencimientos de contratos de renta...")
         today = fields.Date.today()
         fecha_limite = today + relativedelta(days=DIAS_ALERTA_VENCIMIENTO)
 
@@ -1133,7 +1131,7 @@ class ReContrato(models.Model):
     # =========================================================================
 
 
-     def write(self, vals):
+    def write(self, vals):
         """
         Override para generar el registro contable de comisión
         cuando comision_pagada cambia a True.
