@@ -45,7 +45,8 @@
 
     'depends': [
         'tablero_kanban_caletti',  # Core — obligatorio
-        'account',                  # Para campos Monetary (currency_id, precios)
+        'account',                 # Para campos Monetary (currency_id, precios)
+        'portal',                  
     ],
 
     'data': [

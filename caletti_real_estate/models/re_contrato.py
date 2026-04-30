@@ -431,6 +431,50 @@ class ReContrato(models.Model):
     # Si en v2.0 se requiere dividir entre partes, agregar campo Selection aquí
 
     # =========================================================================
+    # INTEGRACIÓN CONTABLE — v1.1
+    # Diario contable para facturas de renta y registro de comisión.
+    # El usuario puede seleccionar el diario emisor por contrato.
+    # =========================================================================
+
+    journal_id = fields.Many2one(
+        'account.journal',
+        string='Diario Contable',
+        domain=[('type', 'in', ['sale', 'general'])],
+        tracking=True,
+        help="Diario contable usado para generar facturas de renta "
+             "y registros de comisión. Si no se selecciona, "
+             "se usará el diario de ventas por defecto de la compañía."
+    )
+    move_ids = fields.Many2many(
+        'account.move',
+        string='Documentos Contables',
+        compute='_compute_move_ids',
+        help="Facturas y registros contables generados por este contrato."
+    )
+    move_count = fields.Integer(
+        string='Documentos Contables',
+        compute='_compute_move_ids'
+    )
+
+    @api.depends('name')
+    def _compute_move_ids(self):
+        for contrato in self:
+            if not contrato.name:
+                contrato.move_ids   = False
+                contrato.move_count = 0
+                continue
+            moves = self.env['account.move'].search([
+                ('ref', 'like', contrato.name),
+                ('move_type', 'in', [
+                    'out_invoice', 'in_invoice',
+                    'out_receipt',  'in_receipt'
+                ]),
+            ])
+            contrato.move_ids   = moves
+            contrato.move_count = len(moves)
+
+
+    # =========================================================================
     # SECCIÓN 7: RENOVACIÓN Y TRAZABILIDAD DE HISTORIAL
     # =========================================================================
 
@@ -1056,6 +1100,165 @@ class ReContrato(models.Model):
         )
 
     # =========================================================================
+    # MÉTODO helper para obtener el diario 
+    # =========================================================================
+
+
+    def _get_journal(self, journal_type='sale'):
+        """
+        Obtiene el diario contable configurado en el contrato.
+        Si no hay uno seleccionado, usa el diario por defecto
+        de la compañía para el tipo indicado.
+        """
+        self.ensure_one()
+        if self.journal_id:
+            return self.journal_id
+
+        journal = self.env['account.journal'].search([
+            ('type', '=', journal_type),
+            ('company_id', '=', self.env.company.id),
+        ], limit=1)
+
+        if not journal:
+            raise UserError(_(
+                "No se encontró un diario contable de tipo '%s' "
+                "configurado en la compañía. "
+                "Configura uno en Contabilidad → Diarios."
+            ) % journal_type)
+
+        return journal
+
+    # =========================================================================
+    # MÉTODO Over write para generar factura cuando se marque comision pagada
+    # =========================================================================
+
+
+     def write(self, vals):
+        """
+        Override para generar el registro contable de comisión
+        cuando comision_pagada cambia a True.
+        """
+        res = super().write(vals)
+
+        if vals.get('comision_pagada'):
+            for contrato in self:
+                if contrato.comision_monto > 0:
+                    contrato._generar_move_comision()
+
+        return res
+
+    def _generar_move_comision(self):
+        """
+        Genera un vendor bill (in_invoice) registrando el egreso
+        de la comisión del asesor hacia el propietario o la inmobiliaria.
+
+        Tipo: in_invoice (egreso — dinero que sale hacia el asesor)
+        Partner: El usuario asesor responsable del contrato
+                 (su partner_id en res.users)
+        """
+        self.ensure_one()
+
+        if not self.comision_monto or self.comision_monto <= 0:
+            _logger.warning(
+                "⚠️ Contrato '%s' sin monto de comisión — "
+                "registro contable no generado",
+                self.name
+            )
+            return
+
+        asesor_partner = self.asesor_id.partner_id if self.asesor_id else None
+
+        if not asesor_partner:
+            _logger.warning(
+                "⚠️ Contrato '%s' sin asesor asignado — "
+                "registro de comisión no generado",
+                self.name
+            )
+            return
+
+        # Para egreso usamos diario de compras o general
+        journal = self._get_journal(journal_type='purchase')
+
+        cuenta_gastos = self.env['account.account'].search([
+            ('account_type', 'in', [
+                'expense', 'expense_other'
+            ]),
+            ('company_id', '=', self.env.company.id),
+            ('deprecated', '=', False),
+        ], limit=1)
+
+        if not cuenta_gastos:
+            _logger.error(
+                "❌ No se encontró cuenta de gastos — "
+                "comisión del contrato '%s' no registrada",
+                self.name
+            )
+            return
+
+        concepto = _(
+            "Comisión del asesor — %(propiedad)s\n"
+            "Contrato: %(contrato)s\n"
+            "Asesor: %(asesor)s"
+        ) % {
+            'propiedad': self.propiedad_id.name,
+            'contrato':  self.name,
+            'asesor':    asesor_partner.name,
+        }
+
+        move_vals = {
+            'move_type':        'in_invoice',
+            'journal_id':       journal.id,
+            'partner_id':       asesor_partner.id,
+            'invoice_date':     self.fecha_cobro_comision
+                                or fields.Date.today(),
+            'ref':              f"{self.name} / Comisión Asesor",
+            'narration':        concepto,
+            'invoice_line_ids': [(0, 0, {
+                'name':       concepto,
+                'quantity':   1.0,
+                'price_unit': self.comision_monto,
+                'account_id': cuenta_gastos.id,
+            })],
+        }
+
+        try:
+            move = self.env['account.move'].create(move_vals)
+            move.action_post()
+
+            _logger.info(
+                "💼 Registro de comisión %s generado — "
+                "contrato '%s' asesor '%s' monto %.2f",
+                move.name,
+                self.name,
+                asesor_partner.name,
+                self.comision_monto
+            )
+
+            self.message_post(
+                body=Markup(_(
+                    "💼 <strong>Comisión registrada contablemente.</strong><br/>"
+                    "Documento: <strong>%(move)s</strong><br/>"
+                    "Asesor: <strong>%(asesor)s</strong><br/>"
+                    "Monto: <strong>%(monto)s %(moneda)s</strong>"
+                )) % {
+                    'move':   move.name,
+                    'asesor': asesor_partner.name,
+                    'monto':  f"{self.comision_monto:,.2f}",
+                    'moneda': self.currency_id.symbol,
+                },
+                message_type='comment',
+                subtype_xmlid='mail.mt_note'
+            )
+
+        except Exception as e:
+            _logger.error(
+                "❌ Error generando registro de comisión "
+                "para contrato '%s': %s",
+                self.name, str(e)
+            )
+
+
+    # =========================================================================
     # OVERRIDE write — CHATTER AUTOMÁTICO
     # =========================================================================
 
@@ -1379,6 +1582,11 @@ class RePago(models.Model):
             self.numero_pago, self.contrato_id.name,
             nuevo_estado, es_tardio
         )
+        
+        # Integración contable v1.1 — generar factura al inquilino
+        if nuevo_estado == PAGO_PAGADO:
+            self._generar_factura_renta()
+
 
     def action_marcar_atrasado(self):
         """
@@ -1395,6 +1603,115 @@ class RePago(models.Model):
             "🔴 Pago %d del contrato '%s' marcado como atrasado",
             self.numero_pago, self.contrato_id.name
         )
+
+    # =========================================================================
+    # INTEGRACIÓN CONTABLE — v1.1
+    # =========================================================================
+
+    def _generar_factura_renta(self):
+        """
+        Genera una factura de cliente (out_invoice) al registrar un pago
+        de renta confirmado. Se llama desde action_registrar_pago.
+
+        Emisor:  La compañía activa en Odoo (configurable via journal_id).
+        Cliente: El inquilino del contrato.
+        Concepto: Renta mensual — mes N del contrato.
+        """
+        self.ensure_one()
+
+        contrato  = self.contrato_id
+        inquilino = contrato.inquilino_id
+
+        if not inquilino:
+            _logger.warning(
+                "⚠️ Pago %d sin inquilino — factura no generada",
+                self.numero_pago
+            )
+            return
+
+        journal = contrato._get_journal(journal_type='sale')
+
+        # Cuenta de ingresos por arrendamiento
+        # Odoo busca la cuenta de ingresos del producto o la por defecto
+        cuenta_ingresos = self.env['account.account'].search([
+            ('account_type', 'in', [
+                'income', 'income_other'
+            ]),
+            ('company_id', '=', self.env.company.id),
+            ('deprecated', '=', False),
+        ], limit=1)
+
+        if not cuenta_ingresos:
+            _logger.error(
+                "❌ No se encontró cuenta de ingresos — "
+                "factura de renta no generada para pago %d",
+                self.numero_pago
+            )
+            return
+
+        concepto = _(
+            "Renta mensual — %(propiedad)s\n"
+            "Contrato: %(contrato)s | Pago %(num)d de %(total)d\n"
+            "Período: %(fecha_ini)s → %(fecha_fin)s"
+        ) % {
+            'propiedad': contrato.propiedad_id.name,
+            'contrato':  contrato.name,
+            'num':       self.numero_pago,
+            'total':     contrato.plazo_meses or 0,
+            'fecha_ini': str(contrato.fecha_inicio or ''),
+            'fecha_fin': str(contrato.fecha_fin or ''),
+        }
+
+        move_vals = {
+            'move_type':       'out_invoice',
+            'journal_id':      journal.id,
+            'partner_id':      inquilino.id,
+            'invoice_date':    self.fecha_pago or fields.Date.today(),
+            'ref':             f"{contrato.name} / Pago #{self.numero_pago}",
+            'narration':       concepto,
+            'invoice_line_ids': [(0, 0, {
+                'name':         concepto,
+                'quantity':     1.0,
+                'price_unit':   self.monto_pagado,
+                'account_id':   cuenta_ingresos.id,
+            })],
+        }
+
+        try:
+            factura = self.env['account.move'].create(move_vals)
+            # Confirmar la factura automáticamente
+            factura.action_post()
+
+            _logger.info(
+                "🧾 Factura %s generada — pago %d contrato '%s' inquilino '%s'",
+                factura.name,
+                self.numero_pago,
+                contrato.name,
+                inquilino.name
+            )
+
+            # Nota en Chatter del contrato con link a la factura
+            contrato.message_post(
+                body=Markup(_(
+                    "🧾 <strong>Factura generada automáticamente.</strong><br/>"
+                    "Factura: <strong>%(factura)s</strong><br/>"
+                    "Inquilino: <strong>%(inquilino)s</strong><br/>"
+                    "Monto: <strong>%(monto)s %(moneda)s</strong>"
+                )) % {
+                    'factura':  factura.name,
+                    'inquilino': inquilino.name,
+                    'monto':    f"{self.monto_pagado:,.2f}",
+                    'moneda':   self.currency_id.symbol,
+                },
+                message_type='comment',
+                subtype_xmlid='mail.mt_note'
+            )
+
+        except Exception as e:
+            _logger.error(
+                "❌ Error generando factura para pago %d: %s",
+                self.numero_pago, str(e)
+            )
 
     # =========================================================================
     # CRON: MARCADO AUTOMÁTICO DE PAGOS ATRASADOS
