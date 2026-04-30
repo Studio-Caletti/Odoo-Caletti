@@ -60,7 +60,7 @@
                     <button name="action_terminar" string="🏁 Terminar Contrato" type="object" invisible="estado not in ['activo','por_vencer','vencido']"/>
                     <button name="action_cancelar" string="❌ Cancelar" type="object" invisible="estado != 'borrador'"/>
                     <field name="estado" widget="statusbar" statusbar_visible="borrador,activo,por_vencer,terminado"/>
-                    <button name="%(account.action_move_out_invoice_type)d"type="action" class="oe_stat_button" icon="fa-file-text-o" invisible="move_count == 0">
+                    <button name="%(account.action_move_out_invoice_type)d" type="action" class="oe_stat_button" icon="fa-file-text-o" invisible="move_count == 0">
                     <field name="move_count" widget="statinfo" string="Facturas"/>
                     </button>
                 </header>
