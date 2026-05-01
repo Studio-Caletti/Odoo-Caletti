@@ -53,10 +53,10 @@
         'security/security_groups.xml',
         'security/ir.model.access.csv',
         'security/ir_rule.xml',
-        'data/re_sequences.xml', 
+        'data/re_sequences.xml',
+        'views/re_visita_views.xml',       # v1.1     
         'views/re_propiedad_views.xml',
         'views/re_prospecto_views.xml',
-        'views/re_visita_views.xml',       # v1.1    
         'views/re_operacion_views.xml',
         'views/re_contrato_views.xml',
         'views/re_mantenimiento_views.xml',
