@@ -510,6 +510,7 @@
                                       decoration-info="estado == 'realizada'"
                                       decoration-warning="estado == 'no_show'"
                                       decoration-muted="estado == 'cancelada'">
+
                                       <field name="convirtio" column_invisible="True"/>
                                       <field name="name"/>
                                       <field name="fecha_visita"/>
