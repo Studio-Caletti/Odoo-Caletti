@@ -228,6 +228,21 @@ class ReVisita(models.Model):
         readonly=True
     )
 
+     # =========================================================================
+    # SECCIÓN 10: CAMPOS TÉCNICOS Y UI
+    # =========================================================================
+
+    current_datetime = fields.Datetime(
+        string='Fecha Actual',
+        compute='_compute_current_datetime',
+        help="Campo técnico para decoraciones de vista (overdue)"
+    )
+
+    color = fields.Integer(
+        string='Color Index',
+        help="Usado para la organización visual en el Kanban"
+    )
+
     # =========================================================================
     # SECCIÓN 6: COMPUTES
     # =========================================================================
@@ -449,3 +464,12 @@ class ReVisita(models.Model):
             ],
             'target': 'new',
         }
+
+    def _compute_current_datetime(self):
+        """Asigna la fecha/hora actual para validaciones dinámicas en la UI."""
+        now = fields.Datetime.now()
+        for record in self:
+            record.current_datetime = now
+
+   
+
