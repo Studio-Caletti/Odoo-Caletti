@@ -195,6 +195,28 @@
                     <field name="estado"
                            widget="statusbar"
                            statusbar_visible="disponible,en_negociacion,ocupada,vendida"/>
+
+                    <button name="%(caletti_real_estate.action_re_visita)d"
+                            type="action"
+                            class="oe_stat_button"
+                            icon="fa-eye"
+                            context="{'default_propiedad_id': active_id,
+                                    'search_default_propiedad_id': active_id}"
+                            invisible="visitas_count == 0">
+                            <field name="visitas_count"
+                                   widget="statinfo"
+                                   string="Visitas"/>
+                    </button>
+
+                    <button name="%(caletti_real_estate.action_re_visita)d"
+                            type="action"
+                            class="oe_stat_button"
+                            icon="fa-line-chart"
+                            invisible="tasa_conversion == 0.0">
+                            <field name="tasa_conversion"
+                                   widget="statinfo"
+                                   string="Conversión %"/>
+                    </button>
                 </header>
 
                 <sheet>
@@ -231,27 +253,7 @@
                              widget="statinfo"/>
                     </button>
 
-                    <button name="%(caletti_real_estate.action_re_visita)d"
-                            type="action"
-                            class="oe_stat_button"
-                            icon="fa-eye"
-                            context="{'default_propiedad_id': active_id,
-                                    'search_default_propiedad_id': active_id}"
-                            invisible="visitas_count == 0">
-                            <field name="visitas_count"
-                                   widget="statinfo"
-                                   string="Visitas"/>
-                    </button>
-
-                    <button name="%(caletti_real_estate.action_re_visita)d"
-                            type="action"
-                            class="oe_stat_button"
-                            icon="fa-line-chart"
-                            invisible="tasa_conversion == 0.0">
-                            <field name="tasa_conversion"
-                                   widget="statinfo"
-                                   string="Conversión %"/>
-                    </button>
+                    
 
                 
 
