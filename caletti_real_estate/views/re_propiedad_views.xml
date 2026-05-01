@@ -202,26 +202,6 @@
 
                 <sheet>
 
-                    <!-- ALERTA: En mantenimiento -->
-                    <div class="alert alert-warning" role="status"
-                         invisible="estado != 'en_mantenimiento'">
-                        <i class="fa fa-wrench me-2" title="Mantenimiento"/>
-                        <strong>Propiedad en Mantenimiento.</strong>
-                        No disponible para operación hasta nuevo aviso.
-                        Trabajo en curso:
-                        <field name="tipo_mantenimiento"
-                               readonly="1"
-                               nolabel="1"
-                               style="display:inline;"/>
-                    </div>
-
-                    <!-- ALERTA: Suspendida -->
-                    <div class="alert alert-danger" role="status"
-                         invisible="estado != 'suspendida'">
-                        <i class="fa fa-ban me-2" title="Suspendida"/>
-                        <strong>Propiedad Suspendida.</strong>
-                        El propietario ha retirado el inmueble del mercado temporalmente.
-                    </div>
 
                     <!-- STAT BUTTONS -->
                 <div class="oe_button_box" name="button_box">
@@ -255,8 +235,28 @@
                                    string="Conversión %"/>
                     </button>
 
-                 </div>   
+                 </div> 
 
+                    <!-- ALERTA: En mantenimiento -->
+                    <div class="alert alert-warning" role="status"
+                         invisible="estado != 'en_mantenimiento'">
+                        <i class="fa fa-wrench me-2" title="Mantenimiento"/>
+                        <strong>Propiedad en Mantenimiento.</strong>
+                        No disponible para operación hasta nuevo aviso.
+                        Trabajo en curso:
+                        <field name="tipo_mantenimiento"
+                               readonly="1"
+                               nolabel="1"
+                               style="display:inline;"/>
+                    </div>
+
+                    <!-- ALERTA: Suspendida -->
+                    <div class="alert alert-danger" role="status"
+                         invisible="estado != 'suspendida'">
+                        <i class="fa fa-ban me-2" title="Suspendida"/>
+                        <strong>Propiedad Suspendida.</strong>
+                        El propietario ha retirado el inmueble del mercado temporalmente.
+                    </div>  
                 
 
                     <!-- TÍTULO -->
