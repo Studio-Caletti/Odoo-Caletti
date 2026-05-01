@@ -55,6 +55,7 @@
         'security/ir_rule.xml',
         'views/re_propiedad_views.xml',
         'views/re_prospecto_views.xml',
+        'views/re_visita_views.xml',       # v1.1    
         'views/re_operacion_views.xml',
         'views/re_contrato_views.xml',
         'views/re_mantenimiento_views.xml',

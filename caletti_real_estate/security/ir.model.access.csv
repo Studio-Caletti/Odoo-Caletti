@@ -22,3 +22,6 @@ access_re_mantenimiento_portal,re.mantenimiento.portal,model_re_mantenimiento,ba
 access_re_contrato_portal,re.contrato.portal,model_re_contrato,base.group_portal,1,0,0,0
 access_re_pago_portal,re.pago.portal,model_re_pago,base.group_portal,1,0,0,0
 access_re_propiedad_foto_portal,re.propiedad.foto.portal,model_re_propiedad_foto,base.group_portal,1,0,0,0
+access_re_visita_asesor,re.visita.asesor,model_re_visita,caletti_real_estate.group_re_asesor,1,1,1,0
+access_re_visita_coordinador,re.visita.coordinador,model_re_visita,caletti_real_estate.group_re_coordinador,1,1,1,0
+access_re_visita_admin,re.visita.admin,model_re_visita,caletti_real_estate.group_re_admin,1,1,1,1

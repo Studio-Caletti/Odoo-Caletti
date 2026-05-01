@@ -210,6 +210,17 @@
                     <field name="etapa"
                            widget="statusbar"
                            statusbar_visible="nuevo,contactado,visita_realizada,investigacion,negociacion,cerrado"/>
+                    <!-- Smart button Visitas — agregar en button_box del prospecto -->
+                    <button name="%(caletti_real_estate.action_re_visita)d"
+                            type="action"
+                            class="oe_stat_button"
+                            icon="fa-eye"
+                            context="{'default_prospecto_id': active_id,
+                            'search_default_prospecto_id': active_id}">
+                            <field name="visitas_count"
+                                   widget="statinfo"
+                                   string="Visitas"/>
+                    </button>
                 </header>
 
                 <sheet>
@@ -377,8 +388,72 @@
                             </group>
                         </page>
 
+                      <!-- Tab Visitas — agregar en el notebook de re.prospecto -->
+                      <page string="👁️ Visitas" name="visitas_prospecto">
+
+                          <!-- Métricas de conversión -->
+                          <group invisible="not visitas_count">
+                              <group string="Métricas del Pipeline">
+                                  <field name="visitas_count" readonly="1"/>
+                                  <field name="primera_visita" readonly="1"/>
+                                  <field name="dias_primer_cierre"
+                                         readonly="1"
+                                         invisible="not dias_primer_cierre"/>
+                              </group>
+                          </group>
+
+                          <!-- Botón nueva visita -->
+                          <div class="mb-3">
+                              <button string="+ Nueva Visita"
+                                      type="action"
+                                      name="%(caletti_real_estate.action_re_visita)d"
+                                      class="btn btn-primary btn-sm"
+                                      context="{'default_prospecto_id': active_id,
+                                                'default_asesor_id': uid}"/>
+                          </div>
+
                         <!-- ============================================
-                             TAB 4: INVESTIGACIÓN SOCIOECONÓMICA
+                             TAB 4: AGENDA DE VISITAS Lista de visitas del prospecto
+                        ============================================ -->
+                          
+                          <field name="visita_ids"
+                                 mode="tree"
+                                 context="{'default_prospecto_id': active_id,
+                                           'default_asesor_id': uid}">
+                              <tree string="Visitas"
+                                    decoration-success="estado == 'realizada' and convirtio"
+                                    decoration-info="estado == 'realizada'"
+                                    decoration-warning="estado == 'no_show'"
+                                    decoration-muted="estado == 'cancelada'">
+                                  <field name="convirtio" column_invisible="True"/>
+                                  <field name="name"/>
+                                  <field name="fecha_visita"/>
+                                  <field name="propiedad_id"/>
+                                  <field name="asesor_id"
+                                         widget="many2one_avatar_user"/>
+                                  <field name="interes_prospecto"
+                                         widget="badge"
+                                         decoration-success="interes_prospecto in ['muy_alto', 'alto']"
+                                         decoration-warning="interes_prospecto == 'medio'"
+                                         decoration-danger="interes_prospecto in ['bajo', 'sin_interes']"/>
+                                  <field name="probabilidad_cierre"
+                                         widget="percentage"/>
+                                  <field name="es_primera_visita"
+                                         widget="boolean_toggle"
+                                         readonly="1"/>
+                                  <field name="estado"
+                                         widget="badge"
+                                         decoration-info="estado == 'agendada'"
+                                         decoration-success="estado == 'realizada'"
+                                         decoration-danger="estado == 'cancelada'"
+                                         decoration-warning="estado == 'no_show'"/>
+                              </tree>
+                          </field>
+                      </page>
+
+
+                        <!-- ============================================
+                             TAB 5: INVESTIGACIÓN SOCIOECONÓMICA
                         ============================================ -->
                         <page string="🔍 Investigación"
                               name="tab_investigacion">
@@ -428,7 +503,7 @@
                         </page>
 
                         <!-- ============================================
-                             TAB 5: DESCARTE (visible si aplica)
+                             TAB 6: DESCARTE (visible si aplica)
                         ============================================ -->
                         <page string="❌ Descarte"
                               name="tab_descarte"
@@ -441,7 +516,7 @@
                         </page>
 
                         <!-- ============================================
-                             TAB 6: NOTAS GENERALES
+                             TAB 7: NOTAS GENERALES
                         ============================================ -->
                         <page string="📝 Notas" name="tab_notas">
                             <field name="notas"

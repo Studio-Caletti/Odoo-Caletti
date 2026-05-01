@@ -228,6 +228,28 @@
                              widget="statinfo"/>
                     </button>
 
+                    <button name="%(caletti_real_estate.action_re_visita)d"
+                            type="action"
+                            class="oe_stat_button"
+                            icon="fa-eye"
+                            context="{'default_propiedad_id': active_id,
+                                    'search_default_propiedad_id': active_id}"
+                            invisible="visitas_count == 0">
+                            <field name="visitas_count"
+                                   widget="statinfo"
+                                   string="Visitas"/>
+                    </button>
+
+                    <button name="%(caletti_real_estate.action_re_visita)d"
+                            type="action"
+                            class="oe_stat_button"
+                            icon="fa-line-chart"
+                            invisible="tasa_conversion == 0.0">
+                            <field name="tasa_conversion"
+                                   widget="statinfo"
+                                   string="Conversión %"/>
+                    </button>
+
                 <!--    <div class="oe_button_box" name="button_box">
                         <div class="oe_stat_button" icon="fa-camera">
                             <field name="foto_count"
@@ -470,6 +492,59 @@
                                        nolabel="1"/>
                             </group>
                         </page>
+                        
+                        <page string="👁️ Visitas" name="visitas">
+                            <div class="alert alert-info mb-3" role="status">
+                            <i class="fa fa-info-circle me-2"/>
+                               Visitas registradas a esta propiedad.
+                               La tasa de conversión se calcula automáticamente.
+                            </div>
+
+                            <!-- Métricas resumen -->
+                            <group>
+                                  <group string="Métricas de Visitas">
+                                         <field name="visitas_count" readonly="1"/>
+                                         <field name="tasa_conversion"
+                                                readonly="1"
+                                                widget="percentage"/>
+                                  </group>
+                            </group>
+
+                            <!-- Lista de visitas -->
+                            <field name="visita_ids"
+                                   mode="tree"
+                                   context="{'default_propiedad_id': active_id}">
+                                <tree string="Visitas"
+                                      decoration-success="estado == 'realizada' and convirtio"
+                                      decoration-info="estado == 'realizada'"
+                                      decoration-warning="estado == 'no_show'"
+                                      decoration-muted="estado == 'cancelada'">
+                                      <field name="convirtio" column_invisible="True"/>
+                                      <field name="name"/>
+                                      <field name="fecha_visita"/>
+                                      <field name="prospecto_id"/>
+                                      <field name="asesor_id"
+                                             widget="many2one_avatar_user"/>
+                                      <field name="interes_prospecto"
+                                             widget="badge"
+                                             decoration-success="interes_prospecto in ['muy_alto', 'alto']"
+                                             decoration-warning="interes_prospecto == 'medio'"
+                                             decoration-danger="interes_prospecto in ['bajo', 'sin_interes']"/>
+                                      <field name="probabilidad_cierre"
+                                             widget="percentage"/>
+                                      <field name="es_primera_visita"
+                                             widget="boolean_toggle"
+                                             readonly="1"/>
+                                      <field name="estado"
+                                             widget="badge"
+                                             decoration-info="estado == 'agendada'"
+                                             decoration-success="estado == 'realizada'"
+                                             decoration-danger="estado == 'cancelada'"
+                                             decoration-warning="estado == 'no_show'"/>
+                                </tree>
+                            </field>
+                        </page>
+
 
                     </notebook>
                 </sheet>

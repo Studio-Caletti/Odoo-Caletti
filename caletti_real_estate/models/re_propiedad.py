@@ -490,6 +490,46 @@ class RePropiedad(models.Model):
     color = fields.Integer(string='Color Index', default=0)
 
     # =========================================================================
+    # INTEGRACIÓN re.visita — v1.1
+    # =========================================================================
+
+    visita_ids = fields.One2many(
+        're.visita',
+        'propiedad_id',
+        string='Visitas',
+        help="Visitas realizadas a esta propiedad"
+    )
+
+    visitas_count = fields.Integer(
+        string='Total Visitas',
+        compute='_compute_visitas_stats',
+        store=True,
+        help="Número total de visitas realizadas a esta propiedad"
+    )
+
+    tasa_conversion = fields.Float(
+        string='Tasa de Conversión (%)',
+        compute='_compute_visitas_stats',
+        store=True,
+        digits=(5, 1),
+        help="Porcentaje de visitas que resultaron en un contrato firmado"
+    )
+
+    @api.depends('visita_ids', 'visita_ids.estado', 'visita_ids.convirtio')
+    def _compute_visitas_stats(self):
+        for propiedad in self:
+            visitas_realizadas = propiedad.visita_ids.filtered(
+                lambda v: v.estado == 'realizada'
+            )
+            total = len(visitas_realizadas)
+            convertidas = len(visitas_realizadas.filtered('convirtio'))
+
+            propiedad.visitas_count   = total
+            propiedad.tasa_conversion = (
+                (convertidas / total * 100) if total > 0 else 0.0
+            )
+
+    # =========================================================================
     # LÓGICA COMPUTED
     # =========================================================================
 

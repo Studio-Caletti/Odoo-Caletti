@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# ________________________________________________________
+#   Part of Caletti Studio.
+#   See LICENSE file for full copyright and licensing details.
+#
+#   Caletti Studio / MEXICO - BUENOS AIRES - ROMA
+#   Lead Architect & Developer: Carlos Caletti - 2026
+# -->
+<!-- Seguridad: Grupos del Vertical Inmobiliario -->
+<!-- Opción B: Grupos propios — aislados del Core (juntos pero no revueltos) -->
+<odoo>
+
+<record id="seq_re_visita" model="ir.sequence">
+    <field name="name">Secuencia Visitas RE</field>
+    <field name="code">re.visita</field>
+    <field name="prefix">VIS-%(year)s-</field>
+    <field name="padding">5</field>
+    <field name="company_id" eval="False"/>
+</record>
+
+</odoo>

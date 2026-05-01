@@ -450,6 +450,64 @@ class ReProspecto(models.Model):
     color = fields.Integer(string='Color Index', default=0)
 
     # =========================================================================
+    # INTEGRACIÓN re.visita
+    # =========================================================================
+
+    visita_ids = fields.One2many(
+        're.visita',
+        'prospecto_id',
+        string='Visitas',
+        help="Visitas realizadas por este prospecto"
+    )
+
+    visitas_count = fields.Integer(
+        string='Total Visitas',
+        compute='_compute_visitas_prospecto',
+        store=True
+    )
+
+    primera_visita = fields.Datetime(
+        string='Fecha Primera Visita',
+        compute='_compute_visitas_prospecto',
+        store=True,
+        help="Fecha de la primera visita realizada por este prospecto"
+    )
+
+    dias_primer_cierre = fields.Integer(
+        string='Días hasta Cierre',
+        compute='_compute_visitas_prospecto',
+        store=True,
+        help="Días transcurridos desde la primera visita hasta el cierre. "
+             "Métrica clave para medir la velocidad del pipeline."
+    )
+
+    @api.depends('visita_ids', 'visita_ids.estado',
+                 'visita_ids.fecha_visita', 'visita_ids.convirtio',
+                 'visita_ids.dias_hasta_cierre')
+    def _compute_visitas_prospecto(self):
+        for prospecto in self:
+            visitas_realizadas = prospecto.visita_ids.filtered(
+                lambda v: v.estado == 'realizada'
+            ).sorted('fecha_visita')
+
+            prospecto.visitas_count = len(visitas_realizadas)
+
+            if visitas_realizadas:
+                prospecto.primera_visita = visitas_realizadas[0].fecha_visita
+            else:
+                prospecto.primera_visita = False
+
+            # Días hasta cierre: desde primera visita hasta el contrato
+            visitas_convertidas = visitas_realizadas.filtered('convirtio')
+            if visitas_convertidas and prospecto.primera_visita:
+                prospecto.dias_primer_cierre = (
+                    visitas_convertidas[0].dias_hasta_cierre
+                )
+            else:
+                prospecto.dias_primer_cierre = 0
+
+
+    # =========================================================================
     # CAMPOS COMPUTED
     # =========================================================================
 
