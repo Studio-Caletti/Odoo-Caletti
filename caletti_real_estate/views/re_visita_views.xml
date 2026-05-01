@@ -50,7 +50,7 @@
                     <div class="alert alert-warning"
                          role="alert"
                          invisible="estado != 'realizada' or interes_prospecto">
-                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <i class="fa fa-exclamation-triangle me-2" title="Warning"/>
                         <strong>Feedback pendiente.</strong>
                         Registra el nivel de interés y próxima acción
                         para mantener el pipeline actualizado.
@@ -60,7 +60,7 @@
                     <div class="alert alert-success"
                          role="alert"
                          invisible="not convirtio">
-                        <i class="fa fa-trophy me-2"/>
+                        <i class="fa fa-trophy me-2" title="Conversión"/>
                         <strong>¡Visita convertida!</strong>
                         Esta visita resultó en el contrato
                         <field name="contrato_id"
