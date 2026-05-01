@@ -367,7 +367,7 @@ class RePropiedad(models.Model):
     altura_bodega = fields.Float(
         string='Altura Interior (m)',
         digits=(6, 2),
-        defautl=0.0,
+        default=0.0,
         help="Altura libre interior en metros. Relevante para bodegas y naves."
     )
 

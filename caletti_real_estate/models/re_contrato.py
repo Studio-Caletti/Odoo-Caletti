@@ -185,7 +185,7 @@ class ReContrato(models.Model):
         string='Inquilino',
         index=True,
         tracking=True,
-        invisible="tipo_operacion != 'renta'",
+        #invisible="tipo_operacion != 'renta'",
         help="Persona o empresa que ocupará el inmueble en arrendamiento"
     )
 
@@ -195,7 +195,7 @@ class ReContrato(models.Model):
         string='Comprador',
         index=True,
         tracking=True,
-        invisible="tipo_operacion != 'venta'",
+        #invisible="tipo_operacion != 'venta'",
         help="Persona o empresa que adquiere el inmueble"
     )
 
@@ -452,7 +452,7 @@ class ReContrato(models.Model):
         help="Facturas y registros contables generados por este contrato."
     )
     move_count = fields.Integer(
-        string='Documentos Contables',
+        string='Nº Documentos Contables',
         compute='_compute_move_ids'
     )
 
