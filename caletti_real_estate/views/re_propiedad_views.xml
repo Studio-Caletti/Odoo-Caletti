@@ -250,13 +250,7 @@
                                    string="Conversión %"/>
                     </button>
 
-                <!--    <div class="oe_button_box" name="button_box">
-                        <div class="oe_stat_button" icon="fa-camera">
-                            <field name="foto_count"
-                                   string="Fotos"
-                                   widget="statinfo"/>
-                        </div>
-                    </div> -->
+                
 
                     <!-- TÍTULO -->
                     <div class="oe_title">
@@ -381,13 +375,6 @@
                                        nolabel="1"/>
                             </div>
 
-
-                            <!-- <group string="Amenidades y Extras">
-                                <field name="amenidades"
-                                       placeholder="Piscina, gimnasio, seguridad 24h, cisterna, paneles solares, jardín, terraza..."
-                                       nolabel="1"/>
-                            </group> -->
-
                         </page>
 
                         <!-- ============================================
@@ -493,6 +480,10 @@
                             </group>
                         </page>
                         
+                        <!-- ============================================
+                             TAB 7: VISITAS
+                        ============================================ -->                        
+
                         <page string="👁️ Visitas" name="visitas">
                             <div class="alert alert-info mb-3" role="status">
                             <i class="fa fa-info-circle me-2"/>
