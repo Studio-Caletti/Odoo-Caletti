@@ -1623,13 +1623,13 @@ class RePago(models.Model):
         cuenta_ingresos = journal.default_account_id
 
         if not cuenta_ingresos:
-        _logger.error(
-        "No se encontro cuenta por defecto en diario '%s' — "
-        "factura de renta no generada para pago %d. "
-        "Configura la cuenta en Facturacion > Diarios.",
-        journal.name,
-        self.numero_pago
-        )
+            _logger.error(
+            "No se encontro cuenta por defecto en diario '%s' — "
+            "factura de renta no generada para pago %d. "
+            "Configura la cuenta en Facturacion > Diarios.",
+            journal.name,
+            self.numero_pago
+            )
         
         concepto = _(
             "Renta mensual — %(propiedad)s\n"
