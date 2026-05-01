@@ -222,7 +222,10 @@
 
                     <!-- STAT BUTTONS -->
 
-                    <button class="oe_stat_button" icon="fa-camera" name="action_view_photos" type="object">
+                    <button class="oe_stat_button" 
+                            icon="fa-camera" 
+                            name="action_view_photos" 
+                            type="object">
                         <field name="foto_count"
                              string="Fotos" 
                              widget="statinfo"/>
