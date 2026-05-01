@@ -1124,26 +1124,12 @@ class ReContrato(models.Model):
                 "Configura uno en Contabilidad → Diarios."
             ) % journal_type)
 
-        return journal
+            return journal
 
     # =========================================================================
     # MÉTODO Over write para generar factura cuando se marque comision pagada
     # =========================================================================
 
-
-    def write(self, vals):
-        """
-        Override para generar el registro contable de comisión
-        cuando comision_pagada cambia a True.
-        """
-        res = super().write(vals)
-
-        if vals.get('comision_pagada'):
-            for contrato in self:
-                if contrato.comision_monto > 0:
-                    contrato._generar_move_comision()
-
-        return res
 
     def _generar_move_comision(self):
         """
@@ -1175,22 +1161,19 @@ class ReContrato(models.Model):
             return
 
         # Para egreso usamos diario de compras o general
-        journal = self._get_journal(journal_type='purchase')
+        
 
-        cuenta_gastos = self.env['account.account'].search([
-            ('account_type', 'in', [
-                'expense', 'expense_other'
-            ]),
-            ('company_id', '=', self.env.company.id),
-            ('deprecated', '=', False),
-        ], limit=1)
+        journal_compras = self._get_journal(journal_type='purchase')
+        cuenta_gastos = journal_compras.default_account_id
 
         if not cuenta_gastos:
             _logger.error(
-                "❌ No se encontró cuenta de gastos — "
-                "comisión del contrato '%s' no registrada",
-                self.name
-            )
+            "No se encontro cuenta por defecto en diario '%s' — "
+            "comision no registrada para contrato '%s'. "
+            "Configura la cuenta en Facturacion > Diarios.",
+            journal_compras.name,
+            self.name
+        )
             return
 
         concepto = _(
@@ -1205,7 +1188,7 @@ class ReContrato(models.Model):
 
         move_vals = {
             'move_type':        'in_invoice',
-            'journal_id':       journal.id,
+            'journal_id':       journal_compras.id,
             'partner_id':       asesor_partner.id,
             'invoice_date':     self.fecha_cobro_comision
                                 or fields.Date.today(),
@@ -1262,44 +1245,49 @@ class ReContrato(models.Model):
 
     def write(self, vals):
         """
-        Registra cambios críticos en el Chatter.
-        Patrón idéntico a re_propiedad.py y re_prospecto.py.
+        Override unificado:
+        1. Genera registro contable de comisión cuando comision_pagada → True
+        2. Registra cambios críticos en el Chatter
         """
-        resultado = super(ReContrato, self).write(vals)
+        res = super(ReContrato, self).write(vals)
 
-        if 'comision_pagada' in vals and vals['comision_pagada']:
+        if vals.get('comision_pagada'):
             for contrato in self:
+                # Nota en Chatter
                 contrato.message_post(
                     body=Markup(_(
-                        "💰 <strong>Comisión cobrada.</strong><br/>"
+                        "🔥 <strong>Comisión cobrada.</strong><br/>"
                         "Monto: <strong>%(monto)s %(moneda)s</strong><br/>"
                         "Pagada por el propietario: "
                         "<strong>%(propietario)s</strong>"
                     )) % {
-                        'monto': f"{contrato.comision_monto:,.2f}",
-                        'moneda': contrato.currency_id.symbol,
+                        'monto':       f"{contrato.comision_monto:,.2f}",
+                        'moneda':      contrato.currency_id.symbol,
                         'propietario': contrato.propietario_id.name
-                            if contrato.propietario_id else '—',
+                                       if contrato.propietario_id else '—',
                     },
                     message_type='comment',
                     subtype_xmlid='mail.mt_note'
                 )
+                # Generar move contable
+                if contrato.comision_monto > 0:
+                    contrato._generar_move_comision()
 
-        if 'deposito_recibido' in vals and vals['deposito_recibido']:
+        if vals.get('deposito_recibido'):
             for contrato in self:
                 contrato.message_post(
                     body=Markup(_(
                         "🏦 <strong>Depósito en garantía recibido.</strong><br/>"
                         "Monto: <strong>%(monto)s %(moneda)s</strong>"
                     )) % {
-                        'monto': f"{contrato.monto_deposito:,.2f}",
+                        'monto':  f"{contrato.monto_deposito:,.2f}",
                         'moneda': contrato.currency_id.symbol,
                     },
                     message_type='comment',
                     subtype_xmlid='mail.mt_note'
                 )
 
-        if 'inquilino_riesgo' in vals and vals['inquilino_riesgo']:
+        if vals.get('inquilino_riesgo'):
             for contrato in self:
                 contrato.message_post(
                     body=Markup(_(
@@ -1309,19 +1297,18 @@ class ReContrato(models.Model):
                         "Se recomienda contactar al inquilino y al propietario."
                     )) % {
                         'inquilino': contrato.inquilino_id.name
-                            if contrato.inquilino_id else '—',
+                                     if contrato.inquilino_id else '—',
                         'atrasados': contrato.pagos_atrasados_count,
                     },
                     message_type='comment',
                     subtype_xmlid='mail.mt_note'
                 )
                 _logger.warning(
-                    "🚨 Inquilino en riesgo — contrato '%s': "
-                    "%d pagos atrasados",
+                    "🚨 Inquilino en riesgo — contrato '%s': %d pagos atrasados",
                     contrato.name, contrato.pagos_atrasados_count
                 )
 
-        return resultado
+        return res
 
 
 # =============================================================================
@@ -1630,23 +1617,20 @@ class RePago(models.Model):
         journal = contrato._get_journal(journal_type='sale')
 
         # Cuenta de ingresos por arrendamiento
-        # Odoo busca la cuenta de ingresos del producto o la por defecto
-        cuenta_ingresos = self.env['account.account'].search([
-            ('account_type', 'in', [
-                'income', 'income_other'
-            ]),
-            ('company_id', '=', self.env.company.id),
-            ('deprecated', '=', False),
-        ], limit=1)
+        # Odoo busca la cuenta de ingresos del producto o aplica la por defecto
+
+
+        cuenta_ingresos = journal.default_account_id
 
         if not cuenta_ingresos:
-            _logger.error(
-                "❌ No se encontró cuenta de ingresos — "
-                "factura de renta no generada para pago %d",
-                self.numero_pago
-            )
-            return
-
+        _logger.error(
+        "No se encontro cuenta por defecto en diario '%s' — "
+        "factura de renta no generada para pago %d. "
+        "Configura la cuenta en Facturacion > Diarios.",
+        journal.name,
+        self.numero_pago
+        )
+        
         concepto = _(
             "Renta mensual — %(propiedad)s\n"
             "Contrato: %(contrato)s | Pago %(num)d de %(total)d\n"
