@@ -252,13 +252,13 @@ class ReVisita(models.Model):
     def _compute_es_primera_visita(self):
         for visita in self:
             if not visita.prospecto_id or not visita.propiedad_id:
-            visita.es_primera_visita = False
+               visita.es_primera_visita = False
             continue
 
         # Si el registro aún no está guardado (NewId), es primera visita
         # por definición — no hay con qué comparar en DB
             if not visita.id or isinstance(visita.id, models.NewId):
-            visita.es_primera_visita = True
+                visita.es_primera_visita = True
             continue
 
             visitas_anteriores = self.search([
