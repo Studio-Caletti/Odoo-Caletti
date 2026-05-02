@@ -307,26 +307,26 @@ class ReVisita(models.Model):
                     "La probabilidad de cierre debe estar entre 0% y 100%."
                 ))
 
-    @api.constrains('prospecto_id', 'propiedad_id')
-    def _check_propiedad_en_prospecto(self):
-        """
-        Validación suave: advierte si la propiedad no está en las
-        propiedades evaluadas del prospecto. No bloquea — el asesor
-        puede querer registrar visitas exploratorias.
-        """
-        for visita in self:
-            if (visita.prospecto_id
-                    and visita.propiedad_id
-                    and visita.propiedad_id not in
-                    visita.prospecto_id.propiedad_interes_ids):
-                _logger.warning(
-                    "⚠️ Visita %s: la propiedad '%s' no está en las "
-                    "propiedades evaluadas del prospecto '%s'. "
-                    "Considera agregarla al prospecto.",
-                    visita.name,
-                    visita.propiedad_id.name,
-                    visita.prospecto_id.name
-                )
+#    @api.constrains('prospecto_id', 'propiedad_id')
+#    def _check_propiedad_en_prospecto(self):
+#        """
+#        Validación suave: advierte si la propiedad no está en las
+#        propiedades evaluadas del prospecto. No bloquea — el asesor
+#        puede querer registrar visitas exploratorias.
+#        """
+#        for visita in self:
+#            if (visita.prospecto_id
+#                    and visita.propiedad_id
+#                    and visita.propiedad_id not in
+#                    visita.prospecto_id.propiedad_interes_ids):
+#                _logger.warning(
+#                    "⚠️ Visita %s: la propiedad '%s' no está en las "
+#                    "propiedades evaluadas del prospecto '%s'. "
+#                    "Considera agregarla al prospecto.",
+#                    visita.name,
+#                    visita.propiedad_id.name,
+#                    visita.prospecto_id.name
+#                )
 
     # =========================================================================
     # SECCIÓN 8: ORM OVERRIDES
