@@ -247,16 +247,19 @@ class ReVisita(models.Model):
     # SECCIÓN 6: COMPUTES
     # =========================================================================
 
+
     @api.depends('prospecto_id', 'propiedad_id', 'fecha_visita')
     def _compute_es_primera_visita(self):
-        """
-        True si no existe ninguna otra visita anterior del mismo prospecto
-        a la misma propiedad con fecha menor a esta visita.
-        """
         for visita in self:
             if not visita.prospecto_id or not visita.propiedad_id:
-                visita.es_primera_visita = False
-                continue
+            visita.es_primera_visita = False
+            continue
+
+        # Si el registro aún no está guardado (NewId), es primera visita
+        # por definición — no hay con qué comparar en DB
+            if not visita.id or isinstance(visita.id, models.NewId):
+            visita.es_primera_visita = True
+            continue
 
             visitas_anteriores = self.search([
                 ('prospecto_id', '=', visita.prospecto_id.id),
@@ -264,8 +267,9 @@ class ReVisita(models.Model):
                 ('fecha_visita', '<', visita.fecha_visita),
                 ('id', '!=', visita.id),
                 ('estado', '!=', ESTADO_CANCELADA),
-            ])
+                ])
             visita.es_primera_visita = not bool(visitas_anteriores)
+
 
     @api.depends('contrato_id')
     def _compute_convirtio(self):
