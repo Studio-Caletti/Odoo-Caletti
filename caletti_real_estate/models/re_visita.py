@@ -202,7 +202,7 @@ class ReVisita(models.Model):
     es_primera_visita = fields.Boolean(
         string='Es Primera Visita',
         compute='_compute_es_primera_visita',
-        store=True,
+        store=False,
         help="True si esta es la primera visita del prospecto "
              "a esta propiedad específica"
     )
@@ -248,7 +248,7 @@ class ReVisita(models.Model):
     # =========================================================================
 
 
-    @api.depends('prospecto_id', 'propiedad_id', 'fecha_visita',  'create_date')
+    @api.depends('prospecto_id', 'propiedad_id', 'fecha_visita')
     def _compute_es_primera_visita(self):
         for visita in self:
             if not visita.prospecto_id or not visita.propiedad_id:
