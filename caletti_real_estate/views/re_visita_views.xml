@@ -343,9 +343,9 @@
                 <filter string="🏆 Convertidas"
                         name="convertidas"
                         domain="[('convirtio', '=', True)]"/>
-                <filter string="1ª Visita"
+                <!-- <filter string="1ª Visita"
                         name="primera_visita"
-                        domain="[('es_primera_visita', '=', True)]"/>
+                        domain="[('es_primera_visita', '=', True)]"/> -->
                 <filter string="🔥 Interés Muy Alto"
                         name="interes_muy_alto"
                         domain="[('interes_prospecto', 'in', ['muy_alto', 'alto'])]"/>
