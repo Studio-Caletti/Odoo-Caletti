@@ -248,7 +248,7 @@ class ReVisita(models.Model):
     # =========================================================================
 
 
-    @api.depends('prospecto_id', 'propiedad_id', 'fecha_visita')
+    @api.depends('prospecto_id', 'propiedad_id', 'fecha_visita',  'create_date')
     def _compute_es_primera_visita(self):
         for visita in self:
             if not visita.prospecto_id or not visita.propiedad_id:
