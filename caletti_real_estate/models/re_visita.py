@@ -202,7 +202,7 @@ class ReVisita(models.Model):
     es_primera_visita = fields.Boolean(
         string='Es Primera Visita',
         compute='_compute_es_primera_visita',
-        store=False,
+        store=True,
         help="True si esta es la primera visita del prospecto "
              "a esta propiedad específica"
     )
