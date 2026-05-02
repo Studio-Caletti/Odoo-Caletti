@@ -203,9 +203,23 @@ class ReVisita(models.Model):
         string='Es Primera Visita',
         compute='_compute_es_primera_visita',
         store=True,
+        search='_search_es_primera_visita',
         help="True si esta es la primera visita del prospecto "
              "a esta propiedad específica"
     )
+
+    def _search_es_primera_visita(self, operator, value):
+        """Permite filtrar por es_primera_visita en búsquedas."""
+        if operator not in ('=', '!=') or not isinstance(value, bool):
+           return []
+        todas = self.search([])
+        if value:
+           ids = [v.id for v in todas if v.es_primera_visita]
+        else:
+             ids = [v.id for v in todas if not v.es_primera_visita]
+        if operator == '!=':
+            ids = [v.id for v in todas if v.id not in ids]
+        return [('id', 'in', ids)]
 
     convirtio = fields.Boolean(
         string='Convirtió',
