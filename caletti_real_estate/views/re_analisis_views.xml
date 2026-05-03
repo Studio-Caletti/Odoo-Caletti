@@ -235,7 +235,7 @@
               sequence="60"/>
 
     <menuitem id="menu_re_analisis_propiedades"
-              name="Propiedades"
+              name="Graph Propiedades"
               parent="menu_re_analisis"
               action="action_re_analisis_propiedades"
               sequence="10"/>
