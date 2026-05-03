@@ -243,7 +243,7 @@
     <menuitem id="menu_re_analisis_prospectos"
               name="Contratos"
               parent="menu_re_analisis"
-              action="action_re_analisis_prospectos"
+              action="action_re_analisis_contratos"
               sequence="20"/>
 
     <menuitem id="menu_re_analisis_prospectos"
