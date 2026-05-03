@@ -401,6 +401,30 @@ class ReContrato(models.Model):
     )
 
     # =========================================================================
+    # INTEGRACIÓN ANALITICA — v1.1
+    # Métrica unificada para análisis (monto_renta o precio_venta_final)
+    # 
+    # =========================================================================
+    
+    monto_total = fields.Monetary(
+        string='Monto Total (Análisis)',
+        compute='_compute_monto_total',
+        currency_field='currency_id',
+        store=True,  # CRÍTICO: Permite que el motor SQL lo use en agrupaciones
+        help="Suma unificada de Renta o Venta para indicadores clave de rendimiento (KPI)."
+    )
+
+    @api.depends('tipo_operacion', 'monto_renta', 'precio_venta_final')
+    def _compute_monto_total(self):
+        for record in self:
+            if record.tipo_operacion == 'renta':
+                record.monto_total = record.monto_renta or 0.0
+            elif record.tipo_operacion == 'venta':
+                record.monto_total = record.precio_venta_final or 0.0
+            else:
+                record.monto_total = 0.0
+
+    # =========================================================================
     # SECCIÓN 6: COMISIÓN DEL ASESOR
     # Capturada manualmente — pagador siempre es el propietario (v1.0)
     # =========================================================================
@@ -430,30 +454,7 @@ class ReContrato(models.Model):
     # Nota: comision_pagador = propietario — hardcoded en v1.0
     # Si en v2.0 se requiere dividir entre partes, agregar campo Selection aquí
 
-    # =========================================================================
-    # INTEGRACIÓN ANALITICA — v1.1
-    # Métrica unificada para análisis (monto_renta o precio_venta_final)
-    # 
-    # =========================================================================
-    
-    monto_total = fields.Monetary(
-        string='Monto Total (Análisis)',
-        compute='_compute_monto_total',
-        currency_field='currency_id',
-        store=True,  # CRÍTICO: Permite que el motor SQL lo use en agrupaciones
-        help="Suma unificada de Renta o Venta para indicadores clave de rendimiento (KPI)."
-    )
-
-    @api.depends('tipo_operacion', 'monto_renta', 'precio_venta_final')
-    def _compute_monto_total(self):
-        for record in self:
-            if record.tipo_operacion == 'renta':
-                record.monto_total = record.monto_renta or 0.0
-            elif record.tipo_operacion == 'venta':
-                record.monto_total = record.precio_venta_final or 0.0
-            else:
-                record.monto_total = 0.0
-
+   
     # =========================================================================
     # INTEGRACIÓN CONTABLE — v1.1
     # Diario contable para facturas de renta y registro de comisión.
