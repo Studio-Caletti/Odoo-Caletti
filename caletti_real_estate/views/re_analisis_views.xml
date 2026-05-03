@@ -75,10 +75,12 @@
         <field name="name">re.contrato.graph</field>
         <field name="model">re.contrato</field>
         <field name="arch" type="xml">
-            <graph string="Análisis de Contratos"
-                   type="bar"
-                   sample="1">
+            <graph string="Análisis de Contratos" 
+                   type="bar" 
+                   sample="1"
+                   title="Distribución Financiera por Estado">
                 <field name="estado" type="row"/>
+                <field name="tipo_operacion" type="col"/>
                 <field name="monto_total" type="measure"/>
             </graph>
         </field>
@@ -88,12 +90,13 @@
         <field name="name">re.contrato.pivot</field>
         <field name="model">re.contrato</field>
         <field name="arch" type="xml">
-            <pivot string="Análisis de Contratos"
-                   sample="1"
+            <pivot string="Análisis de Contratos" 
+                   sample="1" 
                    display_quantity="1">
-                <field name="propiedad_id"   type="row"/>
-                <field name="estado"         type="col"/>
-                <field name="monto_total"    type="measure"/>
+                <field name="propiedad_id" type="row"/>
+                <field name="estado" type="col"/>
+                <field name="monto_total" type="measure"/>
+                <field name="comision_monto" type="measure"/>
             </pivot>
         </field>
     </record>

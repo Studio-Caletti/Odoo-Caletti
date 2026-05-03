@@ -431,6 +431,30 @@ class ReContrato(models.Model):
     # Si en v2.0 se requiere dividir entre partes, agregar campo Selection aquí
 
     # =========================================================================
+    # INTEGRACIÓN ANALITICA — v1.1
+    # Métrica unificada para análisis (monto_renta o precio_venta_final)
+    # 
+    # =========================================================================
+    
+    monto_total = fields.Monetary(
+        string='Monto Total del Negocio',
+        compute='_compute_monto_total',
+        currency_field='currency_id',
+        store=True,
+        help="Campo técnico para análisis: Unifica el precio de venta o el monto de renta."
+    )
+
+    @api.depends('tipo_operacion', 'monto_renta', 'precio_venta_final')
+    def _compute_monto_total(self):
+        for record in self:
+            if record.tipo_operacion == 'renta':
+                record.monto_total = record.monto_renta
+            elif record.tipo_operacion == 'venta':
+                record.monto_total = record.precio_venta_final
+            else:
+                record.monto_total = 0.0
+
+    # =========================================================================
     # INTEGRACIÓN CONTABLE — v1.1
     # Diario contable para facturas de renta y registro de comisión.
     # El usuario puede seleccionar el diario emisor por contrato.
