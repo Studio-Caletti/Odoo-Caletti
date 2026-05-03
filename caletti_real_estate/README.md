@@ -302,3 +302,9 @@ Questo release segna il lancio ufficiale del vertical immobiliare nell'ecosistem
 
 **Carlos Caletti** — *Lead Architect & Developer 2026*
 **Caletti Studio / MÉXICO — BUENOS AIRES — ROMA**
+
+<p align="left">
+  <a href="https://studio.caletti.com.mx">
+    <img src="https://img.shields.io/badge/Visitanos-CALETII%20STUDIO-blue?style=for-the-badge&logo=odoo&logoColor=%23714B67&logoSize=auto&labelColor=lightgray&color=8A2BE2" />
+  </a>
+</p>
