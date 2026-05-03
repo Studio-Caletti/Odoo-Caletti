@@ -65,59 +65,6 @@
     </record>
 
     <!-- ================================================
-         ANÁLISIS: CONTRATOS
-         Graph: pie por estado + bar por operacion_objetivo
-         Pivot: cruce libre por tipo, estado, asesor
-    ================================================ -->
-
-    <record id="view_re_contrato_graph" model="ir.ui.view">
-        <field name="name">re.contrato.graph</field>
-        <field name="model">re.contrato</field>
-        <field name="arch" type="xml">
-            <graph string="Análisis de Contratos"
-                   type="pie"
-                   sample="1">
-                <field name="estado" type="row"/>
-            </graph>
-        </field>
-    </record>
-
-    <record id="view_re_contrato_pivot" model="ir.ui.view">
-        <field name="name">re.contrato.pivot</field>
-        <field name="model">re.contrato</field>
-        <field name="arch" type="xml">
-            <pivot string="Análisis de Contratos"
-                   sample="1"
-                   display_quantity="1">
-                <field name="tipo_operacion" type="row"/>
-                <field name="estado"         type="col"/>
-                
-            </pivot>
-        </field>
-    </record>
-
-    <record id="action_re_analisis_contratos"
-            model="ir.actions.act_window">
-        <field name="name">Contratos</field>
-        <field name="res_model">re.contrato</field>
-        <field name="view_mode">graph,pivot</field>
-        <field name="context">{
-            'search_default_group_estado': 1
-        }</field>
-        <field name="view_ids"
-               eval="[(5, 0, 0),
-                      (0, 0, {'view_mode': 'graph',
-                              'view_id': ref('view_re_contrato_graph')}),
-                      (0, 0, {'view_mode': 'pivot',
-                              'view_id': ref('view_re_contrato_pivot')})]"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Sin propiedades contratos aún.
-            </p>
-        </field>
-    </record>
-
-    <!-- ================================================
          ANÁLISIS: PROSPECTOS
          Graph: bar por etapa del pipeline
          Pivot: cruce por calificación, fuente, asesor
@@ -235,27 +182,21 @@
               sequence="60"/>
 
     <menuitem id="menu_re_analisis_propiedades"
-              name="Graph Propiedades"
+              name="Propiedades"
               parent="menu_re_analisis"
               action="action_re_analisis_propiedades"
               sequence="10"/>
 
     <menuitem id="menu_re_analisis_prospectos"
-              name="Contratos"
-              parent="menu_re_analisis"
-              action="action_re_analisis_contratos"
-              sequence="20"/>
-
-    <menuitem id="menu_re_analisis_prospectos"
               name="Prospectos"
               parent="menu_re_analisis"
               action="action_re_analisis_prospectos"
-              sequence="30"/>
+              sequence="20"/>
 
     <menuitem id="menu_re_analisis_visitas"
               name="Visitas"
               parent="menu_re_analisis"
               action="action_re_analisis_visitas"
-              sequence="40"/>
+              sequence="30"/>
 
 </odoo>
