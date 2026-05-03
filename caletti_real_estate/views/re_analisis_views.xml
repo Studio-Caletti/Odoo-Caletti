@@ -70,7 +70,7 @@
          Pivot: cruce libre por tipo, estado, asesor
     ================================================ -->
 
-    <record id="view_re_propiedad_graph" model="ir.ui.view">
+    <record id="view_re_contrato_graph" model="ir.ui.view">
         <field name="name">re.contrato.graph</field>
         <field name="model">re.contrato</field>
         <field name="arch" type="xml">
@@ -82,11 +82,11 @@
         </field>
     </record>
 
-    <record id="view_re_propiedad_pivot" model="ir.ui.view">
+    <record id="view_re_contrato_pivot" model="ir.ui.view">
         <field name="name">re.contrato.pivot</field>
         <field name="model">re.contrato</field>
         <field name="arch" type="xml">
-            <pivot string="Análisis de Conratos"
+            <pivot string="Análisis de Contratos"
                    sample="1"
                    display_quantity="1">
                 <field name="tipo_operacion" type="row"/>
