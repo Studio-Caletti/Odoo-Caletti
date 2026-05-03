@@ -12,7 +12,7 @@
 {
     'name': 'Tablero Kanban Caletti',
     'category': 'Project/Management',
-    'version': '17.0.3.0.0', 
+    'version': '17.0.5.1.0', 
     'summary': 'Gestión visual de tareas con Business Intelligence y Portal de Cliente',
     'description': """
 
