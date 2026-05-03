@@ -64,6 +64,65 @@
         </field>
     </record>
 
+
+    <!-- ================================================
+         ANÁLISIS: CONTRATOS
+         Graph: bar por tipo (Renta/Venta) + estado
+         Pivot: métricas financieras por propiedad y asesor
+    ================================================ -->
+
+    <record id="view_re_contrato_graph" model="ir.ui.view">
+        <field name="name">re.contrato.graph</field>
+        <field name="model">re.contrato</field>
+        <field name="arch" type="xml">
+            <graph string="Análisis de Contratos"
+                   type="bar"
+                   sample="1">
+                <field name="estado" type="row"/>
+                <field name="monto_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_re_contrato_pivot" model="ir.ui.view">
+        <field name="name">re.contrato.pivot</field>
+        <field name="model">re.contrato</field>
+        <field name="arch" type="xml">
+            <pivot string="Análisis de Contratos"
+                   sample="1"
+                   display_quantity="1">
+                <field name="propiedad_id"   type="row"/>
+                <field name="estado"         type="col"/>
+                <field name="monto_total"    type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="action_re_analisis_contratos"
+            model="ir.actions.act_window">
+        <field name="name">Contratos</field>
+        <field name="res_model">re.contrato</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="context">{
+            'search_default_group_estado': 1
+        }</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {'view_mode': 'graph',
+                              'view_id': ref('view_re_contrato_graph')}),
+                      (0, 0, {'view_mode': 'pivot',
+                              'view_id': ref('view_re_contrato_pivot')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aún no hay contratos cerrados para analizar.
+            </p>
+            <p>
+                Las métricas se activarán una vez que los prospectos completen sus visitas y firmen.
+            </p>
+        </field>
+    </record>
+
     <!-- ================================================
          ANÁLISIS: PROSPECTOS
          Graph: bar por etapa del pipeline
@@ -186,6 +245,12 @@
               parent="menu_re_analisis"
               action="action_re_analisis_propiedades"
               sequence="10"/>
+
+    <menuitem id="menu_re_analisis_contratos"
+              name="Contratos"
+              parent="menu_re_analisis"
+              action="action_re_analisis_contratos"
+              sequence="15"/>
 
     <menuitem id="menu_re_analisis_prospectos"
               name="Prospectos"
