@@ -385,7 +385,8 @@
                                 <!-- Comisión -->
                                 <div t-if="record.comision_monto.raw_value > 0"
                                      t-attf-class="mt-1 small
-                                     #{'text-success' if record.comision_pagada.raw_value else 'text-muted'}">
+                                     #{record.comision_pagada.raw_value ?
+                                       'text-success' : 'text-muted'}">
                                     <i class="fa fa-money me-1" title="Comisión"/>
                                     Comisión:
                                     <field name="comision_monto" widget="monetary"/>
