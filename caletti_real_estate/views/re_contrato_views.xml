@@ -19,14 +19,20 @@
     <record id="action_re_contrato" model="ir.actions.act_window">
         <field name="name">Contratos</field>
         <field name="res_model">re.contrato</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_mis_contratos': 1}</field>
+        <field name="view_ids"
+           eval="[(5, 0, 0),
+                  (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_re_contrato_kanban')}),
+                  (0, 0, {'view_mode': 'tree',   'view_id': ref('view_re_contrato_tree')}),
+                  (0, 0, {'view_mode': 'form',   'view_id': ref('view_re_contrato_form')})]"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                ¡Registra el primer contrato!
+             <p class="o_view_nocontent_smiling_face">
+            ¡Registra el primer contrato!
             </p>
             <p>
-                Gestiona contratos de renta y compraventa con
-                seguimiento de pagos, vencimientos y comisiones.
+            Gestiona contratos de renta y compraventa con
+            seguimiento de pagos, vencimientos y comisiones.
             </p>
         </field>
     </record>
