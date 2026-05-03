@@ -92,7 +92,7 @@
                                    options="{'no_create': True}"
                                    domain="[('estado', 'in', ['disponible', 'en_negociacion'])]"/>
                             <field name="es_primera_visita"
-                                   readonly="1"/>
+                                   readonly="0"/>
                         </group>
                     </group>
 
