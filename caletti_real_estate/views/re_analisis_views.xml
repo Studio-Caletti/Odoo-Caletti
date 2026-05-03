@@ -89,7 +89,7 @@
             <pivot string="Análisis de Conratos"
                    sample="1"
                    display_quantity="1">
-                <field name="tipo_contrato" type="row"/>
+                <field name="tipo_operacion" type="row"/>
                 <field name="estado"         type="col"/>
                 <field name="operacion_objetivo" type="row"/>
             </pivot>
