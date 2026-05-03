@@ -10,7 +10,7 @@
 
 [![Odoo Version](https://img.shields.io/badge/Odoo-17.0-875A7B.svg)](https://www.odoo.com)
 [![License](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-5.0.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
+[![Version](https://img.shields.io/badge/Version-5.1.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
 
 [Español](#español) | [English](#english) | [Italiano](#italiano)
 
@@ -23,6 +23,16 @@
 **Odoo-Caletti V5** es una plataforma de gestión de alto rendimiento diseñada sobre **Odoo 17 Community**. Su esencia no es la de un software cerrado, sino la de un ecosistema vivo compuesto por un **Núcleo Core** de tarjetas dinámicas que orquesta el quehacer cotidiano empresarial.
 
 A diferencia de las soluciones aisladas (hojas de cálculo o apps simples), este ecosistema ofrece el poder de un **ERP (Enterprise Resource Planning)**. Esto significa que mientras nuestras verticales resuelven nichos específicos como el **Auxiliar de Soporte (Helpdesk)** o el **Sistema de Gestión Creativa (SGC)**, el usuario mantiene la puerta abierta para integrar módulos nativos de Odoo como **CRM, Calendario, Pagos Electrónicos, Recursos Humanos o Facturación**, todo bajo una misma base de datos y una sola interfaz.
+
+### Tabla de Módulos
+
+
+| Vertical | Módulo | Versión | Estado |
+|---|---|---|---|
+| Core Kanban Engine | `tablero_kanban_caletti` | 17.0.3.0.0 | ✅ Producción |
+| Helpdesk | `tablero_kanban_helpdesk` | 17.0.1.0.0 | ✅ Producción |
+| Creative Management (SGC) | `caletti_creative` | 17.0.1.0.0 | ✅ Producción |
+| Real Estate (CRE) | `caletti_real_estate` | 17.0.1.1.0 | ✅ Producción |
 
 ### 2. 📌 Pilares de la Arquitectura Caletti
 
@@ -200,9 +210,9 @@ La V4 marca el nacimiento de una arquitectura que no compite con Odoo, sino que 
 
 3. **Creative**: El estándar para Artes Gráficas y Agencias.
 
-4. **Real Estate (CRE) v1.0**: Gestión inmobiliaria integral para asesores independientes.
-
-5. **Próximamente**: Portal del propietario e inquilino, integración con facturación.
+4. **Real Estate (CRE) v1.1**: Gestión inmobiliaria integral — portal propietario/inquilino, integración contable, analítica y modelo de visitas.
+   
+5. **Próximamente v6.0**: Nuevo vertical a definir según roadmap estratégico Caletti Studio.
  
 
 ---

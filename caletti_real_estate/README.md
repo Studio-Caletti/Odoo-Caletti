@@ -1,21 +1,38 @@
-# 🏠 Caletti Real Estate v1.0.0 — Release Notes
+# 🏠 Caletti Real Estate v1.1.0 — Release Notes
 
 **Fecha de Release:** Abril 2026
 **Módulo:** `caletti_real_estate`
 **Versión Odoo:** 17.0 Community
 **Dependencias:** `tablero_kanban_caletti` (Core), `account`
 
+[![Version](https://img.shields.io/badge/Version-1.1.0-brightgreen.svg)]
+
 ---
 
 ## 🇪🇸 Español
 
-### Caletti Real Estate v1.0.0 — Primer Release Estable
+### Caletti Real Estate v1.1.0 — Primer Release Estable
 
 Este release marca el lanzamiento oficial del vertical inmobiliario del ecosistema Odoo-Caletti. Diseñado específicamente para asesores inmobiliarios independientes que gestionan propiedades de terceros, el módulo cubre el ciclo completo del negocio: desde la captación del prospecto hasta el cobro de la comisión, pasando por la gestión de contratos, pagos y mantenimiento.
 
 ---
 
 #### ✨ Funcionalidades Incluidas
+
+
+## v1.1.0 — Madurez Operativa (Mayo 2026)
+
+- ⏱️ Crons automáticos — vencimientos de contratos y pagos atrasados
+- 🌐 Portal web — propietario (pagos, contratos, aprobación mantenimientos)
+  e inquilino (estado de pagos, tickets de mantenimiento)
+- 🧾 Integración `account.move` — factura automática al registrar pago
+  de renta + vendor bill al cobrar comisión del asesor
+- 👁️ `re.visita` — modelo analítico de visitas con métricas de conversión,
+  tiempo hasta cierre y tasa de conversión por propiedad
+- 📊 Módulo de Análisis — gráficas y pivot para propiedades,
+  prospectos y visitas
+- 🗂️ Vista Kanban de Contratos activada
+
 
 **🏠 Cartera de Propiedades (`re.propiedad`)**
 - Soporte para tres tipos desde v1.0: Residencial, Comercial y Terrenos con subtipos específicos por categoría (casa, departamento, townhouse, penthouse, local, oficina, bodega, nave industrial, terreno urbano, agrícola, etc.)
@@ -65,7 +82,9 @@ Este release marca el lanzamiento oficial del vertical inmobiliario del ecosiste
 - Tres grupos propios: `group_re_asesor`, `group_re_coordinador`, `group_re_admin`
 - Record Rules: el asesor ve exclusivamente sus propias propiedades, prospectos, contratos, pagos y mantenimientos
 - El coordinador tiene visibilidad total del vertical
-- Portal: el propietario ve solo sus propiedades (read-only) — base para portal v1.1
+- Portal: el propietario ve solo sus propiedades (read-only)
+
+
 
 ---
 
@@ -84,17 +103,16 @@ Este release marca el lanzamiento oficial del vertical inmobiliario del ecosiste
 - Error OWL en Kanban de Mantenimiento por uso de `not` en expresiones QWeb y ternarios Python en `t-attf-class` — resuelto con `!` y sintaxis ternaria JS
 - `NaN` en campos Float del Kanban de Propiedades — resuelto con `t-if="raw_value > 0"`
 
----
 
-#### 📌 Pendientes para v1.1
-
-- Portal del propietario e inquilino (`re_portal.py`)
-- Integración `account.move` para facturas automáticas de renta
-- Cron automático de marcado de pagos atrasados
-- `re.visita` como modelo propio para administradoras de cartera grande
-- Demo data para App Store
-
----
+## Modelos
+| Modelo:|Descripción|Estado |
+| :---:|:---:|:---:|
+| `re.propiedad` | Gestion de propiedades en cartera CRUD |✅ producción |
+| `re.prospectos` | Flujo de captacion de prospectos 8 etapas hasta cierre |✅ producción |
+| `re.operacion` | Operaciones del sistema RENTA/VENTA |✅ producción |
+| `re.contrato` | Contratos Condiciones/Activacion/Gestion/terminación | ✅ producción |
+| `re.mantenimiento` | Sistema de Tickets de mantenimiento | ✅ producción |
+| `re.visita` | Visitas a propiedades con métricas analíticas | ✅ producción |
 
 ---
 
@@ -184,6 +202,10 @@ This release marks the official launch of the real estate vertical within the Od
 - Automatic overdue payment marking cron
 - `re.visita` as dedicated model for large portfolio managers
 - App Store demo data
+
+- [x] v1.1: Portal, account.move, re.visita, analítica ✅
+- [ ] v2.0: Portal home aislado por rol, analítica por asesor,
+            re.visita searchable, re.visita con validación de propiedades
 
 ---
 
