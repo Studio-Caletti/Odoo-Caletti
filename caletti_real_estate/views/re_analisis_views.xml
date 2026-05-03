@@ -75,12 +75,11 @@
         <field name="name">re.contrato.graph</field>
         <field name="model">re.contrato</field>
         <field name="arch" type="xml">
+            <!-- Title para accesibilidad y sample para carga visual inicial -->
             <graph string="Análisis de Contratos" 
                    type="bar" 
-                   sample="1"
-                   title="Distribución Financiera por Estado">
+                   sample="1">
                 <field name="estado" type="row"/>
-                <field name="tipo_operacion" type="col"/>
                 <field name="monto_total" type="measure"/>
             </graph>
         </field>
