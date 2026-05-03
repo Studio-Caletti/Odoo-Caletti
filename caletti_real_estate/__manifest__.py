@@ -60,7 +60,7 @@
     'views/re_operacion_views.xml',
     'views/re_contrato_views.xml',
     'views/re_mantenimiento_views.xml',
-    'views/re_analisis_views.xml'
+    'views/re_analisis_views.xml',
     'views/portal_re_templates.xml',
         # 'data/re_data.xml',               # se agregara
     ],
