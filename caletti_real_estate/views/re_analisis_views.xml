@@ -91,7 +91,7 @@
                    display_quantity="1">
                 <field name="tipo_operacion" type="row"/>
                 <field name="estado"         type="col"/>
-                <field name="operacion_objetivo" type="row"/>
+                
             </pivot>
         </field>
     </record>
