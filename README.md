@@ -18,7 +18,7 @@
 
 ## <a name="español"></a> 🇪🇸 Español <img src="https://flagcdn.com/w20/es.png" width="20">
 
-### 1. 📄 Descripción del Ecosistema V5
+### 1. 📄 Descripción del Ecosistema V5.1
 
 **Odoo-Caletti V5** es una plataforma de gestión de alto rendimiento diseñada sobre **Odoo 17 Community**. Su esencia no es la de un software cerrado, sino la de un ecosistema vivo compuesto por un **Núcleo Core** de tarjetas dinámicas que orquesta el quehacer cotidiano empresarial.
 
