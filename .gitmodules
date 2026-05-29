@@ -1,0 +1,9 @@
+[submodule "caletti_creative"]
+	path = caletti_creative
+	url = https://github.com/Studio-Caletti/Caletti_Creative.git
+[submodule "caletti_real_estate"]
+	path = caletti_real_estate
+	url = https://github.com/Studio-Caletti/Caletti_Real_Estate.git
+[submodule "tablero_kanban_helpdesk"]
+	path = tablero_kanban_helpdesk
+	url = https://github.com/Studio-Caletti/Caletti_Helpdesk.git
