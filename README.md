@@ -29,7 +29,7 @@ A diferencia de las soluciones aisladas (hojas de cálculo o apps simples), este
 
 | Vertical | Módulo | Versión | Estado |
 |---|---|---|---|
-| Core Kanban Engine | `tablero_kanban_caletti` | 17.0.3.0.0 | ✅ Producción |
+| Core Kanban Engine | `tablero_kanban_caletti` | 17.0.5.0.0 | ✅ Producción |
 | Helpdesk | `tablero_kanban_helpdesk` | 17.0.1.0.0 | ✅ Producción |
 | Creative Management (SGC) | `caletti_creative` | 17.0.1.0.0 | ✅ Producción |
 | Real Estate (CRE) | `caletti_real_estate` | 17.0.1.1.0 | ✅ Producción |
