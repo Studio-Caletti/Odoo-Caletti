@@ -10,7 +10,7 @@
 
 [![Odoo Version](https://img.shields.io/badge/Odoo-17.0-875A7B.svg)](https://www.odoo.com)
 [![License](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-5.1.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
+[![Version](https://img.shields.io/badge/Version-5.2.0-brightgreen.svg)](https://github.com/Studio-Caletti/Odoo-Caletti)
 
 [Español](#español) | [English](#english) | [Italiano](#italiano)
 
@@ -32,7 +32,7 @@ A diferencia de las soluciones aisladas (hojas de cálculo o apps simples), este
 | Core Kanban Engine | `tablero_kanban_caletti` | 17.0.5.0.0 | ✅ Producción |
 | Helpdesk | `tablero_kanban_helpdesk` | 17.0.1.0.0 | ✅ Producción |
 | Creative Management (SGC) | `caletti_creative` | 17.0.1.0.0 | ✅ Producción |
-| Real Estate (CRE) | `caletti_real_estate` | 17.0.1.1.0 | ✅ Producción |
+| Real Estate (CRE) | `caletti_real_estate` | 17.0.1.2.0 | ✅ Producción |
 
 ### 2. 📌 Pilares de la Arquitectura Caletti
 
@@ -103,7 +103,7 @@ El núcleo del módulo implementa una automatización proactiva:
 
 ## <a name="english"></a> 🇺🇸 English <img src="https://flagcdn.com/w20/us.png" width="20">
 
-### 1. 📄 Ecosystem V4 Description
+### 1. 📄 Ecosystem V5 Description
 
 **Odoo-Caletti V5**, designed under Odoo 17 Community, is a high-performance management ecosystem featuring an advanced Core Nucleus task-card board. It orchestrates daily business operations with a data structure optimized for operational agility. Unlike standalone apps, this ecosystem provides the full power of an ERP (Enterprise Resource Planning), enabling seamless integration with native modules like CRM, Calendar, Payments, HR, and Invoicing under a single interface.
 
@@ -154,7 +154,7 @@ Designed to move businesses away from fragmented spreadsheets into a unified env
 
 ### 📄 Descrizione dell'Ecosistema V5
 
-**Odoo-Caletti V4**, progettato su Odoo 17 Community, è un ecosistema di gestione ad alte prestazioni composto da un Nucleo Core avanzato basato su un sistema di schede attività. Questo nucleo permette di orchestrare le operazioni aziendali quotidiane con una struttura dati ottimizzata per l'agilità operativa. A differenza delle soluzioni isolate, questo ecosistema offre la potenza di un **ERP (Enterprise Resource Planning**), consentendo l'integrazione di moduli nativi come **CRM, Calendario, Pagamenti, Risorse Umane e Fatturazione** in un'unica interfaccia.
+**Odoo-Caletti V5**, progettato su Odoo 17 Community, è un ecosistema di gestione ad alte prestazioni composto da un Nucleo Core avanzato basato su un sistema di schede attività. Questo nucleo permette di orchestrare le operazioni aziendali quotidiane con una struttura dati ottimizzata per l'agilità operativa. A differenza delle soluzioni isolate, questo ecosistema offre la potenza di un **ERP (Enterprise Resource Planning**), consentendo l'integrazione di moduli nativi come **CRM, Calendario, Pagamenti, Risorse Umane e Fatturazione** in un'unica interfaccia.
 
 ### 📌 Pilastri Strategici
 
@@ -202,7 +202,7 @@ Designed to move businesses away from fragmented spreadsheets into a unified env
 
 ### 📈 Evolución del Ecosistema: Expansión Modular Realizada
 
-La V4 marca el nacimiento de una arquitectura que no compite con Odoo, sino que lo potencia para sectores específicos:
+La V5 marca el nacimiento de una arquitectura que no compite con Odoo, sino que lo potencia para sectores específicos:
 
 1. **Core**: El cimiento operativo.
 
@@ -210,9 +210,11 @@ La V4 marca el nacimiento de una arquitectura que no compite con Odoo, sino que 
 
 3. **Creative**: El estándar para Artes Gráficas y Agencias.
 
-4. **Real Estate (CRE) v1.1**: Gestión inmobiliaria integral — portal propietario/inquilino, integración contable, analítica y modelo de visitas.
-   
-5. **Próximamente v6.0**: Nuevo vertical a definir según roadmap estratégico Caletti Studio.
+4.  **Real Estate (CRE) v1.2**: Gestión inmobiliaria integral — portal propietario/inquilino, integración contable, analítica, modelo de visitas y vista dedicada de comisiones con flujo de estados trazable.
+
+5. **SaaS en implementación**: Servidor `saas-caletti` operativo con esquema de subdominios `SUEMPRESA.realestate.caletti.com.mx`, tres planes comerciales definidos y pipeline de captación de leads activo con n8n + Odoo CRM.
+
+6. **Próximamente v6.0**: Nuevo vertical a definir según roadmap estratégico Caletti Studio.
  
 
 ---
@@ -242,7 +244,7 @@ La V4 marca el nacimiento de una arquitectura que no compite con Odoo, sino que 
 
 ## ⚙️ Instalación y Configuración del Ecosistema
 
-La implementación de Odoo-Caletti V4 requiere una configuración precisa para habilitar su máxima potencia (Automatización y ERP). 
+La implementación de Odoo-Caletti V5 requiere una configuración precisa para habilitar su máxima potencia (Automatización y ERP). 
 
 1. **Dependencias**: Asegúrese de tener instalado Odoo 17 Community.
 2. **Orden de Instalación**: 
@@ -330,20 +332,27 @@ Odoo-Caletti/
 │   │   ├── re_propiedad.py                  # Cartera de propiedades + submodelo re.propiedad.foto
 │   │   ├── re_prospecto.py                  # Pipeline de captación (8 etapas)
 │   │   ├── re_operacion.py                  # _inherit tablero.tarea — operación activa
-│   │   ├── re_contrato.py                   # Contratos renta/venta + submodelo re.pago
-│   │   └── re_mantenimiento.py              # Solicitudes de mantenimiento con ticket
+│   │   ├── re_contrato.py                   # Contratos renta/venta + submodelo re.pago + Comisiones
+│   │   ├── re_mantenimiento.py              # Solicitudes de mantenimiento con ticket
+│   │   └── re_visita.py                     # Modelo gestor y analaítico de visitas
 │   ├── views/
 │   │   ├── re_propiedad_views.xml           # Kanban, Form, Tree, Search
 │   │   ├── re_prospecto_views.xml           # Pipeline Kanban por etapa
 │   │   ├── re_operacion_views.xml           # Vista propia sobre tablero.tarea
 │   │   ├── re_contrato_views.xml            # Contratos + pagos inline + cron
-│   │   └── re_mantenimiento_views.xml       # Kanban mantenimiento + secuencia
+│   │   ├── re_mantenimiento_views.xml       # Kanban mantenimiento + secuencia
+│   │   ├── re_visita_views.xml              # Kanban, Tree Calendar
+│   │   ├── re_comision_views.xml            # Vista dedicada a comisiones Kabnan, List, Graph
+│   │   └── re_analisis_views.xml            # Gráficas y Pivot
 │   ├── security/
 │   │   ├── security_groups.xml              # group_re_asesor, coordinador, admin
 │   │   ├── ir.model.access.csv              # Permisos por rol y modelo
 │   │   └── ir_rule.xml                      # Record Rules: asesor ve solo sus registros
 │   ├── controllers/
-│   │   └── __init__.py                      # Portal v1.1 — pendiente
+│   │   ├── re_portal.py                     # Portal v1.1 — pendiente
+│   │   └── __init__.py
+│   ├── data/
+│   │   └── re_sequences.xml                 # # Secuencias TTT-YYYY-NNNNN
 │   ├── __init__.py
 │   └── __manifest__.py
 │
@@ -351,7 +360,7 @@ Odoo-Caletti/
 │   ├── INSTALL.md
 │   └── TECHNICAL_NOTES.md
 │
-└── README.md                                # Este archivo
+└── README.md                                # 📄 Este archivo
 ```
 
 **Carlos Caletti** - ** *Lead Architect & Developer* 2026
