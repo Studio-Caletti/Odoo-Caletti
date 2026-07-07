@@ -352,7 +352,8 @@ Odoo-Caletti/
 │   │   ├── re_portal.py                     # Portal v1.1 — pendiente
 │   │   └── __init__.py
 │   ├── data/
-│   │   └── re_sequences.xml                 # # Secuencias TTT-YYYY-NNNNN
+│   │   ├── re_sequences.xml                 # Secuencias TTT-YYYY-NNNNN
+│   │   └── demo_redata.xml                  # Demo data        
 │   ├── __init__.py
 │   └── __manifest__.py
 │
